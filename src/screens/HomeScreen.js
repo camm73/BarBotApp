@@ -8,6 +8,7 @@ import HeaderComponent from '../components/HeaderComponent';
 import MenuItem from '../components/MenuItem';
 import {getCocktailMenu} from '../api/Control';
 import {toUpper} from '../utils/Tools';
+import ConnectionStatus from '../components/ConnectionStatus';
 
 import cocktailImages from '../config/cocktailImages';
 import BottleStatus from '../components/BottleStatus';
@@ -45,7 +46,8 @@ class HomeScreen extends React.Component {
                 <View style={styles.mainView}>
                 <View style={styles.statusView}>
                     {/*<Text style={styles.textStyle}>Your BarBot</Text>*/}
-                    <Text style={styles.infoText}>Connection Status:</Text>
+                    {/*<Text style={styles.infoText}>Connection Status:</Text>*/}
+                    <ConnectionStatus />
                     <Text style={styles.infoText}>Online/Offline:</Text>
                     <Spacer height={10} />
                     {/*<Text style={{fontSize: 18, textDecorationLine: 'underline'}}>Ingredient Status:</Text>

@@ -18,7 +18,18 @@ export async function makeCocktail(name){
 }
 
 export async function isOnline(){
-    
+    return new Promise(function(resolve, reject){
+        fetch(barbotAddress + 'heartbeat/', {
+            method: 'GET'
+        }).then((response) => response.text())
+        .then((text) => {
+            console.log('Heartbeat: ' + text);
+            resolve(text);
+        }).catch((error) => {
+            console.log(error);
+            reject(error);
+        })
+    })
 }
 
 export async function cleanPumps(){
