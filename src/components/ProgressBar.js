@@ -31,7 +31,7 @@ class ProgressBar extends React.Component {
                     borderRadius: 3,
                     padding: 1
                 }}>
-                    <Text style={{position: 'absolute', left: (this.props.width/2)-25, paddingTop: this.props.height/8}}>{this.props.value + "%"}</Text>
+                    <Text style={{position: 'absolute', left: (this.props.width/2)-25, paddingTop: this.props.height/7}}>{this.props.value + "%"}</Text>
                 </View>
             </View>
         );

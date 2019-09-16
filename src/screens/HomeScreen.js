@@ -16,6 +16,7 @@ import BottleStatus from '../components/BottleStatus';
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 
+var manageVisible = false;
 
 class HomeScreen extends React.Component {
     constructor(props){
@@ -64,9 +65,10 @@ class HomeScreen extends React.Component {
                     </View>
                     
                     <Spacer height={5} />
-                    <Button title='Manage BarBot' buttonStyle={styles.manageButton} titleStyle={{fontSize: 16}} onPress={() => {
-                        this.props.navigation.navigate('ManageBarbot');
-                    }}></Button>
+                    {manageVisible && <Button title='Manage BarBot' buttonStyle={styles.manageButton} titleStyle={{fontSize: 16}} onPress={() => {
+                        //this.props.navigation.navigate('ManageBarbot');
+                        
+                    }}></Button>}
                     
                 </View>
                 <Spacer height={20}/>

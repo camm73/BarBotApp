@@ -20,7 +20,7 @@ class ConnectionStatus extends React.Component{
         }).catch((error) => {
             this.setState({
                 textContent: 'Disconnected',
-                color: 'darkred'
+                color: 'red'
             });
         });
     }
@@ -29,7 +29,7 @@ class ConnectionStatus extends React.Component{
         this.checkOnline();
         setInterval(() => {
             this.checkOnline();
-        }, 60000)
+        }, 30000)
     }
 
     render(){

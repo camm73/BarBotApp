@@ -1,11 +1,13 @@
 import React from 'react';
-import {View, Alert, ImageBackground, Text, Dimensions, StyleSheet} from 'react-native';
+import {View, Alert, ImageBackground, Text, Dimensions, StyleSheet, AsyncStorage} from 'react-native';
 import {Overlay, Icon, Button} from 'react-native-elements';
 import Spacer from './Spacer';
-import {getBottlePercent, getBottleName} from '../api/Control';
+import {getBottlePercent, getBottleName, removeBottle, getCurrentBottleVolume, getInitBottleVolume, replaceBottle, pumpOn, pumpOff} from '../api/Control';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {toUpper} from '../utils/Tools';
 import ProgressBar from '../components/ProgressBar';
+import {withNavigation} from 'react-navigation';
+
 
 const scaleFactor = 1.5;
 var bottleNumber;
@@ -28,7 +30,9 @@ class BottleStatus extends React.Component{
         level: 'N/A',
         textColor: 'black',
         detailsVisible: false,
-        bottleName: ''
+        bottleName: '',
+        currentVolume: 'N/A',
+        initVolume: 'N/A'
     }
 
     getTextColor(num){
@@ -41,8 +45,17 @@ class BottleStatus extends React.Component{
         }
     }
 
+    doneCallback(){
+        this.setState({
+            detailsVisible: true
+        });
+    }
+
     reloadPercentage(){
+
+        //Refresh the bottle percentage
         getBottlePercent(this.props.number).then((response) => {
+            console.log(response)
             this.setState({
                 level: response,
                 textColor: this.getTextColor(response)
@@ -54,19 +67,69 @@ class BottleStatus extends React.Component{
                 textColor: 'black'
             });
         });
+
+        //Refresh the bottle currentVolume
+        getCurrentBottleVolume(this.state.bottleName).then((response) => {
+            console.log('Current bottle volume: ' + response);
+            this.setState({
+                currentVolume: response
+            });
+        }).catch((error) => {
+            console.log(error);
+            this.setState({
+                currentVolume: 'N/A'
+            });
+        });
+    }
+
+    //Open the instructions for remove/adding a new bottle
+    openInstructions(){
+        this.props.navigation.navigate('BottleTut', {
+            bottleReturn: bottleNumber,
+            doneCallback: this.doneCallback.bind(this)
+        });
+        this.setState({
+            detailsVisible: false
+        });
+    }
+
+    //Show bottle instructions on the first time you open a this overlay
+    async getShowInstructions(){
+        try{
+            show = await AsyncStorage.getItem('bottleInstructionsShow');
+
+            if(show === 'false'){
+                console.log('Not showing instructions');
+            }else{
+                this.openInstructions();
+            }
+        }catch(error){
+            console.log(error);
+        }
     }
 
     componentDidMount(){
 
+        //Set the bottle name
         getBottleName(this.props.number).then((response) => {
             this.setState({
                 bottleName: response
             });
         });
 
+        //Set the initial bottle volume
+        getInitBottleVolume(this.state.bottleName).then((response) => {
+            this.setState({
+                initVolume: response
+            });
+        });
+
         setInterval(() => {
             this.reloadPercentage();
         }, 30000);
+
+        //Need to trigger tutorial if this is the first time seeing this
+        this.getShowInstructions();
     }
 
     componentWillUnmount(){
@@ -105,21 +168,33 @@ class BottleStatus extends React.Component{
                     <View style={styles.bodyContainer}>
                         <View style={styles.progressContainer}>
                             <Text style={{paddingTop: 6, paddingRight: 5, fontSize: 16}}>Level:</Text>
-                            <ProgressBar width={200} height={30} value={this.state.level === 'N/A' ? 0 : this.state.level}/>
+                            <ProgressBar width={220} height={30} value={this.state.level === 'N/A' ? 0 : this.state.level}/>
                             <Spacer height={40} />
                         </View>
 
                         <View style={styles.statsContainer}>
-                            <Text style={styles.textStyle}>Remaining Volume: {}</Text>
-                            <Text style={styles.textStyle}>Original Volume: {}</Text>
+                            <Text style={styles.textStyle}>Remaining Volume:  {this.state.currentVolume} [mL]</Text>
+                            <Text style={styles.textStyle}>Original Volume:  {this.state.initVolume} [mL]</Text>
                         </View>
                         
                         <View style={styles.buttonContainer}>
-                            <Button title='Remove Bottle' buttonStyle={styles.buttonStyle}/>
+                            <Button title='Remove Bottle' buttonStyle={styles.buttonStyle} onPress={() => {
+                                removeBottle(bottleNumber);
+                            }}/>
                             <Spacer height={10}/>
-                            <Button title='Replace Bottle' buttonStyle={styles.buttonStyle}/>
+                            <Button title='Replace Bottle' buttonStyle={styles.buttonStyle} onPress={() => {
+                                replaceBottle(bottleNumber);
+                            }}/>
                             <Spacer height={10}/>
-                            <Button title='Prime Bottle' buttonStyle={styles.buttonStyle}/>
+                            <Button title='Prime Bottle' buttonStyle={styles.buttonStyle} onPressIn={() => {
+                                pumpOn(bottleNumber);
+                            }} onPressOut={() => {
+                                pumpOff(bottleNumber);
+                            }}/>
+                            <Spacer height={10}/>
+                            <Button title='Test Tutorial' buttonStyle={styles.buttonStyle} onPress={() => {
+                                this.openInstructions();
+                            }} />
                             <Spacer height={10}/>
                         </View>
                     </View>
@@ -129,7 +204,7 @@ class BottleStatus extends React.Component{
     }
 }
 
-export default BottleStatus;
+export default withNavigation(BottleStatus);
 
 
 const styles = StyleSheet.create({

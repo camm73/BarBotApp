@@ -17,6 +17,99 @@ export async function makeCocktail(name){
     });
 }
 
+export async function removeBottle(number){
+    await reverse();
+    pumpOn(number);
+    setTimeout(async () => {
+        pumpOff(number)
+        await reverse();
+    }, 20000);
+}
+
+//TODO: THIS FUNCTION NEEDS TESTING AND A STEP THROUGH GUIDE
+export async function replaceBottle(number){
+    //First you need to remove the bottle
+    await removeBottle();
+
+    //TODO: Need to await confirmation from the user maybe a confirmation alert
+    pumpOn(number);
+    setTimeout(async () => {
+        pumpOff(number);
+    }, 5000);
+}
+
+
+
+export async function reverse(){
+    return new Promise(function(resolve, reject) {
+        fetch(barbotAddress + 'reverse/', {
+        method: 'GET'
+        }).then((response) => response.text())
+        .then((responseText) => {
+            console.log('Reversed polarity: ' + responseText);
+            resolve(responseText);
+        }).catch((error) => {
+            console.log('Error reversing polarity');
+            reject(error);
+        });
+    });
+}
+
+export async function pumpOn(number){
+    fetch(barbotAddress + 'pumpOn/' + number.toString() + "/", {
+        method: 'GET'
+    }).then((response) => response.text())
+    .then((responseText) => {
+        console.log('Pump on: ' + responseText);
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+//TODO: need to create an endpoint for this on the BarBot hardware
+export async function getCurrentBottleVolume(bottleName){
+    return new Promise(function(resolve, reject){
+        fetch(barbotAddress + '/volume/' + bottleName + '/', {
+            method: 'GET'
+        }).then((response) => response.text())
+        .then((responseText) => {
+            console.log('Current Volume of ' + bottleName + " is: " + responseText);
+            resolve(responseText);
+        }).catch((error) => {
+            console.log(error);
+            reject('There was an error getting current bottle volume: ' + error);
+        });
+    });
+}
+
+//TODO: need to create an endpoint for this on the BarBot hardware
+export async function getInitBottleVolume(bottleName){
+    return new Promise(function(resolve, reject){
+        fetch(barbotAddress + '/initVolume/' + bottleName + '/', {
+            method: 'GET'
+        }).then((response) => response.text())
+        .then((responseText) => {
+            console.log('Initial Volume of ' + bottleName + " is: " + responseText);
+            resolve(responseText);
+        }).catch((error) => {
+            console.log(error);
+            reject('There was an error getting initial bottle volume: ' + error);
+        });
+    });
+}
+
+
+export async function pumpOff(number){
+    fetch(barbotAddress + 'pumpOff/' + number.toString() + "/", {
+        method: 'GET'
+    }).then((response) => response.text())
+    .then((responseText) => {
+        console.log('Pump off: ' + responseText);
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
 export async function isOnline(){
     return new Promise(function(resolve, reject){
         fetch(barbotAddress + 'heartbeat/', {
