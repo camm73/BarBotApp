@@ -25,7 +25,7 @@ class HomeScreen extends React.Component {
 
     static navigationOptions = {
         header: (
-            <HeaderComponent backVisible={false}/>
+            <HeaderComponent backVisible={false} settingsVisible={true}/>
         ),
     }
 
@@ -49,7 +49,7 @@ class HomeScreen extends React.Component {
                     {/*<Text style={styles.textStyle}>Your BarBot</Text>*/}
                     {/*<Text style={styles.infoText}>Connection Status:</Text>*/}
                     <ConnectionStatus />
-                    <Text style={styles.infoText}>Online/Offline:</Text>
+                    {false && <Text style={styles.infoText}>Online/Offline:</Text>}
                     <Spacer height={10} />
                     {/*<Text style={{fontSize: 18, textDecorationLine: 'underline'}}>Ingredient Status:</Text>
                     <Spacer height={10} /> */}

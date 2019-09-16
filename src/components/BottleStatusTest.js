@@ -18,7 +18,7 @@ const screenHeight = Dimensions.get('screen').height;
 var overlayWidth = screenWidth/1.2;
 var overlayHeight = screenHeight/1.8;
 
-class BottleStatus extends React.Component{
+class BottleStatusTest extends React.Component{
     constructor(props){
         super(props);
 
@@ -63,7 +63,7 @@ class BottleStatus extends React.Component{
         }).catch((error) => {
             console.log(error);
             this.setState({
-                level: 'N/A',
+                level: '20', //TODO: Change after done testing
                 textColor: 'black'
             });
         });
@@ -145,9 +145,8 @@ class BottleStatus extends React.Component{
                     });
                 }}>
                     <View>
-                        <ImageBackground style={{height: 71*scaleFactor, width: 30*scaleFactor}} source={require('../assets/bottleIcon.png')}>
-                            <Spacer height={70} />
-                            <Text style={{textAlign: 'center', color: this.state.textColor}}>{this.state.level}</Text>
+                        <ImageBackground style={{height: 71*scaleFactor, width: 30*scaleFactor, alignItems: 'baseline'}} source={require('../assets/bottleIcon.png')}>
+                            
                         </ImageBackground>
                         <Text style={{textAlign: 'center'}}>{this.props.number}</Text>
                     </View>
@@ -176,28 +175,25 @@ class BottleStatus extends React.Component{
                             <Text style={styles.textStyle}>Remaining Volume:  {this.state.currentVolume} [mL]</Text>
                             <Text style={styles.textStyle}>Original Volume:  {this.state.initVolume} [mL]</Text>
                         </View>
-
-                        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                            <Text style={{textDecorationLine: 'underline', fontSize: 18, textAlign: 'center', alignSelf: 'center', paddingRight: 10, paddingLeft: 30}}>Bottle Management</Text>
-                            <Icon name='help' size={28} onPress={() => {
-                                this.openInstructions();
-                            }}/>
-                        </View>
                         
                         <View style={styles.buttonContainer}>
                             <Button title='Remove Bottle' buttonStyle={styles.buttonStyle} onPress={() => {
                                 removeBottle(bottleNumber);
                             }}/>
                             <Spacer height={10}/>
-                            {false && <Button title='Replace Bottle' buttonStyle={styles.buttonStyle} onPress={() => {
+                            <Button title='Replace Bottle' buttonStyle={styles.buttonStyle} onPress={() => {
                                 replaceBottle(bottleNumber);
-                            }}/>}
+                            }}/>
                             <Spacer height={10}/>
-                            <Button title='Add Bottle' buttonStyle={styles.buttonStyle} onPressIn={() => {
+                            <Button title='Prime Bottle' buttonStyle={styles.buttonStyle} onPressIn={() => {
                                 pumpOn(bottleNumber);
                             }} onPressOut={() => {
                                 pumpOff(bottleNumber);
                             }}/>
+                            <Spacer height={10}/>
+                            <Button title='Test Tutorial' buttonStyle={styles.buttonStyle} onPress={() => {
+                                this.openInstructions();
+                            }} />
                             <Spacer height={10}/>
                         </View>
                     </View>
@@ -207,7 +203,7 @@ class BottleStatus extends React.Component{
     }
 }
 
-export default withNavigation(BottleStatus);
+export default withNavigation(BottleStatusTest);
 
 
 const styles = StyleSheet.create({

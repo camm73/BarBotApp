@@ -3,6 +3,7 @@ import {createAppContainer, createStackNavigator, SafeAreaView} from 'react-navi
 import HomeScreen from './src/screens/HomeScreen';
 import BarbotScreen from './src/screens/BarbotScreen';
 import BottleTutorial from './src/tutorials/BottleTutorial';
+import SettingsScreen from './src/screens/SettingsScreen';
 
 const App = () => {
   console.disableYellowBox = true; //REMOVE AFTER TESTING
@@ -22,6 +23,10 @@ const AppNavigator = createStackNavigator({
 
   BottleTut: {
     screen: BottleTutorial
+  },
+
+  Settings: {
+    screen: SettingsScreen
   }
 }, {
     initialRouteName: 'Home',

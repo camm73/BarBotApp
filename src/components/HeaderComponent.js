@@ -3,6 +3,7 @@ import {Text, View, StyleSheet, Button, Dimensions} from 'react-native';
 //import {Button} from 'react-native-elements';
 import Spacer from '../components/Spacer';
 import {withNavigation, SafeAreaView} from 'react-navigation';
+import {Icon} from 'react-native-elements';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -11,7 +12,7 @@ class HeaderComponent extends React.Component {
 
     render(){
 
-        if(this.props.backVisible){
+        if(this.props.backVisible || this.props.settingsVisible){
             return(
                 <SafeAreaView style={styles.safeStyle}>
                     <View style={styles.backContainer}>
@@ -24,6 +25,10 @@ class HeaderComponent extends React.Component {
                         <Text style={styles.textStyle}>BarBot</Text>
                     </View>
                     <View style={styles.rightSide}>
+                        {this.props.settingsVisible && <Icon name='settings' size={32} onPress={() => {
+                            this.props.navigation.navigate('Settings');
+                        }}/>
+                        }
                     </View>
                 </View>
                 </SafeAreaView>
