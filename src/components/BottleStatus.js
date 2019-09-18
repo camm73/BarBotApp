@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Alert, ImageBackground, Text, Dimensions, StyleSheet, AsyncStorage} from 'react-native';
 import {Overlay, Icon, Button} from 'react-native-elements';
 import Spacer from './Spacer';
-import {getBottlePercent, getBottleName, removeBottle, getCurrentBottleVolume, getInitBottleVolume, replaceBottle, pumpOn, pumpOff} from '../api/Control';
+import {getBottlePercent, getBottleName, removeBottle, getCurrentBottleVolume, getInitBottleVolume, pumpOn, pumpOff} from '../api/Control';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {toUpper} from '../utils/Tools';
 import ProgressBar from '../components/ProgressBar';
@@ -69,6 +69,11 @@ class BottleStatus extends React.Component{
         });
 
         //Refresh the bottle currentVolume
+        this.setBottleVolumes();
+        
+    }
+
+    setBottleVolumes(){
         getCurrentBottleVolume(this.state.bottleName).then((response) => {
             console.log('Current bottle volume: ' + response);
             this.setState({
@@ -115,14 +120,20 @@ class BottleStatus extends React.Component{
             this.setState({
                 bottleName: response
             });
+        }).then(() => {
+            //console.log('BOTTLE NAME: ' + this.state.bottleName);
+            //Set the initial bottle volume
+            getInitBottleVolume(this.state.bottleName).then((response) => {
+                console.log('Initial Volume: ' + response);
+                this.setState({
+                    initVolume: response
+                });
+            });
+
+            //Set the bottle volumes the first time
+            this.setBottleVolumes();
         });
 
-        //Set the initial bottle volume
-        getInitBottleVolume(this.state.bottleName).then((response) => {
-            this.setState({
-                initVolume: response
-            });
-        });
 
         setInterval(() => {
             this.reloadPercentage();
@@ -188,10 +199,6 @@ class BottleStatus extends React.Component{
                             <Button title='Remove Bottle' buttonStyle={styles.buttonStyle} onPress={() => {
                                 removeBottle(bottleNumber);
                             }}/>
-                            <Spacer height={10}/>
-                            {false && <Button title='Replace Bottle' buttonStyle={styles.buttonStyle} onPress={() => {
-                                replaceBottle(bottleNumber);
-                            }}/>}
                             <Spacer height={10}/>
                             <Button title='Add Bottle' buttonStyle={styles.buttonStyle} onPressIn={() => {
                                 pumpOn(bottleNumber);

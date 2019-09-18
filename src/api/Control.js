@@ -26,18 +26,6 @@ export async function removeBottle(number){
     }, 20000);
 }
 
-//TODO: THIS FUNCTION NEEDS TESTING AND A STEP THROUGH GUIDE
-export async function replaceBottle(number){
-    //First you need to remove the bottle
-    await removeBottle();
-
-    //TODO: Need to await confirmation from the user maybe a confirmation alert
-    pumpOn(number);
-    setTimeout(async () => {
-        pumpOff(number);
-    }, 5000);
-}
-
 
 
 export async function reverse(){
@@ -66,12 +54,16 @@ export async function pumpOn(number){
     });
 }
 
-//TODO: need to create an endpoint for this on the BarBot hardware
 export async function getCurrentBottleVolume(bottleName){
     return new Promise(function(resolve, reject){
-        fetch(barbotAddress + '/volume/' + bottleName + '/', {
+
+        if(bottleName === 'N/A'){
+            reject('Cannot run request for unknown bottle')
+        }
+
+        fetch(barbotAddress + 'volume/' + bottleName + '/', {
             method: 'GET'
-        }).then((response) => response.text())
+        }).then((response) => response.json())
         .then((responseText) => {
             console.log('Current Volume of ' + bottleName + " is: " + responseText);
             resolve(responseText);
@@ -82,12 +74,17 @@ export async function getCurrentBottleVolume(bottleName){
     });
 }
 
-//TODO: need to create an endpoint for this on the BarBot hardware
+
 export async function getInitBottleVolume(bottleName){
     return new Promise(function(resolve, reject){
-        fetch(barbotAddress + '/initVolume/' + bottleName + '/', {
+
+        if(bottleName === 'N/A'){
+            reject('Cannot run request for unknown bottle')
+        }
+
+        fetch(barbotAddress + 'initVolume/' + bottleName + '/', {
             method: 'GET'
-        }).then((response) => response.text())
+        }).then((response) => response.json())
         .then((responseText) => {
             console.log('Initial Volume of ' + bottleName + " is: " + responseText);
             resolve(responseText);
