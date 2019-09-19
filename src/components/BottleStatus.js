@@ -7,10 +7,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import {toUpper} from '../utils/Tools';
 import ProgressBar from '../components/ProgressBar';
 import {withNavigation} from 'react-navigation';
+import CalibrationBody, {calibrationSlideCount} from './CalibrationBody';
 
 
 const scaleFactor = 1.5;
-var bottleNumber;
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
@@ -22,7 +22,6 @@ class BottleStatus extends React.Component{
     constructor(props){
         super(props);
 
-        bottleNumber = this.props.number;
         this.reloadPercentage();
     }
 
@@ -30,9 +29,11 @@ class BottleStatus extends React.Component{
         level: 'N/A',
         textColor: 'black',
         detailsVisible: false,
+        calibrateVisible: false,
         bottleName: '',
         currentVolume: 'N/A',
-        initVolume: 'N/A'
+        initVolume: 'N/A',
+        slideNum: 1
     }
 
     getTextColor(num){
@@ -90,7 +91,7 @@ class BottleStatus extends React.Component{
     //Open the instructions for remove/adding a new bottle
     openInstructions(){
         this.props.navigation.navigate('BottleTut', {
-            bottleReturn: bottleNumber,
+            bottleReturn: this.props.number,
             doneCallback: this.doneCallback.bind(this)
         });
         this.setState({
@@ -197,16 +198,63 @@ class BottleStatus extends React.Component{
                         
                         <View style={styles.buttonContainer}>
                             <Button title='Remove Bottle' buttonStyle={styles.buttonStyle} onPress={() => {
-                                removeBottle(bottleNumber);
+                                removeBottle(this.props.number);
                             }}/>
                             <Spacer height={10}/>
                             <Button title='Add Bottle' buttonStyle={styles.buttonStyle} onPressIn={() => {
-                                pumpOn(bottleNumber);
+                                pumpOn(this.props.number);
                             }} onPressOut={() => {
-                                pumpOff(bottleNumber);
+                                pumpOff(this.props.number);
                             }}/>
                             <Spacer height={10}/>
+                            <Button title={"Calibrate Pump " + this.props.number} buttonStyle={styles.buttonStyle} onPress={() => {
+                                this.setState({
+                                    detailsVisible: false,
+                                    calibrateVisible: true
+                                });
+                            }}/>
                         </View>
+                    </View>
+                </Overlay>
+
+                <Overlay isVisible={this.state.calibrateVisible} width={overlayWidth} height={overlayHeight} overlayStyle={styles.overlay}>
+                    <View style={styles.backButtonRow}>
+                        <TouchableOpacity onPress={() => {
+                                this.setState({
+                                    detailsVisible: true,
+                                    calibrateVisible: false,
+                                    slideNum: 1
+                                });
+                            }}>
+                            <Icon name='back' size={33} type='antdesign'/>
+                        </TouchableOpacity>
+                    </View>
+
+                    <Text style={styles.headerStyle}>{"Calibrate Pump " + this.props.number}</Text>
+                    <Spacer height={10} />
+                    <CalibrationBody slide={this.state.slideNum} pumpNum={this.props.number}/>
+                    
+                    <View style={styles.calibrateControl}>
+                        {this.state.slideNum > 1 && <Button title='Prev' buttonStyle={styles.calibrateButtons} onPress={() => {
+                            this.setState({
+                                slideNum: this.state.slideNum-1
+                            });
+                        }} />}
+
+                        {this.state.slideNum < calibrationSlideCount && <Button title='Next' buttonStyle={styles.calibrateButtons} onPress={() => {
+                            this.setState({
+                                slideNum: this.state.slideNum+1
+                            });
+                        }}/>}
+
+                        {this.state.slideNum === calibrationSlideCount && <Button title='Done' buttonStyle={styles.calibrateButtons} onPress={() => {
+                            //TODO: Make API Call here to do calibration
+                            this.setState({
+                                detailsVisible: true,
+                                calibrateVisible: false,
+                                slideNum: 1
+                            });
+                        }}/>}
                     </View>
                 </Overlay>
             </View>
@@ -255,6 +303,12 @@ const styles = StyleSheet.create({
         paddingTop: 20
     },
 
+    calibrateButtons: {
+        borderRadius: 20,
+        width: 70,
+        backgroundColor: '#7295A6'
+    },
+
     statsContainer: {
         paddingTop: 10,
         paddingBottom: 10,
@@ -273,5 +327,12 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         width: 175,
         backgroundColor: '#7295A6'
+    },
+
+    calibrateControl: {
+        paddingTop: 20,
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly'
     }
 });

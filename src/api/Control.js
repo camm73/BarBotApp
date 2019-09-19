@@ -23,7 +23,7 @@ export async function removeBottle(number){
     setTimeout(async () => {
         pumpOff(number)
         await reverse();
-    }, 20000);
+    }, 15000);
 }
 
 
@@ -52,6 +52,20 @@ export async function pumpOn(number){
     }).catch((error) => {
         console.log(error);
     });
+}
+
+export async function calibratePump(number, time){
+    return new Promise(function(resolve, reject){
+        fetch(barbotAddress + "calibrate/" + number.toString() + '/time/' + time.replace('.', '%2E'), {
+            method: 'GET'
+        }).then((response) => response.json())
+        .then((responseJson) => {
+            resolve(responseJson);
+        }).catch((error) => {
+            console.log(error);
+            reject(false);
+        });
+    })
 }
 
 export async function getCurrentBottleVolume(bottleName){
