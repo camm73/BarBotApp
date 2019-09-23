@@ -29,12 +29,19 @@ class HomeScreen extends React.Component {
         ),
     }
 
-    componentDidMount(){
+    setCocktailMenu(){
         getCocktailMenu().then((response) => {
             this.setState({
                 cocktailMenu: response
             });
+            console.log(response);
         }).catch((error) => console.log(error));
+
+        this.forceUpdate();
+    }
+
+    componentDidMount(){
+       this.setCocktailMenu();
     }
 
     state = {
@@ -54,14 +61,14 @@ class HomeScreen extends React.Component {
                         {/*<Text style={{fontSize: 18, textDecorationLine: 'underline'}}>Ingredient Status:</Text>
                         <Spacer height={10} /> */}
                         <View style={styles.bottleContainer}>
-                            <BottleStatus number={1}/>
-                            <BottleStatus number={2}/>
-                            <BottleStatus number={3}/>
-                            <BottleStatus number={4}/>
-                            <BottleStatus number={5}/>
-                            <BottleStatus number={6}/>
-                            <BottleStatus number={7}/>
-                            <BottleStatus number={8}/>
+                            <BottleStatus number={1} reloadCallback={this.setCocktailMenu.bind(this)}/>
+                            <BottleStatus number={2} reloadCallback={this.setCocktailMenu.bind(this)}/>
+                            <BottleStatus number={3} reloadCallback={this.setCocktailMenu.bind(this)}/>
+                            <BottleStatus number={4} reloadCallback={this.setCocktailMenu.bind(this)}/>
+                            <BottleStatus number={5} reloadCallback={this.setCocktailMenu.bind(this)}/>
+                            <BottleStatus number={6} reloadCallback={this.setCocktailMenu.bind(this)}/>
+                            <BottleStatus number={7} reloadCallback={this.setCocktailMenu.bind(this)}/>
+                            <BottleStatus number={8} reloadCallback={this.setCocktailMenu.bind(this)}/>
                         </View>
                         
                         <Spacer height={5} />
@@ -110,7 +117,7 @@ const styles = StyleSheet.create({
     },
 
     bottleContainer: {
-        flexDirection: 'row', 
+        flexDirection: 'row',
         justifyContent: 'space-between'
     },
 

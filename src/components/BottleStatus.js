@@ -1,13 +1,14 @@
 import React from 'react';
-import {View, Alert, ImageBackground, Text, Dimensions, StyleSheet, AsyncStorage} from 'react-native';
+import {View, Alert, TextInput, ImageBackground, Text, Dimensions, StyleSheet, AsyncStorage} from 'react-native';
 import {Overlay, Icon, Button} from 'react-native-elements';
 import Spacer from './Spacer';
-import {getBottlePercent, getBottleName, removeBottle, getCurrentBottleVolume, getInitBottleVolume, pumpOn, pumpOff} from '../api/Control';
+import {getBottlePercent, getBottleName, removeBottle, addBottle ,getCurrentBottleVolume, getInitBottleVolume, pumpOn, pumpOff} from '../api/Control';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {toUpper} from '../utils/Tools';
 import ProgressBar from '../components/ProgressBar';
 import {withNavigation} from 'react-navigation';
 import CalibrationBody, {calibrationSlideCount} from './CalibrationBody';
+import SearchableDropdown from 'react-native-searchable-dropdown';
 
 
 const scaleFactor = 1.5;
@@ -17,6 +18,21 @@ const screenHeight = Dimensions.get('screen').height;
 
 var overlayWidth = screenWidth/1.2;
 var overlayHeight = screenHeight/1.8;
+
+var items = [
+    {
+      id: 1,
+      name: 'mezcal',
+    },
+    {
+      id: 2,
+      name: 'gin',
+    },
+    {
+      id: 3,
+      name: 'whiskey',
+    }
+  ];
 
 class BottleStatus extends React.Component{
     constructor(props){
@@ -30,10 +46,13 @@ class BottleStatus extends React.Component{
         textColor: 'black',
         detailsVisible: false,
         calibrateVisible: false,
-        bottleName: '',
+        bottleName: 'N/A',
         currentVolume: 'N/A',
         initVolume: 'N/A',
-        slideNum: 1
+        inputInitVolume: '',
+        inputCurrentVolume: '',
+        slideNum: 1,
+        selectedItem: ''
     }
 
     getTextColor(num){
@@ -99,6 +118,23 @@ class BottleStatus extends React.Component{
         });
     }
 
+    processVolumeInput(text, current){
+        var isNum = /^\d*$/.test(text);
+        if(isNum != 1){
+            Alert.alert('Only numbers are a valid input');
+        }else{
+            if(current){
+                this.setState({
+                    inputCurrentVolume: text
+                });
+            }else{
+                this.setState({
+                    inputInitVolume: text
+                });
+            }
+        }
+    }
+
     //Show bottle instructions on the first time you open a this overlay
     async getShowInstructions(){
         try{
@@ -121,6 +157,7 @@ class BottleStatus extends React.Component{
             this.setState({
                 bottleName: response
             });
+            console.log('RESPONSE: ' + response);
         }).then(() => {
             //console.log('BOTTLE NAME: ' + this.state.bottleName);
             //Set the initial bottle volume
@@ -151,10 +188,11 @@ class BottleStatus extends React.Component{
     render(){
         return(
             <View>
-                <TouchableOpacity disabled={this.state.level === 'N/A'} onPress={() => {
+                <TouchableOpacity onPress={() => {
                     this.setState({
-                        detailsVisible: true
+                        detailsVisible: true,
                     });
+                    console.log('Item: ' + this.state.selectedItem);
                 }}>
                     <View>
                         <ImageBackground style={{height: 71*scaleFactor, width: 30*scaleFactor}} source={require('../assets/bottleIcon.png')}>
@@ -169,8 +207,11 @@ class BottleStatus extends React.Component{
                     <View style={styles.backButtonRow}>
                         <TouchableOpacity onPress={() => {
                                 this.setState({
-                                    detailsVisible: false
+                                    detailsVisible: false,
+                                    selectedItem: ''
                                 });
+
+                                console.log('CLOSE Item: ' + this.state.selectedItem);
                             }}>
                             <Icon name='back' size={33} type='antdesign'/>
                         </TouchableOpacity>
@@ -178,30 +219,43 @@ class BottleStatus extends React.Component{
                     <Text style={styles.headerStyle}>{toUpper(this.state.bottleName)}</Text>
                     
                     <View style={styles.bodyContainer}>
-                        <View style={styles.progressContainer}>
-                            <Text style={{paddingTop: 6, paddingRight: 5, fontSize: 16}}>Level:</Text>
-                            <ProgressBar width={220} height={30} value={this.state.level === 'N/A' ? 0 : this.state.level}/>
-                            <Spacer height={40} />
-                        </View>
+                        {this.state.bottleName !== 'N/A' && <View>
+                            <View style={styles.progressContainer}>
+                                <Text style={{paddingTop: 6, paddingRight: 5, fontSize: 16}}>Level:</Text>
+                                <ProgressBar width={220} height={30} value={this.state.level === 'N/A' ? 0 : this.state.level}/>
+                                <Spacer height={40} />
+                            </View>
 
-                        <View style={styles.statsContainer}>
-                            <Text style={styles.textStyle}>Remaining Volume:  {this.state.currentVolume} [mL]</Text>
-                            <Text style={styles.textStyle}>Original Volume:  {this.state.initVolume} [mL]</Text>
-                        </View>
+                            <View style={styles.statsContainer}>
+                                <Text style={styles.textStyle}>Remaining Volume:  {this.state.currentVolume} [mL]</Text>
+                                <Text style={styles.textStyle}>Original Volume:  {this.state.initVolume} [mL]</Text>
+                            </View>
 
-                        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                            <Text style={{textDecorationLine: 'underline', fontSize: 18, textAlign: 'center', alignSelf: 'center', paddingRight: 10, paddingLeft: 30}}>Bottle Management</Text>
-                            <Icon name='help' size={28} onPress={() => {
-                                this.openInstructions();
-                            }}/>
-                        </View>
+                            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                <Text style={{textDecorationLine: 'underline', fontSize: 18, textAlign: 'center', alignSelf: 'center', paddingRight: 10, paddingLeft: 30}}>Bottle Management</Text>
+                                <Icon name='help' size={28} onPress={() => {
+                                    this.openInstructions();
+                                }}/>
+                            </View>
+                        </View>}
                         
-                        <View style={styles.buttonContainer}>
-                            <Button title='Remove Bottle' buttonStyle={styles.buttonStyle} onPress={() => {
-                                removeBottle(this.props.number);
+                        {this.state.bottleName !== 'N/A' && <View style={styles.buttonContainer}>
+                            <Button title='Remove Bottle' buttonStyle={styles.buttonStyle} onPress={async () => {
+                                await removeBottle(this.props.number, this.state.bottleName);
+                               
+                                //reset state items for the bottle
+                                this.setState({
+                                    bottleName: 'N/A',
+                                    currentVolume: 'N/A',
+                                    initVolume: 'N/A',
+                                });
+                                
+                                this.reloadPercentage();
+                                this.props.reloadCallback();
+                                //TODO: need to fix the problem on Barbot where cocktail list does not reflect updates to bottles
                             }}/>
                             <Spacer height={10}/>
-                            <Button title='Add Bottle' buttonStyle={styles.buttonStyle} onPressIn={() => {
+                            <Button title='Prime Bottle' buttonStyle={styles.buttonStyle} onPressIn={() => {
                                 pumpOn(this.props.number);
                             }} onPressOut={() => {
                                 pumpOff(this.props.number);
@@ -213,7 +267,87 @@ class BottleStatus extends React.Component{
                                     calibrateVisible: true
                                 });
                             }}/>
-                        </View>
+                        </View>}
+                        {this.state.bottleName === 'N/A' && <View style={styles.buttonContainer}>
+                            <SearchableDropdown 
+                                onItemSelect={(item) => {
+                                    this.setState({
+                                        selectedItem: item['name']
+                                    });
+                                }}
+                                  containerStyle={{ padding: 5 }}
+                                  itemStyle={{
+                                    padding: 10,
+                                    marginTop: 2,
+                                    backgroundColor: '#ddd',
+                                    borderColor: '#bbb',
+                                    borderWidth: 1,
+                                    borderRadius: 5,
+                                  }}
+                                  itemTextStyle={{ color: '#222' }}
+                                  itemsContainerStyle={{ maxHeight: 120 }}
+                                  items={items}
+                                  resetValue={false}
+                                  textInputProps={
+                                    {
+                                      placeholder: "Select a bottle...",
+                                      underlineColorAndroid: "transparent",
+                                      style: {
+                                          padding: 12,
+                                          borderWidth: 1,
+                                          borderColor: '#ccc',
+                                          borderRadius: 5,
+                                          backgroundColor: 'white',
+                                          width: overlayWidth/1.5
+                                      },
+                                      onTextChange: text => console.log(text)
+                                    }
+                                  }
+                                  listProps={
+                                    {
+                                      nestedScrollEnabled: true,
+                                    }
+                                  }
+                            />
+                            <Spacer height={10} />
+                            <Text style={styles.textStyle}>Current Bottle Volume (mL):</Text>
+                            <TextInput
+                                style={{width: overlayWidth/3, height: 30, backgroundColor: 'white', borderColor: 'gray', borderWidth: 1, borderRadius: 5}}
+                                keyboardType='number-pad'
+                                onChangeText={(text) => {this.processVolumeInput(text, true)}}
+                                maxLength={4}
+                                value={this.state.inputCurrentVolume}
+                            />
+
+                            <Spacer height={10} />
+                            <Text style={styles.textStyle}>Initial Bottle Volume (mL):</Text>
+                            <TextInput
+                                style={{width: overlayWidth/3, height: 30, backgroundColor: 'white', borderColor: 'gray', borderWidth: 1, borderRadius: 5}}
+                                keyboardType='number-pad'
+                                onChangeText={(text) => {this.processVolumeInput(text, false)}}
+                                maxLength={4}
+                                value={this.state.inputInitVolume}
+                            />
+                            <Spacer height={10} />
+
+                            <Button title='Add Bottle' disabled={this.state.selectedItem === '' || this.state.inputCurrentVolume === '' || this.state.inputInitVolume === ''} buttonStyle={styles.buttonStyle} onPress={async () => {
+                                //TODO: make api call to add the bottle
+
+                                var res = await addBottle(this.state.selectedItem, this.props.number, this.state.inputCurrentVolume, this.state.inputInitVolume);
+                                console.log('ADDING BOTTLE RESULT: ' + res);
+                                this.setState({
+                                    detailsVisible: false,
+                                    selectedItem: '',
+                                    inputCurrentVolume: '',
+                                    inputInitVolume: ''
+                                });
+
+                                this.reloadPercentage();
+                                this.componentDidMount(); //TODO: may need to make sure duplicates are not created on intervals
+                                this.props.reloadCallback();
+
+                            }} />
+                        </View>}
                     </View>
                 </Overlay>
 
@@ -223,7 +357,8 @@ class BottleStatus extends React.Component{
                                 this.setState({
                                     detailsVisible: true,
                                     calibrateVisible: false,
-                                    slideNum: 1
+                                    slideNum: 1,
+                                    selectedItem: ''
                                 });
                             }}>
                             <Icon name='back' size={33} type='antdesign'/>
@@ -248,7 +383,6 @@ class BottleStatus extends React.Component{
                         }}/>}
 
                         {this.state.slideNum === calibrationSlideCount && <Button title='Done' buttonStyle={styles.calibrateButtons} onPress={() => {
-                            //TODO: Make API Call here to do calibration
                             this.setState({
                                 detailsVisible: true,
                                 calibrateVisible: false,
@@ -300,7 +434,8 @@ const styles = StyleSheet.create({
 
     buttonContainer: {
         alignSelf: 'center',
-        paddingTop: 20
+        paddingTop: 20,
+        alignItems: 'center'
     },
 
     calibrateButtons: {

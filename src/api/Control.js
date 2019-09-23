@@ -1,7 +1,7 @@
 import React from 'react';
 import {Alert} from 'react-native';
 
-const barbotAddress = 'http://barbot:5000/';
+const barbotAddress = 'http://barbot.local:5000/';
 
 export async function makeCocktail(name){
     return new Promise(function(resolve, reject){
@@ -17,15 +17,40 @@ export async function makeCocktail(name){
     });
 }
 
-export async function removeBottle(number){
+export async function removeBottle(number, bottleName){
     await reverse();
     pumpOn(number);
     setTimeout(async () => {
         pumpOff(number)
         await reverse();
     }, 15000);
+
+    fetch(barbotAddress + 'removeBottle/' + bottleName, {
+        method: 'GET'
+    }).then((response) => response.json())
+    .then((responseJson) => {
+        console.log('Removed bottle: ' + bottleName + "; " + responseJson);
+    }).catch((error) => {
+        console.log('Issue removing bottle!');
+        console.log(error);
+    });
 }
 
+
+export async function addBottle(bottleName, pumpNum, volume, originalVolume){
+    return new Promise(function(resolve, reject){
+        fetch(barbotAddress + 'addBottle/' + bottleName + '/pump/' + pumpNum.toString() + '/volume/' + volume + '/originalVolume/' + originalVolume + '/', 
+        {
+            method: 'GET'
+        }).then((response) => response.json())
+        .then((responseJson) => {
+            resolve(responseJson);
+        }).catch((error) => {
+            reject('false');
+            console.log(error);
+        })
+    })
+}
 
 
 export async function reverse(){
