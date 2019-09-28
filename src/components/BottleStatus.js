@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Alert, TextInput, ImageBackground, Text, Dimensions, StyleSheet, AsyncStorage} from 'react-native';
 import {Overlay, Icon, Button} from 'react-native-elements';
 import Spacer from './Spacer';
-import {getBottlePercent, getBottleName, removeBottle, addBottle ,getCurrentBottleVolume, getInitBottleVolume, pumpOn, pumpOff} from '../api/Control';
+import {getBottlePercent, getBottleName, removeBottle, addBottle ,getCurrentBottleVolume, getInitBottleVolume, pumpOn, pumpOff, getNewBottles} from '../api/Control';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {toUpper} from '../utils/Tools';
 import ProgressBar from '../components/ProgressBar';
@@ -19,27 +19,13 @@ const screenHeight = Dimensions.get('screen').height;
 var overlayWidth = screenWidth/1.2;
 var overlayHeight = screenHeight/1.8;
 
-var items = [
-    {
-      id: 1,
-      name: 'mezcal',
-    },
-    {
-      id: 2,
-      name: 'gin',
-    },
-    {
-      id: 3,
-      name: 'whiskey',
-    }
-  ];
-
 class BottleStatus extends React.Component{
     constructor(props){
         super(props);
 
         this.reloadPercentage();
     }
+
 
     state = {
         level: 'N/A',
@@ -216,7 +202,7 @@ class BottleStatus extends React.Component{
                             <Icon name='back' size={33} type='antdesign'/>
                         </TouchableOpacity>
                     </View>
-                    <Text style={styles.headerStyle}>{toUpper(this.state.bottleName)}</Text>
+                    <Text style={styles.headerStyle}>{this.state.bottleName === 'N/A' ? 'Add New Bottle' : toUpper(this.state.bottleName)}</Text>
                     
                     <View style={styles.bodyContainer}>
                         {this.state.bottleName !== 'N/A' && <View>
@@ -286,7 +272,7 @@ class BottleStatus extends React.Component{
                                   }}
                                   itemTextStyle={{ color: '#222' }}
                                   itemsContainerStyle={{ maxHeight: 120 }}
-                                  items={items}
+                                  items={this.props.bottleItems}
                                   resetValue={false}
                                   textInputProps={
                                     {

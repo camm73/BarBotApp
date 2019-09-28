@@ -52,6 +52,20 @@ export async function addBottle(bottleName, pumpNum, volume, originalVolume){
     })
 }
 
+export async function getNewBottles(){
+    return new Promise(function(resolve, reject){
+        fetch(barbotAddress + 'newBottles/', {
+            method: 'GET'
+        }).then((response) => response.json())
+        .then((responseJson) => {
+            resolve(responseJson);
+        }).catch((error) => {
+            reject([]);
+            console.log(error);
+        });
+    });
+}
+
 
 export async function reverse(){
     return new Promise(function(resolve, reject) {

@@ -6,12 +6,13 @@ import { SafeAreaView, withNavigation } from 'react-navigation';
 import { ScrollView } from 'react-native-gesture-handler';
 import HeaderComponent from '../components/HeaderComponent';
 import MenuItem from '../components/MenuItem';
-import {getCocktailMenu} from '../api/Control';
+import {getCocktailMenu, getNewBottles} from '../api/Control';
 import {toUpper} from '../utils/Tools';
 import ConnectionStatus from '../components/ConnectionStatus';
 
 import cocktailImages from '../config/cocktailImages';
 import BottleStatus from '../components/BottleStatus';
+import bottles from '../config/bottles.json';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -40,12 +41,39 @@ class HomeScreen extends React.Component {
         this.forceUpdate();
     }
 
+    //Load bottle list from the BarBot controller and formats it for the drop down menu
+    loadBottleList(){
+        getNewBottles().then((list) => {
+            newList = []
+            for(var i = 0; i < list.length; i++){
+                newList.push({
+                    id: i,
+                    name: list[i]
+                });
+            }
+
+            console.log(newList);
+
+            this.setState({
+                bottleList: newList
+            });
+        });
+    }
+
+    //Called to reload menu and bottle list after exit from bottleStatus
+    reloadCallback(){
+        this.setCocktailMenu();
+        this.loadBottleList();
+    }
+
     componentDidMount(){
        this.setCocktailMenu();
+       this.loadBottleList();
     }
 
     state = {
-        cocktailMenu: []
+        cocktailMenu: [],
+        bottleList: []
     }
 
     render(){
@@ -61,14 +89,14 @@ class HomeScreen extends React.Component {
                         {/*<Text style={{fontSize: 18, textDecorationLine: 'underline'}}>Ingredient Status:</Text>
                         <Spacer height={10} /> */}
                         <View style={styles.bottleContainer}>
-                            <BottleStatus number={1} reloadCallback={this.setCocktailMenu.bind(this)}/>
-                            <BottleStatus number={2} reloadCallback={this.setCocktailMenu.bind(this)}/>
-                            <BottleStatus number={3} reloadCallback={this.setCocktailMenu.bind(this)}/>
-                            <BottleStatus number={4} reloadCallback={this.setCocktailMenu.bind(this)}/>
-                            <BottleStatus number={5} reloadCallback={this.setCocktailMenu.bind(this)}/>
-                            <BottleStatus number={6} reloadCallback={this.setCocktailMenu.bind(this)}/>
-                            <BottleStatus number={7} reloadCallback={this.setCocktailMenu.bind(this)}/>
-                            <BottleStatus number={8} reloadCallback={this.setCocktailMenu.bind(this)}/>
+                            <BottleStatus number={1} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={2} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={3} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={4} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={5} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={6} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={7} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={8} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
                         </View>
                         
                         <Spacer height={5} />
