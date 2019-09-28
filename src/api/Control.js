@@ -25,14 +25,18 @@ export async function removeBottle(number, bottleName){
         await reverse();
     }, 15000);
 
-    fetch(barbotAddress + 'removeBottle/' + bottleName, {
-        method: 'GET'
-    }).then((response) => response.json())
-    .then((responseJson) => {
-        console.log('Removed bottle: ' + bottleName + "; " + responseJson);
-    }).catch((error) => {
-        console.log('Issue removing bottle!');
-        console.log(error);
+    return new Promise(function(resolve, reject){
+        fetch(barbotAddress + 'removeBottle/' + bottleName, {
+            method: 'GET'
+        }).then((response) => response.json())
+        .then((responseJson) => {
+            console.log('Removed bottle: ' + bottleName + "; " + responseJson);
+            resolve('true')
+        }).catch((error) => {
+            console.log('Issue removing bottle!');
+            console.log(error);
+            reject('false')
+        });
     });
 }
 

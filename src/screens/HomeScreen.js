@@ -62,6 +62,9 @@ class HomeScreen extends React.Component {
 
     //Called to reload menu and bottle list after exit from bottleStatus
     reloadCallback(){
+        this.setState({
+            cocktailMenu: []
+        });
         this.setCocktailMenu();
         this.loadBottleList();
     }
@@ -78,7 +81,6 @@ class HomeScreen extends React.Component {
 
     render(){
         return(
-            <SafeAreaView>
                 <View style={styles.mainView}>
                     <View style={styles.statusView}>
                         {/*<Text style={styles.textStyle}>Your BarBot</Text>*/}
@@ -121,7 +123,6 @@ class HomeScreen extends React.Component {
                         </ScrollView>
                     </View>
                 </View>
-            </SafeAreaView>
         );
     }
 }

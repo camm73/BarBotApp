@@ -228,17 +228,14 @@ class BottleStatus extends React.Component{
                         {this.state.bottleName !== 'N/A' && <View style={styles.buttonContainer}>
                             <Button title='Remove Bottle' buttonStyle={styles.buttonStyle} onPress={async () => {
                                 await removeBottle(this.props.number, this.state.bottleName);
-                               
-                                //reset state items for the bottle
+
                                 this.setState({
                                     bottleName: 'N/A',
                                     currentVolume: 'N/A',
                                     initVolume: 'N/A',
                                 });
-                                
                                 this.reloadPercentage();
                                 this.props.reloadCallback();
-                                //TODO: need to fix the problem on Barbot where cocktail list does not reflect updates to bottles
                             }}/>
                             <Spacer height={10}/>
                             <Button title='Prime Bottle' buttonStyle={styles.buttonStyle} onPressIn={() => {
@@ -322,7 +319,7 @@ class BottleStatus extends React.Component{
                                 var res = await addBottle(this.state.selectedItem, this.props.number, this.state.inputCurrentVolume, this.state.inputInitVolume);
                                 console.log('ADDING BOTTLE RESULT: ' + res);
                                 this.setState({
-                                    detailsVisible: false,
+                                    //detailsVisible: false,
                                     selectedItem: '',
                                     inputCurrentVolume: '',
                                     inputInitVolume: ''
