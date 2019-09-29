@@ -58,7 +58,7 @@ export async function addBottle(bottleName, pumpNum, volume, originalVolume){
 
 export async function getNewBottles(){
     return new Promise(function(resolve, reject){
-        fetch(barbotAddress + 'newBottles/', {
+        fetch(barbotAddress + 'getBottles/', {
             method: 'GET'
         }).then((response) => response.json())
         .then((responseJson) => {
@@ -67,6 +67,18 @@ export async function getNewBottles(){
             reject([]);
             console.log(error);
         });
+    });
+}
+
+export async function addNewBottle(bottleName){
+    fetch(barbotAddress + 'newBottle/' + bottleName + '/', {
+        method: 'GET'
+    }).then((response) => response.json())
+    .then((responseJson) => {
+        resolve(responseJson);
+    }).catch((error) => {
+        console.log(error)
+        reject(false)
     });
 }
 

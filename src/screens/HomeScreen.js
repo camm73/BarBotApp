@@ -2,7 +2,7 @@ import React from 'react';
 import {Text, View, StyleSheet, Alert, Dimensions, PixelRatio} from 'react-native';
 import { Button } from 'react-native-elements';
 import Spacer from '../components/Spacer';
-import { SafeAreaView, withNavigation } from 'react-navigation';
+import { SafeAreaView, withNavigationFocus } from 'react-navigation';
 import { ScrollView } from 'react-native-gesture-handler';
 import HeaderComponent from '../components/HeaderComponent';
 import MenuItem from '../components/MenuItem';
@@ -17,7 +17,7 @@ import bottles from '../config/bottles.json';
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 
-var manageVisible = false;
+var manageVisible = true;
 
 class HomeScreen extends React.Component {
     constructor(props){
@@ -74,6 +74,13 @@ class HomeScreen extends React.Component {
        this.loadBottleList();
     }
 
+    componentDidUpdate(prevProps){
+        //Runs when navigating back to the screen
+        if(prevProps.isFocused !== this.props.isFocused){
+            this.loadBottleList();
+        }
+    }
+
     state = {
         cocktailMenu: [],
         bottleList: []
@@ -103,8 +110,7 @@ class HomeScreen extends React.Component {
                         
                         <Spacer height={5} />
                         {manageVisible && <Button title='Manage BarBot' buttonStyle={styles.manageButton} titleStyle={{fontSize: 16}} onPress={() => {
-                            //this.props.navigation.navigate('ManageBarbot');
-                            
+                            this.props.navigation.navigate('ManageBarbot');
                         }}></Button>}
                     </View>
                     <Spacer height={20}/>
@@ -183,6 +189,7 @@ const styles = StyleSheet.create({
         height: 40,
         paddingHorizontal: 10,
         borderRadius: 10,
+        marginBottom: 10
     },
 
     menuContainer: {
@@ -192,4 +199,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default withNavigation(HomeScreen);
+export default withNavigationFocus(HomeScreen);

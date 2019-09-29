@@ -319,7 +319,6 @@ class BottleStatus extends React.Component{
                                 var res = await addBottle(this.state.selectedItem, this.props.number, this.state.inputCurrentVolume, this.state.inputInitVolume);
                                 console.log('ADDING BOTTLE RESULT: ' + res);
                                 this.setState({
-                                    //detailsVisible: false,
                                     selectedItem: '',
                                     inputCurrentVolume: '',
                                     inputInitVolume: ''
