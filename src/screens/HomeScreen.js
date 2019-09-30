@@ -118,7 +118,7 @@ class HomeScreen extends React.Component {
                         <Text style={styles.textStyle}>Menu</Text>
                         <ScrollView bounces={true} contentContainerStyle={{paddingBottom: 90}}>
                             <Spacer height={10} />
-
+                            
                             {this.state.cocktailMenu.map((cocktail) => (
                                 <View>
                                     <MenuItem name={toUpper(cocktail)} imageSrc={cocktailImages[cocktail]}/>

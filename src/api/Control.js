@@ -5,7 +5,7 @@ const barbotAddress = 'http://barbot.local:5000/';
 
 export async function makeCocktail(name){
     return new Promise(function(resolve, reject){
-        fetch(barbotAddress + encodeURI(name.toLowerCase()) + '/', {
+        fetch(barbotAddress + 'cocktail/' + encodeURI(name.toLowerCase()) + '/', {
             method: 'GET'
         }).then((response) => response.json())
         .then((responseJson) => {
@@ -68,6 +68,20 @@ export async function getNewBottles(){
             console.log(error);
         });
     });
+}
+
+export async function getAllBottles(){
+    return new Promise(function(resolve, reject) {
+        fetch(barbotAddress + 'getAllBottles/', {
+            method: 'GET'
+        }).then((response) => response.json())
+        .then((responseJson) => {
+            resolve(responseJson);
+        }).catch((error) => {
+            reject([]);
+            console.log(error);
+        })
+    })
 }
 
 export async function addNewBottle(bottleName){
