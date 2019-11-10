@@ -17,7 +17,8 @@ const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
 
 var overlayWidth = screenWidth/1.2;
-var overlayHeight = screenHeight/1.8;
+//var overlayHeight = screenHeight/1.4;
+var overlayHeight = 500;
 
 class BottleStatus extends React.Component{
     constructor(props){

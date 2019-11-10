@@ -2,6 +2,7 @@ import React from 'react';
 import {Alert} from 'react-native';
 
 const barbotAddress = 'http://barbot.local:5000/';
+const shotSize = 1.5;
 
 export async function makeCocktail(name){
     return new Promise(function(resolve, reject){
@@ -54,6 +55,36 @@ export async function addBottle(bottleName, pumpNum, volume, originalVolume){
             console.log(error);
         })
     })
+}
+
+//Add cocktail recipe to menu hosted on BarBot
+export async function addRecipe(recipeName, ingredients, amounts){
+
+    //Need to process amounts for BarBot's format
+    for(var i = 0; i < amounts.length; i++){
+        var oldAmount = amounts[i]
+        amounts[i] = parseFloat(oldAmount.replace(/.oz/g, ''))/shotSize
+    }
+
+
+    return new Promise(function(resolve, reject) {
+        fetch(barbotAddress + 'addRecipe/', {
+            method: 'POST',
+            body: JSON.stringify({
+                name: recipeName,
+                ingredients: ingredients,
+                amounts: amounts
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then((responseJson) => {
+            resolve(responseJson);
+        }).catch((error) => {
+            reject('false');
+            console.log(error);
+        });
+    });
 }
 
 export async function getNewBottles(){

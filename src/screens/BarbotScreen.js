@@ -4,7 +4,7 @@ import {Button, Overlay, Icon} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
 import HeaderComponent from '../components/HeaderComponent';
 import Spacer from '../components/Spacer';
-import {addNewBottle, getAllBottles} from '../api/Control';
+import {addNewBottle, getAllBottles, addRecipe} from '../api/Control';
 import IngredientItem from '../components/IngredientItem';
 import {toUpper} from '../utils/Tools';
 
@@ -12,7 +12,8 @@ var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 
 const recipeOverlayWidth = screenWidth/1.2;
-const recipeOverlayHeight = screenHeight/1.5;
+//const recipeOverlayHeight = screenHeight/1.2;
+const recipeOverlayHeight = 570;
 
 
 class BarbotScreen extends React.Component {
@@ -54,10 +55,13 @@ class BarbotScreen extends React.Component {
         recipeIngredients: [],
         recipeAmounts: [],
         fullBottleList: [],
-        ingredientCount: 1,
+        ingredientCount: 0,
     }
 
     setIngredValue(ingredient){
+        this.setState({
+            ingredientCount: this.state.ingredientCount+1
+        });
         this.state.recipeIngredients.push(ingredient);
         this.forceUpdate();
     }
@@ -77,7 +81,7 @@ class BarbotScreen extends React.Component {
                     });
                 }}/>
 
-                <Overlay isVisible={this.state.newBottleVisible} width={screenWidth/1.3} height={screenHeight/4} overlayStyle={styles.overlay}>
+                <Overlay isVisible={this.state.newBottleVisible} width={screenWidth/1.3} height={225} overlayStyle={styles.overlay}>
                     <View style={styles.backButtonRow}>
                         <TouchableOpacity onPress={() => {
                                 this.setState({
@@ -118,7 +122,11 @@ class BarbotScreen extends React.Component {
                     <View style={styles.backButtonRow}>
                         <TouchableOpacity onPress={() => {
                                 this.setState({
-                                    newRecipeVisible: false
+                                    newRecipeVisible: false,
+                                    recipeName: '',
+                                    recipeIngredients: [],
+                                    recipeAmounts: [],
+                                    ingredientCount: 0
                                 });
                             }}>
                             <Icon name='back' size={33} type='antdesign'/>
@@ -142,18 +150,28 @@ class BarbotScreen extends React.Component {
 
                     <View style={{
                         flexDirection: 'column',
-                        flex: 1,
                         alignItems: 'center',
                         justifyContent: 'center',
                         alignContent: 'center',
                         maxHeight: 80,
-                        height: this.state.ingredientCount*20 < 80 ? this.state.ingredientCount*20 : 80
+                        height: this.state.ingredientCount*25 < 80 ? this.state.ingredientCount*25 : 80
                     }}>
-                        <ScrollView bounces={true} contentContainerStyle={{maxWidth: recipeOverlayWidth-20}}>
-                        {this.state.recipeIngredients.map((ingredient) => (
-                            <Text style={styles.ingredientText}>{toUpper(ingredient)}</Text>
-                        ))
-                        }
+                        <ScrollView bounces={true} contentContainerStyle={{maxWidth: recipeOverlayWidth-20, width: recipeOverlayWidth-20, backgroundColor: 'gray', borderRadius: 10, borderColor: 'black', borderWidth: 1}}>
+                            <View style={{flexDirection: 'row', alignContent: 'space-between', justifyContent: 'space-evenly'}}>
+                                <View style={{flexDirection: 'column', alignItems: 'center'}}>
+                                    {this.state.recipeIngredients.map((ingredient) => (
+                                        <Text style={styles.ingredientText}>{toUpper(ingredient)}</Text>
+                                    ))
+                                    }
+                                </View>
+
+                                <View style={{flexDirection: 'column', alignItems: 'center'}}>
+                                    {this.state.recipeAmounts.map((amount) => (
+                                        <Text style={styles.ingredientText}>{toUpper(amount)}</Text>
+                                    ))
+                                    }
+                                </View>
+                            </View>
 
                         </ScrollView>
                     </View>
@@ -163,6 +181,22 @@ class BarbotScreen extends React.Component {
                     <IngredientItem bottleItems={this.state.fullBottleList} overlayWidth={recipeOverlayWidth} ingredCallback={this.setIngredValue.bind(this)} amountCallback={this.setAmountValue.bind(this)}/>
 
                     <Spacer height={15} />
+                    <Button title='Save Recipe' buttonStyle={styles.buttonStyle} onPress={() => {
+                        if(this.state.recipeName != '' && this.state.recipeIngredients.length>0 && this.state.recipeAmounts.length>0){
+                            var res = addRecipe(this.state.recipeName, this.state.recipeIngredients, this.state.recipeAmounts);
+                            this.setState({
+                                newRecipeVisible: false,
+                                recipeName: '',
+                                recipeIngredients: [],
+                                recipeAmounts: [],
+                                ingredientCount: 0
+                            });
+                            
+                            console.log("RES: " + toString(res));
+                        }else{
+                            Alert.alert('You must fill out all the appropriate fields!')
+                        }
+                    }}/>
                 </Overlay>
             </View>
         );

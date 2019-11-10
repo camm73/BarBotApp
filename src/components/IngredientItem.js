@@ -1,8 +1,9 @@
 import React from 'react'
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Alert} from 'react-native';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import {Button} from 'react-native-elements';
 import Spacer from './Spacer';
+
 
 class IngredientItem extends React.Component{
     constructor(props){
@@ -30,17 +31,17 @@ class IngredientItem extends React.Component{
                             }}
                             containerStyle={{ padding: 5 }}
                             itemStyle={{
-                            padding: 10,
-                            marginTop: 2,
-                            backgroundColor: '#ddd',
-                            borderColor: '#bbb',
-                            borderWidth: 1,
-                            borderRadius: 5,
+                                padding: 10,
+                                marginTop: 2,
+                                backgroundColor: '#ddd',
+                                borderColor: '#bbb',
+                                borderWidth: 1,
+                                borderRadius: 5,
                             }}
                             itemTextStyle={{ color: '#222' }}
                             itemsContainerStyle={{ maxHeight: 120 }}
                             items={this.props.bottleItems}
-                            resetValue={this.state.reset}
+                            resetValue={false}
                             textInputProps={
                             {
                                 placeholder: "Select an ingredient...",
@@ -54,7 +55,9 @@ class IngredientItem extends React.Component{
                                     backgroundColor: 'white',
                                     width: this.props.overlayWidth/1.5
                                 },
-                                onTextChange: text => console.log(text)
+                                onTextChange: text => this.setState({
+                                    selectedItem: text
+                                }),
                             }
                             }
                             listProps={
@@ -83,7 +86,7 @@ class IngredientItem extends React.Component{
                         itemTextStyle={{ color: '#222' }}
                         itemsContainerStyle={{ maxHeight: 120 }}
                         items={amountItems}
-                        resetValue={this.state.reset}
+                        resetValue={false}
                         textInputProps={
                         {
                             placeholder: "fl oz",
@@ -97,7 +100,9 @@ class IngredientItem extends React.Component{
                                 backgroundColor: 'white',
                                 width: this.props.overlayWidth - ((this.props.overlayWidth/1.5) + 40)
                             },
-                            onTextChange: text => console.log(text)
+                            onTextChange: text => this.setState({
+                                selectedAmount: text
+                            }),
                         }
                         }
                         listProps={
@@ -111,13 +116,17 @@ class IngredientItem extends React.Component{
 
             <Spacer height={20} />
             <Button title='Add Ingredient' buttonStyle={styles.lightButtonStyle} onPress={() => {
-                this.props.ingredCallback(this.state.selectedItem);
-                this.props.amountCallback(this.state.selectedAmount);
+                if(this.state.selectedAmount != '' && this.state.selectedItem != ''){
+                    this.props.ingredCallback(this.state.selectedItem);
+                    this.props.amountCallback(this.state.selectedAmount);
+                }else{
+                    Alert.alert("You must have both an ingredient and amount");
+                    return;
+                }
 
                 this.setState({
                     selectedAmount: '',
                     selectedItem: '',
-                    reset: true,
                 });
 
                 this.setState({
