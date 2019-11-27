@@ -8,9 +8,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "react": "16.8.6",
+    "aws-sdk": "^2.580.0",
+    "react": "16.9.0",
     "react-liquid-gauge": "^1.2.4",
-    "react-native": "0.60.5",
+    "react-native": "0.61.4",
     "react-native-app-intro-slider": "^3.0.0",
     "react-native-elements": "^1.1.0",
     "react-native-gesture-handler": "^1.3.0",
