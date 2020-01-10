@@ -1,0 +1,15 @@
+{
+	"auth": {
+		"barbot05328675": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": []
+		}
+	},
+	"storage": {
+		"cocktailImages": {
+			"service": "S3",
+			"providerPlugin": "awscloudformation"
+		}
+	}
+}

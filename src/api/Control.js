@@ -80,6 +80,7 @@ export async function addRecipe(recipeName, ingredients, amounts){
             }
         }).then((responseJson) => {
             resolve(responseJson);
+            console.log("Successfully added new recipe: " + recipeName);
         }).catch((error) => {
             reject('false');
             console.log(error);

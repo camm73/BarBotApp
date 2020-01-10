@@ -8,6 +8,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "aws-amplify": "^1.2.4",
+    "aws-amplify-react-native": "^2.2.3",
     "aws-sdk": "^2.580.0",
     "react": "16.9.0",
     "react-liquid-gauge": "^1.2.4",

@@ -4,6 +4,8 @@ import HomeScreen from './src/screens/HomeScreen';
 import BarbotScreen from './src/screens/BarbotScreen';
 import BottleTutorial from './src/tutorials/BottleTutorial';
 import SettingsScreen from './src/screens/SettingsScreen';
+import Amplify from 'aws-amplify';
+import amplify from '.'
 
 const App = () => {
   console.disableYellowBox = true; //REMOVE AFTER TESTING

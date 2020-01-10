@@ -35,6 +35,7 @@ class HomeScreen extends React.Component {
             this.setState({
                 cocktailMenu: response
             });
+            console.log('Cocktail Menu:')
             console.log(response);
         }).catch((error) => console.log(error));
 

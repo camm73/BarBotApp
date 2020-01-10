@@ -1,0 +1,20 @@
+{
+    "test": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-barbot-test-143149-authRole",
+            "UnauthRoleArn": "arn:aws:iam::727434030224:role/amplify-barbot-test-143149-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::727434030224:role/amplify-barbot-test-143149-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-barbot-test-143149-deployment",
+            "UnauthRoleName": "amplify-barbot-test-143149-unauthRole",
+            "StackName": "amplify-barbot-test-143149",
+            "StackId": "arn:aws:cloudformation:us-east-1:727434030224:stack/amplify-barbot-test-143149/b50febb0-1165-11ea-abbc-12f4ed1177e6",
+            "AmplifyAppId": "d1lehvigds5ha5"
+        },
+        "categories": {
+            "auth": {
+                "barbot05328675": {}
+            }
+        }
+    }
+}
