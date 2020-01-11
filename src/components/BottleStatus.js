@@ -130,6 +130,7 @@ class BottleStatus extends React.Component{
             if(show === 'false'){
                 console.log('Not showing instructions');
             }else{
+                //TODO: ADD THIS BACK AFTER WE DETERMINE WHETHER IT WORKS OR NOT
                 this.openInstructions();
             }
         }catch(error){
@@ -165,7 +166,8 @@ class BottleStatus extends React.Component{
         }, 30000);
 
         //Need to trigger tutorial if this is the first time seeing this
-        this.getShowInstructions();
+        //this.getShowInstructions();
+        //TODO: Removed temporarily
     }
 
     componentWillUnmount(){
@@ -220,8 +222,10 @@ class BottleStatus extends React.Component{
 
                             <View style={{flexDirection: 'row', justifyContent: 'center'}}>
                                 <Text style={{textDecorationLine: 'underline', fontSize: 18, textAlign: 'center', alignSelf: 'center', paddingRight: 10, paddingLeft: 30}}>Bottle Management</Text>
-                                <Icon name='help' size={28} onPress={() => {
-                                    this.openInstructions();
+                                {//TODO: ICON TEMPORARILY DISABLED FOR RELEASE ISSUE FIX
+                                }
+                                <Icon name='help' disabled={true} size={28} onPress={() => {
+                                    //this.openInstructions();
                                 }}/>
                             </View>
                         </View>}
