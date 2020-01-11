@@ -26,7 +26,7 @@ class HomeScreen extends React.Component {
 
     static navigationOptions = {
         header: (
-            <HeaderComponent backVisible={false} settingsVisible={true}/>
+            <HeaderComponent backVisible={false} settingsVisible={false}/>
         ),
     }
 
