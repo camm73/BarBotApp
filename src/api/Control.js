@@ -238,8 +238,18 @@ export async function isOnline(){
 }
 
 export async function cleanPumps(){
-    fetch(barbotAddress + 'clean/', {
-        method: 'GET'
+    return new Promise(function(resolve, reject){
+        fetch(barbotAddress + 'clean/', {
+            method: 'GET'
+        }).then((response) => response.text())
+        .then((responseText) => {
+            console.log('Pumping cleaning response: ');
+            console.log(responseText);
+            resolve(responseText);
+        }).catch((error) => {
+            console.log('Error cleaning pumps: ' + error);
+            reject('false');
+        })
     });
 }
 

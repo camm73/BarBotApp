@@ -4,7 +4,7 @@ import {Button, Overlay, Icon} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
 import HeaderComponent from '../components/HeaderComponent';
 import Spacer from '../components/Spacer';
-import {addNewBottle, getAllBottles, addRecipe} from '../api/Control';
+import {addNewBottle, getAllBottles, addRecipe, cleanPumps, reverse} from '../api/Control';
 import IngredientItem from '../components/IngredientItem';
 import {toUpper} from '../utils/Tools';
 
@@ -198,6 +198,28 @@ class BarbotScreen extends React.Component {
                         }
                     }}/>
                 </Overlay>
+                
+                <Spacer height={25} />
+                <Button title="Flush Pumps" buttonStyle={styles.buttonStyle} onPress={() => {
+                    Alert.alert('Confirm Pump Flush', 'This will flush all pumps for 10 seconds. Be sure to remove all bottles and replace with water prior to flushing! Are you sure you want to continue?', [{text: 'Cancel', onPress: () => console.log('User canceled pump flush!'), style: 'cancel'}, {text: 'Confirm', onPress: () => {
+                        console.log("Starting flush of all pumps...");
+                        cleanPumps();
+                    }}]);
+                }}/>
+
+                <Spacer height={25} />
+                <Button title="Remove All Bottles" buttonStyle={styles.buttonStyle} onPress={() => {
+                    Alert.alert('Confirm Bottle Removal', 'This will return all excess ingredients to their respective bottles. Are you sure you want to continue?', [{text: 'Cancel', onPress: () => console.log('User canceled full bottle removal!'), style: 'cancel'}, {text: 'Confirm', onPress: () => {
+                        console.log("Starting removal of all bottles...");
+                        reverse().then((response) => {
+                            cleanPumps().then((res) => {
+                                reverse();
+                                console.log('Finished removal of all bottles!');
+                                Alert.alert('Successfully replenished bottles');
+                            });
+                        });
+                    }}]);
+                }}/>
             </View>
         );
     }
