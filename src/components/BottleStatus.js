@@ -344,6 +344,7 @@ class BottleStatus extends React.Component{
 
                                 this.componentDidMount();
                                 this.props.reloadCallback();
+                                this.reloadPercentage();
 
                             }} />
                         </View>}
