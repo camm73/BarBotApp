@@ -47,6 +47,8 @@ class BottleStatus extends React.Component{
             return 'limegreen'
         }else if(num > 15 && num < 50){
             return 'yellow'
+        }else if(num === 'N/A'){
+            return 'black'
         }else{
             return 'red'
         }
@@ -59,16 +61,15 @@ class BottleStatus extends React.Component{
     }
 
     reloadPercentage(){
-
         //Refresh the bottle percentage
         getBottlePercent(this.props.number).then((response) => {
-            console.log(response)
+            //console.log(response)
             this.setState({
                 level: response,
                 textColor: this.getTextColor(response)
             });
         }).catch((error) => {
-            console.log(error);
+            //console.log(error);
             this.setState({
                 level: 'N/A',
                 textColor: 'black'
@@ -80,18 +81,39 @@ class BottleStatus extends React.Component{
         
     }
 
-    setBottleVolumes(){
-        getCurrentBottleVolume(this.state.bottleName).then((response) => {
-            console.log('Current bottle volume: ' + response);
-            this.setState({
-                currentVolume: response
-            });
-        }).catch((error) => {
-            console.log(error);
-            this.setState({
-                currentVolume: 'N/A'
-            });
+    resetBottle(){
+        this.props.reloadCallback();
+        this.reloadPercentage();
+        this.setState({
+            bottleName: 'N/A',
+            currentVolume: 'N/A',
+            initVolume: 'N/A',
         });
+    }
+
+    setBottleVolumes(){
+        if(this.state.bottleName != 'N/A'){
+            //Set current volume
+            getCurrentBottleVolume(this.state.bottleName).then((response) => {
+                console.log('Current bottle volume: ' + response);
+                this.setState({
+                    currentVolume: response
+                });
+            }).catch((error) => {
+                console.log(error);
+                this.setState({
+                    currentVolume: 'N/A'
+                });
+            });
+            
+            //Set Initial volume
+            getInitBottleVolume(this.state.bottleName).then((response) => {
+                console.log('Initial Volume: ' + response);
+                this.setState({
+                    initVolume: response
+                });
+            });
+        }
     }
 
     //Open the instructions for remove/adding a new bottle
@@ -145,21 +167,11 @@ class BottleStatus extends React.Component{
             this.setState({
                 bottleName: response
             });
-            console.log('RESPONSE: ' + response);
+            //console.log('RESPONSE: ' + response);
         }).then(() => {
-            //console.log('BOTTLE NAME: ' + this.state.bottleName);
-            //Set the initial bottle volume
-            getInitBottleVolume(this.state.bottleName).then((response) => {
-                console.log('Initial Volume: ' + response);
-                this.setState({
-                    initVolume: response
-                });
-            });
-
             //Set the bottle volumes the first time
             this.setBottleVolumes();
         });
-
 
         setInterval(() => {
             this.reloadPercentage();
@@ -172,6 +184,13 @@ class BottleStatus extends React.Component{
 
     componentWillUnmount(){
         clearInterval(this.interval);
+    }
+
+    componentDidUpdate(){
+        if(this.props.reload){
+            console.log('RESETTING BOTTLE!!');
+            this.resetBottle();
+        }
     }
 
     render(){
@@ -234,13 +253,7 @@ class BottleStatus extends React.Component{
                             <Button title='Remove Bottle' buttonStyle={styles.buttonStyle} onPress={async () => {
                                 await removeBottle(this.props.number, this.state.bottleName);
 
-                                this.setState({
-                                    bottleName: 'N/A',
-                                    currentVolume: 'N/A',
-                                    initVolume: 'N/A',
-                                });
-                                this.reloadPercentage();
-                                this.props.reloadCallback();
+                                this.resetBottle();
                             }}/>
                             <Spacer height={10}/>
                             <Button title='Prime Bottle' buttonStyle={styles.buttonStyle} onPressIn={() => {
@@ -329,8 +342,7 @@ class BottleStatus extends React.Component{
                                     inputInitVolume: ''
                                 });
 
-                                this.reloadPercentage();
-                                this.componentDidMount(); //TODO: may need to make sure duplicates are not created on intervals
+                                this.componentDidMount();
                                 this.props.reloadCallback();
 
                             }} />

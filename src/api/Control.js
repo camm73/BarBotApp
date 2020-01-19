@@ -194,11 +194,6 @@ export async function calibratePump(number, time){
 
 export async function getCurrentBottleVolume(bottleName){
     return new Promise(function(resolve, reject){
-
-        if(bottleName === 'N/A'){
-            reject('Cannot run request for unknown bottle')
-        }
-
         fetch(barbotAddress + 'volume/' + bottleName + '/', {
             method: 'GET'
         }).then((response) => response.json())
@@ -215,11 +210,6 @@ export async function getCurrentBottleVolume(bottleName){
 
 export async function getInitBottleVolume(bottleName){
     return new Promise(function(resolve, reject){
-
-        if(bottleName === 'N/A'){
-            reject('Cannot run request for unknown bottle')
-        }
-
         fetch(barbotAddress + 'initVolume/' + bottleName + '/', {
             method: 'GET'
         }).then((response) => response.json())
@@ -284,7 +274,7 @@ export async function getCocktailMenu(){
         .then((responseJson) => {
             resolve(responseJson);
         }).catch((error) => {
-            console.log('Returned error: ' + error);
+            console.log('getCocktailMenu error: ' + error);
             reject('ERROR');
         });
     });
@@ -299,7 +289,7 @@ export async function getIngredients(name){
         .then((responseJson) => {
             resolve(responseJson);
         }).catch((error) => {
-            console.log('Returned error: ' + error);
+            console.log('getIngredients error: ' + error);
             reject('ERROR');
         });
     });
@@ -309,12 +299,12 @@ export async function getBottlePercent(bottleNum){
     return new Promise(function(resolve, reject){
         fetch(barbotAddress + 'bottlePercent/' + bottleNum + "/", {
             method: 'GET'
-        }).then((response) => response.json())
+        }).then((response) => response.text())
         .then((responseJson) => {
-            console.log(responseJson);
+            //console.log(responseJson);
             resolve(responseJson);
         }).catch((error) => {
-            console.log('Returned error: ' + error);
+            console.log('getBottlePercent error: ' + error);
             reject('ERROR');
         });
     });

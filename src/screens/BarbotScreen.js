@@ -39,7 +39,7 @@ class BarbotScreen extends React.Component {
                 });
             }
 
-            console.log(fullList);
+            //console.log(fullList);
 
             this.setState({
                 fullBottleList: fullList
@@ -213,6 +213,7 @@ class BarbotScreen extends React.Component {
                         console.log("Starting removal of all bottles...");
                         removeAllBottles().then((response) => {
                             if(response == 'true'){
+                                this.props.navigation.state.params.resetBottles();
                                 Alert.alert('Successfully removed all bottles!');
                             }else{
                                 Alert.alert('Failed to remove all bottles!');

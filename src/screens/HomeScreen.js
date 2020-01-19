@@ -53,7 +53,7 @@ class HomeScreen extends React.Component {
                 });
             }
 
-            console.log(newList);
+            //console.log(newList);
 
             this.setState({
                 bottleList: newList
@@ -64,7 +64,8 @@ class HomeScreen extends React.Component {
     //Called to reload menu and bottle list after exit from bottleStatus
     reloadCallback(){
         this.setState({
-            cocktailMenu: []
+            cocktailMenu: [],
+            reload: false
         });
         this.setCocktailMenu();
         this.loadBottleList();
@@ -84,7 +85,8 @@ class HomeScreen extends React.Component {
 
     state = {
         cocktailMenu: [],
-        bottleList: []
+        bottleList: [],
+        reload: false
     }
 
     render(){
@@ -99,19 +101,23 @@ class HomeScreen extends React.Component {
                         {/*<Text style={{fontSize: 18, textDecorationLine: 'underline'}}>Ingredient Status:</Text>
                         <Spacer height={10} /> */}
                         <View style={styles.bottleContainer}>
-                            <BottleStatus number={1} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
-                            <BottleStatus number={2} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
-                            <BottleStatus number={3} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
-                            <BottleStatus number={4} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
-                            <BottleStatus number={5} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
-                            <BottleStatus number={6} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
-                            <BottleStatus number={7} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
-                            <BottleStatus number={8} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={1} reload={this.state.reload} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={2} reload={this.state.reload} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={3} reload={this.state.reload} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={4} reload={this.state.reload} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={5} reload={this.state.reload} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={6} reload={this.state.reload} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={7} reload={this.state.reload} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
+                            <BottleStatus number={8} reload={this.state.reload} bottleItems={this.state.bottleList} reloadCallback={this.reloadCallback.bind(this)}/>
                         </View>
                         
                         <Spacer height={5} />
                         {manageVisible && <Button title='Manage BarBot' buttonStyle={styles.manageButton} titleStyle={{fontSize: 16}} onPress={() => {
-                            this.props.navigation.navigate('ManageBarbot');
+                            this.props.navigation.navigate('ManageBarbot', {resetBottles: ()=>{
+                                this.setState({
+                                    reload: true
+                                });
+                            }});
                         }}></Button>}
                     </View>
                     <Spacer height={20}/>
