@@ -4,7 +4,7 @@ import {Button, Overlay, Icon} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
 import HeaderComponent from '../components/HeaderComponent';
 import Spacer from '../components/Spacer';
-import {addNewBottle, getAllBottles, addRecipe, cleanPumps, reverse} from '../api/Control';
+import {addNewBottle, getAllBottles, addRecipe, cleanPumps, removeAllBottles} from '../api/Control';
 import IngredientItem from '../components/IngredientItem';
 import {toUpper} from '../utils/Tools';
 
@@ -211,12 +211,12 @@ class BarbotScreen extends React.Component {
                 <Button title="Remove All Bottles" buttonStyle={styles.buttonStyle} onPress={() => {
                     Alert.alert('Confirm Bottle Removal', 'This will return all excess ingredients to their respective bottles. Are you sure you want to continue?', [{text: 'Cancel', onPress: () => console.log('User canceled full bottle removal!'), style: 'cancel'}, {text: 'Confirm', onPress: () => {
                         console.log("Starting removal of all bottles...");
-                        reverse().then((response) => {
-                            cleanPumps().then((res) => {
-                                reverse();
-                                console.log('Finished removal of all bottles!');
-                                Alert.alert('Successfully replenished bottles');
-                            });
+                        removeAllBottles().then((response) => {
+                            if(response == 'true'){
+                                Alert.alert('Successfully removed all bottles!');
+                            }else{
+                                Alert.alert('Failed to remove all bottles!');
+                            }
                         });
                     }}]);
                 }}/>

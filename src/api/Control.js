@@ -18,6 +18,29 @@ export async function makeCocktail(name){
     });
 }
 
+//Remove bottles from every pump
+export async function removeAllBottles(){
+    return new Promise(function(resolve, reject){
+        fetch(barbotAddress + 'removeAllBottles/', {
+            method: 'GET'
+        }).then((response) => response.text())
+        .then((responseText) => {
+            if(responseText == 'true'){
+                console.log('Successfully removed all bottles!');
+                resolve(responseText);
+            }else{
+                console.log("Failed to remove all bottles");
+                reject(responseText);
+            }
+        }).catch((error) => {
+            console.log('Issue removing all bottles!');
+            console.log(error);
+            reject('false');
+        });
+    });
+}
+
+//TODO: Migrate reverse and pumpOn call to the removeBottle function on server-side
 export async function removeBottle(number, bottleName){
     await reverse();
     pumpOn(number);
