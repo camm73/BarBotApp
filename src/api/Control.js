@@ -1,5 +1,6 @@
 import React from 'react';
 import {Alert} from 'react-native';
+const creds = require('../config/awsCreds.json');
 
 const barbotAddress = 'http://barbot.local:5000/';
 const shotSize = 1.5;
@@ -308,6 +309,19 @@ export async function getBottlePercent(bottleNum){
             reject('ERROR');
         });
     });
+}
+
+export async function uploadImage(cocktailName){
+    console.log("Thumbnail: " + cocktailName);
+    var address = creds['apiAddress'] + cocktailName + '/';
+    return new Promise(function(resolve, reject){
+        fetch(address, {
+            method: 'GET'
+        }).then((response) => response.text())
+        .then((responseText) => {
+            resolve('true');
+        })
+    }); 
 }
 
 export async function getBottleName(number){

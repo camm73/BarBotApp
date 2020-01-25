@@ -4,7 +4,7 @@ import {Button, Overlay, Icon} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
 import HeaderComponent from '../components/HeaderComponent';
 import Spacer from '../components/Spacer';
-import {addNewBottle, getAllBottles, addRecipe, cleanPumps, removeAllBottles} from '../api/Control';
+import {addNewBottle, getAllBottles, addRecipe, cleanPumps, removeAllBottles, uploadImage} from '../api/Control';
 import IngredientItem from '../components/IngredientItem';
 import {toUpper} from '../utils/Tools';
 
@@ -184,6 +184,7 @@ class BarbotScreen extends React.Component {
                     <Button title='Save Recipe' buttonStyle={styles.buttonStyle} onPress={() => {
                         if(this.state.recipeName != '' && this.state.recipeIngredients.length>0 && this.state.recipeAmounts.length>0){
                             var res = addRecipe(this.state.recipeName, this.state.recipeIngredients, this.state.recipeAmounts);
+                            uploadImage(this.state.recipeName);
                             this.setState({
                                 newRecipeVisible: false,
                                 recipeName: '',
