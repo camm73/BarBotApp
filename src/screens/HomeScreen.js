@@ -7,6 +7,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import HeaderComponent from '../components/HeaderComponent';
 import MenuItem from '../components/MenuItem';
 import {getCocktailMenu, getNewBottles} from '../api/Control';
+import {getThumbnail} from '../api/Cloud';
 import {toUpper} from '../utils/Tools';
 import ConnectionStatus from '../components/ConnectionStatus';
 
@@ -128,7 +129,7 @@ class HomeScreen extends React.Component {
                             
                             {this.state.cocktailMenu.map((cocktail) => (
                                 <View>
-                                    <MenuItem name={toUpper(cocktail)} imageSrc={cocktailImages[cocktail]}/>
+                                    <MenuItem name={toUpper(cocktail)} imageSrc={getThumbnail(cocktail)}/>
                                     <Spacer height={20} />
                                 </View>
                             ))}
