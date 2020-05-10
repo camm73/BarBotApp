@@ -57,8 +57,6 @@ class HomeScreen extends React.Component {
                 });
             }
 
-            //console.log(newList);
-
             this.setState({
                 bottleList: newList
             });

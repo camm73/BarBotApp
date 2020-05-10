@@ -29,7 +29,7 @@ class ConnectionStatus extends React.Component{
         this.checkOnline();
         setInterval(() => {
             this.checkOnline();
-        }, 30000)
+        }, 15000);
     }
 
     render(){
