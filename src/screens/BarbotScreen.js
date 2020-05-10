@@ -213,9 +213,11 @@ class BarbotScreen extends React.Component {
                     Alert.alert('Confirm Bottle Removal', 'This will return all excess ingredients to their respective bottles. Are you sure you want to continue?', [{text: 'Cancel', onPress: () => console.log('User canceled full bottle removal!'), style: 'cancel'}, {text: 'Confirm', onPress: () => {
                         console.log("Starting removal of all bottles...");
                         removeAllBottles().then((response) => {
-                            if(response == 'true'){
+                            if(response === 'true'){
                                 this.props.navigation.state.params.resetBottles();
                                 Alert.alert('Successfully removed all bottles!');
+                            }else if(response === 'busy'){
+                                Alert.alert('BarBot is busy right now! Try again soon.');
                             }else{
                                 Alert.alert('Failed to remove all bottles!');
                             }

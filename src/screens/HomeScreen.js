@@ -25,10 +25,13 @@ class HomeScreen extends React.Component {
         super(props);
     }
 
-    static navigationOptions = {
-        header: (
-            <HeaderComponent backVisible={false} settingsVisible={false}/>
-        ),
+    static navigationOptions = ({navigation}) => {
+
+        return {
+            header: (
+                <HeaderComponent backVisible={false} settingsVisible={false} reloadCallback={navigation.getParam('reloadCallback')}/>
+            ),
+        }
     }
 
     setCocktailMenu(){
@@ -73,8 +76,9 @@ class HomeScreen extends React.Component {
     }
 
     componentDidMount(){
-       this.setCocktailMenu();
-       this.loadBottleList();
+        this.props.navigation.setParams({reloadCallback: this.reloadCallback.bind(this)});
+        this.setCocktailMenu();
+        this.loadBottleList();
     }
 
     componentDidUpdate(prevProps){

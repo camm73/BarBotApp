@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, StyleSheet, Button, Dimensions} from 'react-native';
+import {Text, View, StyleSheet, Button, Dimensions, TouchableOpacity, Alert} from 'react-native';
 //import {Button} from 'react-native-elements';
 import Spacer from '../components/Spacer';
 import {withNavigation, SafeAreaView} from 'react-navigation';
@@ -21,9 +21,14 @@ class HeaderComponent extends React.Component {
                             this.props.navigation.navigate('Home');
                         }}/>}
                     </View>
-                    <View style={styles.textContainer}>
+                    <TouchableOpacity
+                        style={styles.textContainer}
+                        onPress={() => {
+                            this.props.reloadCallback();
+                        }}
+                    >
                         <Text style={styles.textStyle}>BarBot</Text>
-                    </View>
+                    </TouchableOpacity>
                     <View style={styles.rightSide}>
                         {this.props.settingsVisible && <Icon name='settings' size={32} onPress={() => {
                             this.props.navigation.navigate('Settings');
@@ -37,9 +42,11 @@ class HeaderComponent extends React.Component {
             return(
                 <SafeAreaView style={styles.safeStyle}>
                     <View style={styles.container}>
-                        <View style={styles.textContainer}>
+                        <TouchableOpacity style={styles.textContainer} onPress={() => {
+                            this.props.reloadCallback();
+                        }}>
                             <Text style={styles.textStyle}>BarBot</Text>
-                        </View>
+                        </TouchableOpacity>
                     </View>
                 </SafeAreaView>
             );

@@ -9,10 +9,19 @@ export async function makeCocktail(name){
     return new Promise(function(resolve, reject){
         fetch(barbotAddress + 'cocktail/' + encodeURI(name.toLowerCase()) + '/', {
             method: 'GET'
-        }).then((response) => response.json())
-        .then((responseJson) => {
+        }).then((response) => response.text())
+        .then((responseText) => {
+            console.log('Cocktail Response: ' + responseText);
+            if(responseText === 'available'){
+                Alert.alert("We're sorry, but this cocktail is no longer available.");
+            }else if(responseText === 'busy'){
+                Alert.alert('BarBot is busy right now! Try again in a little while.');
+            }else if(responseText === 'ingredients'){
+                Alert.alert('BarBot does not have the necessary ingredients for this cocktail. Sorry!');
+            }
             resolve('DONE');
         }).catch((error) => {
+            Alert.alert('An error occurred trying to make this cocktail!');
             console.log(error);
             reject('ERROR');
         });
@@ -31,7 +40,7 @@ export async function removeAllBottles(){
                 resolve(responseText);
             }else{
                 console.log("Failed to remove all bottles");
-                reject(responseText);
+                resolve(responseText);
             }
         }).catch((error) => {
             console.log('Issue removing all bottles!');
@@ -43,24 +52,17 @@ export async function removeAllBottles(){
 
 //TODO: Migrate reverse and pumpOn call to the removeBottle function on server-side
 export async function removeBottle(number, bottleName){
-    await reverse();
-    pumpOn(number);
-    setTimeout(async () => {
-        pumpOff(number)
-        await reverse();
-    }, 15000);
-
     return new Promise(function(resolve, reject){
         fetch(barbotAddress + 'removeBottle/' + bottleName, {
             method: 'GET'
-        }).then((response) => response.json())
+        }).then((response) => response.text())
         .then((responseJson) => {
             console.log('Removed bottle: ' + bottleName + "; " + responseJson);
-            resolve('true')
+            resolve(responseJson);
         }).catch((error) => {
             console.log('Issue removing bottle!');
             console.log(error);
-            reject('false')
+            reject(responseJson);
         });
     });
 }
@@ -259,6 +261,9 @@ export async function cleanPumps(){
         .then((responseText) => {
             console.log('Pumping cleaning response: ');
             console.log(responseText);
+            if(responseText === 'busy'){
+                Alert.alert("BarBot is busy right now! Try again soon.");
+            }
             resolve(responseText);
         }).catch((error) => {
             console.log('Error cleaning pumps: ' + error);

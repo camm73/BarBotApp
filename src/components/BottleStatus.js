@@ -251,9 +251,19 @@ class BottleStatus extends React.Component{
                         
                         {this.state.bottleName !== 'N/A' && <View style={styles.buttonContainer}>
                             <Button title='Remove Bottle' buttonStyle={styles.buttonStyle} onPress={async () => {
-                                await removeBottle(this.props.number, this.state.bottleName);
-
-                                this.resetBottle();
+                                removeBottle(this.props.number, this.state.bottleName).then((res) => {
+                                    if(res === 'true'){
+                                        this.resetBottle();
+                                    }else if(res === 'busy'){
+                                        console.log('Barbot is busy...');
+                                        Alert.alert('Barbot is busy! Try again soon.');
+                                    }else{
+                                        console.log('Error removing bottle ' + this.state.bottleName + ": " + res);
+                                    }
+                                }).catch((error) => {
+                                    console.log('Error removing bottle ' + this.state.bottleName + ": " + error);
+                                    Alert.alert('Error removing bottle: ' + error);
+                                })
                             }}/>
                             <Spacer height={10}/>
                             <Button title='Prime Bottle' buttonStyle={styles.buttonStyle} onPressIn={() => {
