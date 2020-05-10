@@ -4,7 +4,7 @@ import {Button, Overlay, Icon} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
 import HeaderComponent from '../components/HeaderComponent';
 import Spacer from '../components/Spacer';
-import {addNewBottle, getAllBottles, addRecipe, cleanPumps, removeAllBottles, uploadImage} from '../api/Control';
+import {addNewBottle, getAllBottles, addRecipe, cleanPumps, removeAllBottles, uploadImage, checkAlcoholMode, setAlcoholMode} from '../api/Control';
 import IngredientItem from '../components/IngredientItem';
 import {toUpper} from '../utils/Tools';
 
@@ -25,7 +25,12 @@ class BarbotScreen extends React.Component {
     }
 
     componentDidMount(){
-        this.loadBottleList()
+        this.loadBottleList();
+        checkAlcoholMode().then((res) => {
+            this.setState({
+                alcoholMode: res
+            });
+        });
     }
 
     loadBottleList(){
@@ -56,6 +61,7 @@ class BarbotScreen extends React.Component {
         recipeAmounts: [],
         fullBottleList: [],
         ingredientCount: 0,
+        alcoholMode: false
     }
 
     setIngredValue(ingredient){
@@ -117,6 +123,19 @@ class BarbotScreen extends React.Component {
                         newRecipeVisible: true
                     });
                 }} />
+
+                <Spacer height={25} />
+                <Button buttonStyle={styles.buttonStyle} title={this.state.alcoholMode ? 'Disable Alcohol Mode' : 'Enable Alcohol Mode'} onPress={() => {
+                    setAlcoholMode(!this.state.alcoholMode).then(() => {
+                        this.props.navigation.state.params.reloadMenu();
+                        this.setState({
+                            alcoholMode: !this.state.alcoholMode
+                        });
+                    }).catch((error) => {
+                        console.log(error);
+                        Alert.alert('There was an error switching to Alcohol Mode');
+                    });
+                }}/>
 
                 <Overlay isVisible={this.state.newRecipeVisible} width={recipeOverlayWidth} height={recipeOverlayHeight} overlayStyle={styles.overlay}>
                     <View style={styles.backButtonRow}>

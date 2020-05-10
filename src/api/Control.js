@@ -67,6 +67,43 @@ export async function removeBottle(number, bottleName){
     });
 }
 
+//Check whether alcoholMode is enabled or not
+export async function checkAlcoholMode(){
+    return new Promise(function(resolve, reject){
+        fetch(barbotAddress + "getAlcoholMode/", {
+            method: 'GET'
+        }).then((response) => response.json())
+        .then((responseJson) => {
+            console.log("Alcohol Mode: " + responseJson);
+            resolve(responseJson);
+        }).catch((error) => {
+            console.log('Error loading Alcohol mode!');
+        });
+    })
+}
+
+
+export async function setAlcoholMode(modeSetting){
+    return new Promise(function(resolve, reject){
+        fetch(barbotAddress + "alcoholMode/", {
+            method: 'POST',
+            body: JSON.stringify({
+                enable: modeSetting
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => response.json())
+        .then((responseJson) => {
+            console.log(responseJson);
+            resolve(responseJson);
+        }).catch((error) => {
+            console.log(error);
+            reject(error)
+        })
+    })
+}
+
 
 export async function addBottle(bottleName, pumpNum, volume, originalVolume){
     return new Promise(function(resolve, reject){

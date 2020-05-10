@@ -86,12 +86,20 @@ class HomeScreen extends React.Component {
         if(prevProps.isFocused !== this.props.isFocused){
             this.loadBottleList();
         }
+
+        if(this.state.reloadMenu){
+            this.reloadCallback();
+            this.setState({
+                reloadMenu: false
+            });
+        }
     }
 
     state = {
         cocktailMenu: [],
         bottleList: [],
-        reload: false
+        reload: false,
+        reloadMenu: false
     }
 
     render(){
@@ -118,11 +126,18 @@ class HomeScreen extends React.Component {
                         
                         <Spacer height={5} />
                         {manageVisible && <Button title='Manage BarBot' buttonStyle={styles.manageButton} titleStyle={{fontSize: 16}} onPress={() => {
-                            this.props.navigation.navigate('ManageBarbot', {resetBottles: ()=>{
-                                this.setState({
-                                    reload: true
-                                });
-                            }});
+                            this.props.navigation.navigate('ManageBarbot', {
+                                resetBottles: ()=>{
+                                    this.setState({
+                                        reload: true
+                                    });
+                                },
+                                reloadMenu: () => {
+                                    this.setState({
+                                        reloadMenu: true
+                                    });
+                                }
+                        });
                         }}></Button>}
                     </View>
                     <Spacer height={20}/>
