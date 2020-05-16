@@ -71,6 +71,7 @@ class HomeScreen extends React.Component {
         });
         this.setCocktailMenu();
         this.loadBottleList();
+        console.log('Reloaded');
     }
 
     componentDidMount(){
@@ -146,7 +147,7 @@ class HomeScreen extends React.Component {
                             
                             {this.state.cocktailMenu.map((cocktail) => (
                                 <View>
-                                    <MenuItem name={toUpper(cocktail)} imageSrc={getThumbnail(cocktail)}/>
+                                    <MenuItem name={toUpper(cocktail)} imageSrc={getThumbnail(cocktail)} reloadCallback={this.reloadCallback.bind(this)}/>
                                     <Spacer height={20} />
                                 </View>
                             ))}

@@ -4,6 +4,11 @@ import {Button, Overlay} from 'react-native-elements';
 import Spacer from './Spacer';
 import {makeCocktail, getIngredients} from '../api/Control.js';
 import {toUpper} from '../utils/Tools';
+import {verifyImageExists, uploadImage} from '../api/Cloud';
+import ImagePicker from 'react-native-image-picker';
+
+const defaultImage = require('../assets/defaultCocktail.jpg');
+
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
@@ -14,13 +19,18 @@ const shotSize = 1.5; //fl oz
 
 var infoVisible = false;
 
+const imageOptions = {
+    quality: 0.05
+};
+
 class MenuItem extends React.Component {
     constructor(props){
         super(props);
     }
 
     state = {
-        ingredients: {}
+        ingredients: {},
+        imageExists: false
     }
 
     componentDidMount(){
@@ -29,6 +39,19 @@ class MenuItem extends React.Component {
                 ingredients: response
             });
         }).catch((error) => console.log(error));
+        verifyImageExists(this.props.name, this.setImageExists.bind(this));
+    }
+
+
+    setImageExists(status){
+        this.setState({
+            imageExists: status
+        });
+    }
+
+    imageUploadCallback(){
+        infoVisible = false;
+        this.props.reloadCallback();
     }
 
     render(){
@@ -39,7 +62,7 @@ class MenuItem extends React.Component {
                         infoVisible = true;
                         this.forceUpdate();
                     }}>
-                        <Image style={styles.imageStyle} source={{uri: this.props.imageSrc}}/>
+                        <Image style={styles.imageStyle} source={this.state.imageExists ? {uri: this.props.imageSrc} : defaultImage}/>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.infoStyle}>
@@ -59,7 +82,26 @@ class MenuItem extends React.Component {
 
                 <Overlay isVisible={infoVisible} width={screenWidth - 100} height={screenHeight/1.6} overlayStyle={styles.overlayStyle}>
                     <Text style={styles.headerText}>{this.props.name}</Text>
-                    <Image style={styles.largeImage} source={{uri: this.props.imageSrc}}/>
+                    <TouchableOpacity onPress={() => {
+                        ImagePicker.showImagePicker(imageOptions, (response) => {
+
+                            if(response.didCancel){
+                                console.log('User canceled image selection');
+                            }else if(response.error){
+                                console.log('Image Picker error: ' + response.error);
+                                Alert.alert("There was an error trying to upload your image. Try again later!");
+                            }else{
+                                const source = {uri: response.uri, type: 'image/jpeg', name: toUpper(this.props.name) + '.jpg'};
+                                console.log('Successfully selected image. Will upload now...');
+                                uploadImage(this.props.name, source, this.imageUploadCallback.bind(this));
+                            }
+                        })
+                    }}>
+                        <Image style={styles.largeImage} source={this.state.imageExists ? {uri: this.props.imageSrc} : defaultImage}/>
+                    </TouchableOpacity>
+                    {false && 
+                    <Image style={styles.largeImage} source={this.state.imageExists ? {uri: this.props.imageSrc} : defaultImage}/>
+                    }
                     <Spacer height={10} />
                     <Text style={styles.textStyle}>Ingredients</Text>
 

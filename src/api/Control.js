@@ -353,19 +353,6 @@ export async function getBottlePercent(bottleNum){
     });
 }
 
-export async function uploadImage(cocktailName){
-    console.log("Thumbnail: " + cocktailName);
-    var address = thumbnailApi['apiAddress'] + cocktailName + '/';
-    return new Promise(function(resolve, reject){
-        fetch(address, {
-            method: 'GET'
-        }).then((response) => response.text())
-        .then((responseText) => {
-            resolve('true');
-        })
-    }); 
-}
-
 export async function getBottleName(number){
     var address = barbotAddress + 'bottleName/' + number + '/';
     return new Promise(function(resolve, reject){
