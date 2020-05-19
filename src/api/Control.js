@@ -142,8 +142,13 @@ export async function addRecipe(recipeName, ingredients, amounts){
                 'Content-Type': 'application/json'
             }
         }).then((responseJson) => {
-            resolve(responseJson);
-            console.log("Successfully added new recipe: " + recipeName);
+            console.log(responseJson);
+            if(responseJson.status === 200){
+                console.log("Successfully added new recipe: " + recipeName);
+                resolve(true);
+            }else{
+                resolve(false);
+            }
         }).catch((error) => {
             reject('false');
             console.log(error);
@@ -179,15 +184,17 @@ export async function getAllBottles(){
     })
 }
 
-export async function addNewBottle(bottleName){
-    fetch(barbotAddress + 'newBottle/' + bottleName + '/', {
-        method: 'GET'
-    }).then((response) => response.json())
-    .then((responseJson) => {
-        resolve(responseJson);
-    }).catch((error) => {
-        console.log(error)
-        reject(false)
+export async function addNewBottle(bottleName, isAlcohol){
+    return new Promise(function(resolve, reject){
+        fetch(barbotAddress + 'newBottle/' + bottleName + '/alcohol=' + isAlcohol, {
+            method: 'GET'
+        }).then((response) => response.json())
+        .then((responseJson) => {
+            resolve(responseJson);
+        }).catch((error) => {
+            console.log(error)
+            reject(false)
+        });
     });
 }
 

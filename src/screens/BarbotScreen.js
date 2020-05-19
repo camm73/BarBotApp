@@ -1,10 +1,10 @@
 import React from 'react';
 import {View, StyleSheet, Dimensions, Text, Alert, TouchableOpacity, TextInput, ScrollView} from 'react-native';
-import {Button, Overlay, Icon} from 'react-native-elements';
+import {Button, Overlay, Icon, CheckBox} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
 import HeaderComponent from '../components/HeaderComponent';
 import Spacer from '../components/Spacer';
-import {addNewBottle, getAllBottles, addRecipe, cleanPumps, removeAllBottles, uploadImage, checkAlcoholMode, setAlcoholMode} from '../api/Control';
+import {addNewBottle, getAllBottles, addRecipe, cleanPumps, removeAllBottles, checkAlcoholMode, setAlcoholMode} from '../api/Control';
 import IngredientItem from '../components/IngredientItem';
 import {toUpper} from '../utils/Tools';
 
@@ -61,7 +61,8 @@ class BarbotScreen extends React.Component {
         recipeAmounts: [],
         fullBottleList: [],
         ingredientCount: 0,
-        alcoholMode: false
+        alcoholMode: false,
+        alcoholCheck: false
     }
 
     setIngredValue(ingredient){
@@ -87,11 +88,12 @@ class BarbotScreen extends React.Component {
                     });
                 }}/>
 
-                <Overlay isVisible={this.state.newBottleVisible} width={screenWidth/1.3} height={225} overlayStyle={styles.overlay}>
+                <Overlay isVisible={this.state.newBottleVisible} width={screenWidth/1.3} height={265} overlayStyle={styles.overlay}>
                     <View style={styles.backButtonRow}>
                         <TouchableOpacity onPress={() => {
                                 this.setState({
-                                    newBottleVisible: false
+                                    newBottleVisible: false,
+                                    alcoholCheck: false
                                 });
                             }}>
                             <Icon name='back' size={33} type='antdesign'/>
@@ -108,12 +110,22 @@ class BarbotScreen extends React.Component {
                             });
                         }}/>
                     </View>
+                    <Spacer height={10}/>
+                    <CheckBox title='Is alcohol?' checked={this.state.alcoholCheck} containerStyle={{
+                        borderRadius: 10,
+                        backgroundColor: 'white'
+                    }} onPress={() => {
+                        this.setState({
+                            alcoholCheck: !this.state.alcoholCheck
+                        });
+                    }}/>
                     <Spacer height={20} />
                     <Button title='Add Bottle' buttonStyle={styles.lightButtonStyle} onPress={() => {
-                        addNewBottle(this.state.inputBottle);
+                        addNewBottle(this.state.inputBottle, this.state.alcoholCheck ? 'true' : 'false');
                         this.setState({
                             newBottleVisible: false,
-                            inputBottle: ''
+                            inputBottle: '',
+                            alcoholCheck: false
                         });
                     }}/>
                 </Overlay>
@@ -202,8 +214,14 @@ class BarbotScreen extends React.Component {
                     <Spacer height={15} />
                     <Button title='Save Recipe' buttonStyle={styles.buttonStyle} onPress={() => {
                         if(this.state.recipeName != '' && this.state.recipeIngredients.length>0 && this.state.recipeAmounts.length>0){
-                            var res = addRecipe(this.state.recipeName, this.state.recipeIngredients, this.state.recipeAmounts);
-                            uploadImage(this.state.recipeName);
+                            var saveName = this.state.recipeName;
+                            var res = addRecipe(this.state.recipeName, this.state.recipeIngredients, this.state.recipeAmounts).then((res) => {
+                                if(res === true){
+                                    Alert.alert('Successfully added ' + saveName + " recipe!");
+                                }else{
+                                    Alert.alert('Failed to add ' + saveName + " recipe! Try again later.");
+                                }
+                            })
                             this.setState({
                                 newRecipeVisible: false,
                                 recipeName: '',

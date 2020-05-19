@@ -13,7 +13,7 @@ class IngredientItem extends React.Component{
     state = {
         selectedItem: '',
         selectedAmount: '',
-        reset: false,
+        resetText: false,
         value: ''
     }
 
@@ -41,7 +41,7 @@ class IngredientItem extends React.Component{
                             itemTextStyle={{ color: '#222' }}
                             itemsContainerStyle={{ maxHeight: 120 }}
                             items={this.props.bottleItems}
-                            resetValue={false}
+                            resetValue={this.state.resetText}
                             textInputProps={
                             {
                                 placeholder: "Select an ingredient...",
@@ -86,7 +86,7 @@ class IngredientItem extends React.Component{
                         itemTextStyle={{ color: '#222' }}
                         itemsContainerStyle={{ maxHeight: 120 }}
                         items={amountItems}
-                        resetValue={false}
+                        resetValue={this.state.resetText}
                         textInputProps={
                         {
                             placeholder: "fl oz",
@@ -126,12 +126,8 @@ class IngredientItem extends React.Component{
 
                 this.setState({
                     selectedAmount: '',
-                    selectedItem: '',
+                    selectedItem: ''
                 });
-
-                this.setState({
-                    reset: false
-                })
                 
             }}/>
 
