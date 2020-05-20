@@ -6,7 +6,8 @@ class ConnectionStatus extends React.Component{
 
     state = {
         color: 'red',
-        textContent: 'Disconnected'
+        textContent: 'Disconnected',
+        hearbeatRunning: false
     }
 
     checkOnline(){
@@ -28,9 +29,15 @@ class ConnectionStatus extends React.Component{
 
     componentDidMount(){
         this.checkOnline();
-        setInterval(() => {
-            this.checkOnline();
-        }, 10000);
+
+        if(!this.state.hearbeatRunning){
+            setInterval(() => {
+                this.checkOnline();
+            }, 10000);
+            this.setState({
+                hearbeatRunning: true
+            });
+        }
     }
 
     render(){

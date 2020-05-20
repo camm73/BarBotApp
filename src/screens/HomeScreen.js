@@ -74,6 +74,18 @@ class HomeScreen extends React.Component {
         console.log('Reloaded');
     }
 
+    loadThumbnail(cocktailName){
+        var thumbnailLink = getThumbnail(cocktailName);
+        this.setState({
+            cocktailThumbnails: {
+                ...this.state.cocktailThumbnails,
+                [cocktailName]: thumbnailLink
+            }
+        });
+
+        return thumbnailLink;
+    }
+
     componentDidMount(){
         this.props.navigation.setParams({reloadCallback: this.reloadCallback.bind(this)});
         this.setCocktailMenu();
@@ -98,7 +110,8 @@ class HomeScreen extends React.Component {
         cocktailMenu: [],
         bottleList: [],
         reload: false,
-        reloadMenu: false
+        reloadMenu: false,
+        cocktailThumbnails: {}
     }
 
     render(){
@@ -147,7 +160,7 @@ class HomeScreen extends React.Component {
                             
                             {this.state.cocktailMenu.map((cocktail) => (
                                 <View>
-                                    <MenuItem name={toUpper(cocktail)} imageSrc={getThumbnail(cocktail)} reloadCallback={this.reloadCallback.bind(this)}/>
+                                    <MenuItem name={toUpper(cocktail)} imageSrc={ (cocktail in this.state.cocktailThumbnails) ? this.state.cocktailThumbnails[cocktail] : this.loadThumbnail(cocktail)} reloadCallback={this.reloadCallback.bind(this)}/>
                                     <Spacer height={20} />
                                 </View>
                             ))}

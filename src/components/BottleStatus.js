@@ -342,7 +342,18 @@ class BottleStatus extends React.Component{
                             <Spacer height={10} />
 
                             <Button title='Add Bottle' disabled={this.state.selectedItem === '' || this.state.inputCurrentVolume === '' || this.state.inputInitVolume === ''} buttonStyle={styles.buttonStyle} onPress={async () => {
-                                //TODO: make api call to add the bottle
+
+                                //Validate input volumes (Technically not possible to be less than zero, but leaving here in case changes are made to numpad input)
+                                if(this.state.inputCurrentVolume < 0){
+                                    Alert.alert('Current Volume cannot be less than 0!');
+                                    return;
+                                }else if(this.state.inputInitVolume < 0){
+                                    Alert.alert('Initial Volume cannot be less than 0!');
+                                    return;
+                                }else if(this.state.inputCurrentVolume > this.state.inputInitVolume){
+                                    Alert.alert('Current volume cannot be larger than initial volume!');
+                                    return;
+                                }
 
                                 var res = await addBottle(this.state.selectedItem, this.props.number, this.state.inputCurrentVolume, this.state.inputInitVolume);
                                 console.log('ADDING BOTTLE RESULT: ' + res);

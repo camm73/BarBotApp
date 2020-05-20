@@ -17,7 +17,7 @@ class ProgressBar extends React.Component {
     render(){
         return(
             <View style={{
-                width: this.props.width,
+                width: this.props.width+6,
                 height: this.props.height,
                 borderColor: 'black',
                 borderWidth: 2,
@@ -28,7 +28,7 @@ class ProgressBar extends React.Component {
                     height: this.props.height-6,
                     width: (this.props.value/100)*this.props.width,
                     backgroundColor: this.getColor(),
-                    borderRadius: 3,
+                    borderRadius: 4,
                     padding: 1
                 }}>
                     <Text style={{position: 'absolute', left: (this.props.width/2)-25, paddingTop: this.props.height/7}}>{this.props.value + "%"}</Text>
