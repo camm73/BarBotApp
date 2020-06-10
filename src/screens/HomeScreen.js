@@ -1,12 +1,6 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  Alert,
-  Dimensions,
-  PixelRatio,
-} from 'react-native';
+import {Text, View, StyleSheet, Alert, Dimensions} from 'react-native';
 import {Button} from 'react-native-elements';
 import Spacer from '../components/Spacer';
 import {SafeAreaView, withNavigationFocus} from 'react-navigation';
@@ -126,6 +120,7 @@ class HomeScreen extends React.Component {
     reload: false,
     reloadMenu: false,
     cocktailThumbnails: {},
+    bottleCount: 8, //TODO: Tie this in with the API
   };
 
   render() {
@@ -140,54 +135,58 @@ class HomeScreen extends React.Component {
           {/*<Text style={{fontSize: 18, textDecorationLine: 'underline'}}>Ingredient Status:</Text>
                         <Spacer height={10} /> */}
           <View style={styles.bottleContainer}>
-            <BottleStatus
-              number={1}
-              reload={this.state.reload}
-              bottleItems={this.state.bottleList}
-              reloadCallback={this.reloadCallback.bind(this)}
-            />
-            <BottleStatus
-              number={2}
-              reload={this.state.reload}
-              bottleItems={this.state.bottleList}
-              reloadCallback={this.reloadCallback.bind(this)}
-            />
-            <BottleStatus
-              number={3}
-              reload={this.state.reload}
-              bottleItems={this.state.bottleList}
-              reloadCallback={this.reloadCallback.bind(this)}
-            />
-            <BottleStatus
-              number={4}
-              reload={this.state.reload}
-              bottleItems={this.state.bottleList}
-              reloadCallback={this.reloadCallback.bind(this)}
-            />
-            <BottleStatus
-              number={5}
-              reload={this.state.reload}
-              bottleItems={this.state.bottleList}
-              reloadCallback={this.reloadCallback.bind(this)}
-            />
-            <BottleStatus
-              number={6}
-              reload={this.state.reload}
-              bottleItems={this.state.bottleList}
-              reloadCallback={this.reloadCallback.bind(this)}
-            />
-            <BottleStatus
-              number={7}
-              reload={this.state.reload}
-              bottleItems={this.state.bottleList}
-              reloadCallback={this.reloadCallback.bind(this)}
-            />
-            <BottleStatus
-              number={8}
-              reload={this.state.reload}
-              bottleItems={this.state.bottleList}
-              reloadCallback={this.reloadCallback.bind(this)}
-            />
+            <ScrollView
+              horizontal={true}
+              scrollEnabled={this.state.bottleCount > 8 ? true : false}>
+              <BottleStatus
+                number={1}
+                reload={this.state.reload}
+                bottleItems={this.state.bottleList}
+                reloadCallback={this.reloadCallback.bind(this)}
+              />
+              <BottleStatus
+                number={2}
+                reload={this.state.reload}
+                bottleItems={this.state.bottleList}
+                reloadCallback={this.reloadCallback.bind(this)}
+              />
+              <BottleStatus
+                number={3}
+                reload={this.state.reload}
+                bottleItems={this.state.bottleList}
+                reloadCallback={this.reloadCallback.bind(this)}
+              />
+              <BottleStatus
+                number={4}
+                reload={this.state.reload}
+                bottleItems={this.state.bottleList}
+                reloadCallback={this.reloadCallback.bind(this)}
+              />
+              <BottleStatus
+                number={5}
+                reload={this.state.reload}
+                bottleItems={this.state.bottleList}
+                reloadCallback={this.reloadCallback.bind(this)}
+              />
+              <BottleStatus
+                number={6}
+                reload={this.state.reload}
+                bottleItems={this.state.bottleList}
+                reloadCallback={this.reloadCallback.bind(this)}
+              />
+              <BottleStatus
+                number={7}
+                reload={this.state.reload}
+                bottleItems={this.state.bottleList}
+                reloadCallback={this.reloadCallback.bind(this)}
+              />
+              <BottleStatus
+                number={8}
+                reload={this.state.reload}
+                bottleItems={this.state.bottleList}
+                reloadCallback={this.reloadCallback.bind(this)}
+              />
+            </ScrollView>
           </View>
 
           <Spacer height={5} />

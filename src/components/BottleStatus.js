@@ -21,7 +21,6 @@ import {
   getInitBottleVolume,
   pumpOn,
   pumpOff,
-  getNewBottles,
 } from '../api/Control';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {toUpper} from '../utils/Tools';
@@ -225,7 +224,7 @@ class BottleStatus extends React.Component {
             });
             console.log('Item: ' + this.state.selectedItem);
           }}>
-          <View>
+          <View style={{paddingHorizontal: 0.8}}>
             <ImageBackground
               style={{height: 71 * scaleFactor, width: 30 * scaleFactor}}
               source={require('../assets/bottleIcon.png')}>
