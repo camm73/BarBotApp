@@ -1,58 +1,57 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {View, Text, StyleSheet, Alert} from 'react-native';
+import {View, Text, Alert} from 'react-native';
 import {isOnline} from '../api/Control';
 
-class ConnectionStatus extends React.Component{
+class ConnectionStatus extends React.Component {
+  state = {
+    color: 'red',
+    textContent: 'Disconnected',
+    hearbeatRunning: false,
+  };
 
-    state = {
-        color: 'red',
-        textContent: 'Disconnected',
-        hearbeatRunning: false
-    }
-
-    checkOnline(){
-        isOnline().then((response) => {
-            if(response === 'online'){
-                this.setState({
-                    textContent: 'Connected',
-                    color: 'limegreen'
-                });
-            }
-        }).catch((error) => {
-            this.setState({
-                textContent: 'Disconnected',
-                color: 'red'
-            });
-            console.log(error);
-        });
-    }
-
-    componentDidMount(){
-        this.checkOnline();
-
-        if(!this.state.hearbeatRunning){
-            setInterval(() => {
-                this.checkOnline();
-            }, 10000);
-            this.setState({
-                hearbeatRunning: true
-            });
+  checkOnline() {
+    isOnline()
+      .then(response => {
+        if (response === 'online') {
+          this.setState({
+            textContent: 'Connected',
+            color: 'limegreen',
+          });
         }
-    }
+      })
+      .catch(error => {
+        this.setState({
+          textContent: 'Disconnected',
+          color: 'red',
+        });
+        console.log(error);
+      });
+  }
 
-    render(){
-        return(
-            <View style={{flexDirection: 'row'}}>
-                <Text style={{fontSize: 18, color: 'black'}}>Connection Status: </Text>
-                <Text style={{fontSize: 18, color: this.state.color}}>{this.state.textContent}</Text>
-            </View>
-        );
+  componentDidMount() {
+    this.checkOnline();
+
+    if (!this.state.hearbeatRunning) {
+      setInterval(() => {
+        this.checkOnline();
+      }, 10000);
+      this.setState({
+        hearbeatRunning: true,
+      });
     }
+  }
+
+  render() {
+    return (
+      <View style={{flexDirection: 'row'}}>
+        <Text style={{fontSize: 18, color: 'black'}}>Connection Status: </Text>
+        <Text style={{fontSize: 18, color: this.state.color}}>
+          {this.state.textContent}
+        </Text>
+      </View>
+    );
+  }
 }
 
 export default ConnectionStatus;
-
-
-const styles = StyleSheet.create({
-    
-});

@@ -19,6 +19,7 @@
 		2DCD954D1E0B4F2C00145EB5 /* BarBotTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* BarBotTests.m */; };
 		3AA2D1A8DA5349F9A71496E6 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 382328F5A5EB42F9A7DAB1B1 /* Fontisto.ttf */; };
 		3B5E7165A0FB44A38286BD1B /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CFA9B9B497C34C3790A17391 /* FontAwesome5_Solid.ttf */; };
+		48B88392248459F900C94F2A /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 008F07F21AC5B25A0029DE68 /* main.jsbundle */; };
 		5181F306203F41958AB4495F /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 44A48B000DE7491399646CA5 /* Foundation.ttf */; };
 		532771C5D9714A56B89E66F0 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 53300C0FB1894E0EB3D74843 /* Zocial.ttf */; };
 		5A1E54D6231647E2A9911912 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0286B653FDD46D29F3139AD /* Octicons.ttf */; };
@@ -396,6 +397,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48B88392248459F900C94F2A /* main.jsbundle in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				AF3B8EAD10684B69A1FF1FC1 /* AntDesign.ttf in Resources */,
