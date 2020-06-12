@@ -27,7 +27,7 @@ class CalibrationBody extends React.Component {
   render() {
     return (
       <View>
-        {this.props.slide === 1 && (
+        {(this.props.slide === 1 && (
           <View>
             <Text style={styles.textStyle}>
               Before beginning calibration, place the pump input tube in a large
@@ -52,82 +52,84 @@ class CalibrationBody extends React.Component {
               />
             </View>
           </View>
-        )}
-        {this.props.slide === 2 && (
-          <View>
-            <Text style={styles.textStyle}>
-              Press the Start Button to begin calibration.
-            </Text>
-            <View style={styles.calibrateButtons}>
-              <Button
-                title="Start"
-                disabled={this.state.calRunning || this.state.tenthsOfSec !== 0}
-                buttonStyle={{
-                  borderRadius: 20,
-                  width: 175,
-                  backgroundColor: 'green',
-                }}
-                onPress={() => {
-                  pumpOn(this.props.pumpNum);
-                  startTime = new Date().getTime();
-                  this.setState({
-                    tenthsOfSec: 1,
-                    timer: setInterval(() => {
-                      this.setState({
-                        tenthsOfSec: this.state.tenthsOfSec + 1,
-                      });
-                    }, 100),
-                    calRunning: true,
-                  });
-                }}
-              />
-            </View>
-            <Spacer height={10} />
-            <Text style={styles.textStyle}>
-              Immediately after the water stops coming out of the output tube,
-              press the Stop Button.
-            </Text>
-            <View style={styles.calibrateButtons}>
-              <Button
-                title="Stop"
-                disabled={!this.state.calRunning}
-                buttonStyle={{
-                  borderRadius: 20,
-                  width: 175,
-                  backgroundColor: 'red',
-                }}
-                onPress={async () => {
-                  endTime = new Date().getTime();
-                  pumpOff(this.props.pumpNum);
+        )) ||
+          (this.props.slide === 2 && (
+            <View>
+              <Text style={styles.textStyle}>
+                Press the Start Button to begin calibration.
+              </Text>
+              <View style={styles.calibrateButtons}>
+                <Button
+                  title="Start"
+                  disabled={
+                    this.state.calRunning || this.state.tenthsOfSec !== 0
+                  }
+                  buttonStyle={{
+                    borderRadius: 20,
+                    width: 175,
+                    backgroundColor: 'green',
+                  }}
+                  onPress={() => {
+                    pumpOn(this.props.pumpNum);
+                    startTime = new Date().getTime();
+                    this.setState({
+                      tenthsOfSec: 1,
+                      timer: setInterval(() => {
+                        this.setState({
+                          tenthsOfSec: this.state.tenthsOfSec + 1,
+                        });
+                      }, 100),
+                      calRunning: true,
+                    });
+                  }}
+                />
+              </View>
+              <Spacer height={10} />
+              <Text style={styles.textStyle}>
+                Immediately after the water stops coming out of the output tube,
+                press the Stop Button.
+              </Text>
+              <View style={styles.calibrateButtons}>
+                <Button
+                  title="Stop"
+                  disabled={!this.state.calRunning}
+                  buttonStyle={{
+                    borderRadius: 20,
+                    width: 175,
+                    backgroundColor: 'red',
+                  }}
+                  onPress={async () => {
+                    endTime = new Date().getTime();
+                    pumpOff(this.props.pumpNum);
 
-                  this.setState({
-                    calRunning: false,
-                  });
+                    this.setState({
+                      calRunning: false,
+                    });
 
-                  //var shotTime = ((this.state.tenthsOfSec/10.0)/calibrationVolume)*shotVolume
-                  var shotTime = (endTime - startTime) / 1000.0;
-                  console.log('Shot time: ' + shotTime.toString());
-                  calibratePump(this.props.pumpNum, shotTime.toString()).then(
-                    response => {
-                      console.log(response);
-                      if (response === true) {
-                        Alert.alert(
-                          'The calibration has finished with shotTime: ' +
-                            shotTime.toString() +
-                            '. Press the done button to continue',
-                        );
-                      } else {
-                        Alert.alert(
-                          'There was an error calibrating the pump. Try rebooting the BarBot. Press the Done Button to continue.',
-                        );
-                      }
-                    },
-                  );
-                }}
-              />
+                    //var shotTime = ((this.state.tenthsOfSec/10.0)/calibrationVolume)*shotVolume
+                    var shotTime = (endTime - startTime) / 1000.0;
+                    console.log('Shot time: ' + shotTime.toString());
+                    calibratePump(this.props.pumpNum, shotTime.toString()).then(
+                      response => {
+                        console.log(response);
+                        if (response === true) {
+                          Alert.alert(
+                            'The calibration has finished with shotTime: ' +
+                              shotTime.toString() +
+                              '. Press the done button to continue',
+                          );
+                        } else {
+                          Alert.alert(
+                            'There was an error calibrating the pump. Try rebooting the BarBot. Press the Done Button to continue.',
+                          );
+                        }
+                      },
+                    );
+                  }}
+                />
+              </View>
             </View>
-          </View>
-        )}
+          ))}
       </View>
     );
   }

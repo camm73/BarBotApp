@@ -273,6 +273,7 @@ export async function calibratePump(number, time) {
     )
       .then(response => response.json())
       .then(responseJson => {
+        console.log(responseJson);
         resolve(responseJson);
       })
       .catch(error => {
@@ -442,7 +443,7 @@ export async function getBottleName(number) {
     })
       .then(response => response.text())
       .then(responseText => {
-        //console.log(responseText);
+        //console.log('Bottle Name Response: ' + responseText);
         resolve(responseText);
       })
       .catch(error => {

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  ImageBackground,
 } from 'react-native';
 import {Button, Overlay, Icon, CheckBox} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
