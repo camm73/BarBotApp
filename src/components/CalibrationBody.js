@@ -19,6 +19,11 @@ class CalibrationBody extends React.Component {
     tenthsOfSec: 0,
   };
 
+  componentDidMount() {
+    console.log(this.props.slide);
+    console.log(this.props.pumpNum);
+  }
+
   render() {
     return (
       <View>
@@ -53,7 +58,6 @@ class CalibrationBody extends React.Component {
             <Text style={styles.textStyle}>
               Press the Start Button to begin calibration.
             </Text>
-
             <View style={styles.calibrateButtons}>
               <Button
                 title="Start"
@@ -78,13 +82,11 @@ class CalibrationBody extends React.Component {
                 }}
               />
             </View>
-
             <Spacer height={10} />
             <Text style={styles.textStyle}>
               Immediately after the water stops coming out of the output tube,
               press the Stop Button.
             </Text>
-
             <View style={styles.calibrateButtons}>
               <Button
                 title="Stop"
@@ -126,7 +128,6 @@ class CalibrationBody extends React.Component {
             </View>
           </View>
         )}
-        ;
       </View>
     );
   }
