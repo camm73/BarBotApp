@@ -33,6 +33,7 @@ var screenHeight = Dimensions.get('window').height;
 const recipeOverlayWidth = screenWidth / 1.2;
 //const recipeOverlayHeight = screenHeight/1.2;
 const recipeOverlayHeight = 570;
+const iconScale = 0.8;
 
 class BarbotScreen extends React.Component {
   static navigationOptions = {
@@ -97,15 +98,96 @@ class BarbotScreen extends React.Component {
     return (
       <View style={styles.mainView}>
         <Text style={styles.headerText}>Manage Menu</Text>
-        <Button
-          title="New Bottle"
-          buttonStyle={styles.buttonStyle}
-          onPress={() => {
-            this.setState({
-              newBottleVisible: true,
-            });
-          }}
-        />
+
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({
+                newBottleVisible: true,
+              });
+            }}>
+            <ImageBackground
+              style={{height: 120 * iconScale, width: 120 * iconScale}}
+              source={require('../assets/newBottleIcon.png')}
+            />
+            <Text style={styles.iconText}>New Bottle</Text>
+          </TouchableOpacity>
+
+          <Spacer width={35} />
+
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({
+                newRecipeVisible: true,
+              });
+            }}>
+            <ImageBackground
+              style={{height: 120 * iconScale, width: 120 * iconScale}}
+              source={require('../assets/menuIcon.png')}
+            />
+            <Text style={styles.iconText}>New Recipe</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Spacer height={35} />
+
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            onPress={() => {
+              setAlcoholMode(!this.state.alcoholMode)
+                .then(() => {
+                  this.props.navigation.state.params.reloadMenu();
+                  this.setState({
+                    alcoholMode: !this.state.alcoholMode,
+                  });
+                })
+                .catch(error => {
+                  console.log(error);
+                  Alert.alert('There was an error switching to Alcohol Mode');
+                });
+            }}>
+            <ImageBackground
+              style={{height: 120 * iconScale, width: 120 * iconScale}}
+              source={require('../assets/alcoholModeIcon.png')}
+            />
+            <Text style={styles.iconText}>
+              {this.state.alcoholMode
+                ? 'Disable\n Alcohol Mode'
+                : 'Enable\n Alcohol Mode'}
+            </Text>
+          </TouchableOpacity>
+
+          <Spacer width={30} />
+
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert(
+                'Confirm Pump Flush',
+                'This will flush all pumps for 10 seconds. Be sure to remove all bottles and replace with water prior to flushing! Are you sure you want to continue?',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('User canceled pump flush!'),
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Confirm',
+                    onPress: () => {
+                      console.log('Starting flush of all pumps...');
+                      cleanPumps();
+                    },
+                  },
+                ],
+              );
+            }}>
+            <ImageBackground
+              style={{height: 120 * iconScale, width: 120 * iconScale}}
+              source={require('../assets/flushIcon.png')}
+            />
+            <Text style={styles.iconText}>Flush Pumps</Text>
+          </TouchableOpacity>
+        </View>
+        <Spacer height={70} />
 
         <Overlay
           isVisible={this.state.newBottleVisible}
@@ -169,39 +251,6 @@ class BarbotScreen extends React.Component {
             }}
           />
         </Overlay>
-        <Spacer height={25} />
-        <Button
-          title="Add Cocktail Recipe"
-          buttonStyle={styles.buttonStyle}
-          onPress={() => {
-            this.setState({
-              newRecipeVisible: true,
-            });
-          }}
-        />
-
-        <Spacer height={25} />
-        <Button
-          buttonStyle={styles.buttonStyle}
-          title={
-            this.state.alcoholMode
-              ? 'Disable Alcohol Mode'
-              : 'Enable Alcohol Mode'
-          }
-          onPress={() => {
-            setAlcoholMode(!this.state.alcoholMode)
-              .then(() => {
-                this.props.navigation.state.params.reloadMenu();
-                this.setState({
-                  alcoholMode: !this.state.alcoholMode,
-                });
-              })
-              .catch(error => {
-                console.log(error);
-                Alert.alert('There was an error switching to Alcohol Mode');
-              });
-          }}
-        />
 
         <Overlay
           isVisible={this.state.newRecipeVisible}
@@ -336,69 +385,47 @@ class BarbotScreen extends React.Component {
           />
         </Overlay>
 
-        <Spacer height={25} />
-        <Button
-          title="Flush Pumps"
-          buttonStyle={styles.buttonStyle}
-          onPress={() => {
-            Alert.alert(
-              'Confirm Pump Flush',
-              'This will flush all pumps for 10 seconds. Be sure to remove all bottles and replace with water prior to flushing! Are you sure you want to continue?',
-              [
-                {
-                  text: 'Cancel',
-                  onPress: () => console.log('User canceled pump flush!'),
-                  style: 'cancel',
-                },
-                {
-                  text: 'Confirm',
-                  onPress: () => {
-                    console.log('Starting flush of all pumps...');
-                    cleanPumps();
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert(
+                'Confirm Bottle Removal',
+                'This will return all excess ingredients to their respective bottles. Are you sure you want to continue?',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () =>
+                      console.log('User canceled full bottle removal!'),
+                    style: 'cancel',
                   },
-                },
-              ],
-            );
-          }}
-        />
-
-        <Spacer height={25} />
-        <Button
-          title="Remove All Bottles"
-          buttonStyle={styles.buttonStyle}
-          onPress={() => {
-            Alert.alert(
-              'Confirm Bottle Removal',
-              'This will return all excess ingredients to their respective bottles. Are you sure you want to continue?',
-              [
-                {
-                  text: 'Cancel',
-                  onPress: () =>
-                    console.log('User canceled full bottle removal!'),
-                  style: 'cancel',
-                },
-                {
-                  text: 'Confirm',
-                  onPress: () => {
-                    console.log('Starting removal of all bottles...');
-                    removeAllBottles().then(response => {
-                      if (response === 'true') {
-                        this.props.navigation.state.params.resetBottles();
-                        Alert.alert('Successfully removed all bottles!');
-                      } else if (response === 'busy') {
-                        Alert.alert(
-                          'BarBot is busy right now! Try again soon.',
-                        );
-                      } else {
-                        Alert.alert('Failed to remove all bottles!');
-                      }
-                    });
+                  {
+                    text: 'Confirm',
+                    onPress: () => {
+                      console.log('Starting removal of all bottles...');
+                      removeAllBottles().then(response => {
+                        if (response === 'true') {
+                          this.props.navigation.state.params.resetBottles();
+                          Alert.alert('Successfully removed all bottles!');
+                        } else if (response === 'busy') {
+                          Alert.alert(
+                            'BarBot is busy right now! Try again soon.',
+                          );
+                        } else {
+                          Alert.alert('Failed to remove all bottles!');
+                        }
+                      });
+                    },
                   },
-                },
-              ],
-            );
-          }}
-        />
+                ],
+              );
+            }}>
+            <ImageBackground
+              style={{height: 120 * iconScale, width: 120 * iconScale}}
+              source={require('../assets/removeAllIcon.png')}
+            />
+            <Text style={styles.iconText}>{'Remove\n All Bottles'}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -479,5 +506,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     maxHeight: 50,
+  },
+
+  buttonRow: {
+    flex: 1,
+    flexDirection: 'row',
+    maxHeight: 90,
+    alignContent: 'center',
+  },
+
+  iconText: {
+    fontSize: 18,
+    textAlign: 'center',
   },
 });
