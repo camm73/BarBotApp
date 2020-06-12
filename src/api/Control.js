@@ -40,7 +40,7 @@ export async function removeAllBottles() {
     })
       .then(response => response.text())
       .then(responseText => {
-        if (responseText == 'true') {
+        if (responseText === 'true') {
           console.log('Successfully removed all bottles!');
           resolve(responseText);
         } else {
@@ -282,6 +282,24 @@ export async function calibratePump(number, time) {
   });
 }
 
+export async function getPumpSupportDetails() {
+  return new Promise(function(resolve, reject) {
+    fetch(barbotAddress + 'pumpSupportDetails/', {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log('Retreieved pump support data');
+        console.log(responseJson);
+        resolve(responseJson);
+      })
+      .catch(error => {
+        console.log(error);
+        reject([]);
+      });
+  });
+}
+
 export async function getCurrentBottleVolume(bottleName) {
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'volume/' + bottleName + '/', {
@@ -289,7 +307,7 @@ export async function getCurrentBottleVolume(bottleName) {
     })
       .then(response => response.json())
       .then(responseText => {
-        console.log('Current Volume of ' + bottleName + ' is: ' + responseText);
+        //console.log('Current Volume of ' + bottleName + ' is: ' + responseText);
         resolve(responseText);
       })
       .catch(error => {
@@ -306,7 +324,7 @@ export async function getInitBottleVolume(bottleName) {
     })
       .then(response => response.json())
       .then(responseText => {
-        console.log('Initial Volume of ' + bottleName + ' is: ' + responseText);
+        //console.log('Initial Volume of ' + bottleName + ' is: ' + responseText);
         resolve(responseText);
       })
       .catch(error => {
@@ -399,9 +417,9 @@ export async function getIngredients(name) {
   });
 }
 
-export async function getBottlePercent(bottleNum) {
+export async function getBottlePercent(bottleName) {
   return new Promise(function(resolve, reject) {
-    fetch(barbotAddress + 'bottlePercent/' + bottleNum + '/', {
+    fetch(barbotAddress + 'bottlePercent/' + bottleName + '/', {
       method: 'GET',
     })
       .then(response => response.text())

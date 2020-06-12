@@ -78,22 +78,24 @@ class BottleStatus extends React.Component {
   }
 
   reloadPercentage() {
-    //Refresh the bottle percentage
-    getBottlePercent(this.props.number)
-      .then(response => {
-        //console.log(response)
-        this.setState({
-          level: response,
-          textColor: this.getTextColor(response),
+    if (this.state.bottleName !== 'N/A') {
+      //Refresh the bottle percentage
+      getBottlePercent(this.state.bottleName)
+        .then(response => {
+          //console.log(response)
+          this.setState({
+            level: response,
+            textColor: this.getTextColor(response),
+          });
+        })
+        .catch(error => {
+          //console.log(error);
+          this.setState({
+            level: 'N/A',
+            textColor: 'black',
+          });
         });
-      })
-      .catch(error => {
-        //console.log(error);
-        this.setState({
-          level: 'N/A',
-          textColor: 'black',
-        });
-      });
+    }
 
     //Refresh the bottle currentVolume
     this.setBottleVolumes();
@@ -110,7 +112,7 @@ class BottleStatus extends React.Component {
   }
 
   setBottleVolumes() {
-    if (this.state.bottleName != 'N/A') {
+    if (this.state.bottleName !== 'N/A') {
       //Set current volume
       getCurrentBottleVolume(this.state.bottleName)
         .then(response => {
@@ -149,7 +151,7 @@ class BottleStatus extends React.Component {
 
   processVolumeInput(text, current) {
     var isNum = /^\d*$/.test(text);
-    if (isNum != 1) {
+    if (isNum !== true) {
       Alert.alert('Only numbers are a valid input');
     } else {
       if (current) {
@@ -187,11 +189,12 @@ class BottleStatus extends React.Component {
         this.setState({
           bottleName: response,
         });
-        //console.log('RESPONSE: ' + response);
+        console.log('BOTTLE NAME: ' + response);
       })
       .then(() => {
         //Set the bottle volumes the first time
         this.setBottleVolumes();
+        this.reloadPercentage();
       });
 
     setInterval(() => {
@@ -227,7 +230,11 @@ class BottleStatus extends React.Component {
           <View style={{paddingHorizontal: 0.8}}>
             <ImageBackground
               style={{height: 71 * scaleFactor, width: 30 * scaleFactor}}
-              source={require('../assets/bottleIcon.png')}>
+              source={
+                this.props.pumpType === 'soda'
+                  ? require('../assets/sparklingBottle.png')
+                  : require('../assets/bottleIcon.png')
+              }>
               <Spacer height={70} />
               <Text style={{textAlign: 'center', color: this.state.textColor}}>
                 {this.state.level}
@@ -373,8 +380,9 @@ class BottleStatus extends React.Component {
               <View style={styles.buttonContainer}>
                 <SearchableDropdown
                   onItemSelect={item => {
+                    console.log('You selected: ' + item);
                     this.setState({
-                      selectedItem: item['name'],
+                      selectedItem: item.name,
                     });
                   }}
                   containerStyle={{padding: 5}}
@@ -482,6 +490,11 @@ class BottleStatus extends React.Component {
                       this.state.inputInitVolume,
                     );
                     console.log('ADDING BOTTLE RESULT: ' + res);
+                    if (res === false) {
+                      Alert.alert(
+                        'There was an error adding your bottle. Please try again later',
+                      );
+                    }
                     this.setState({
                       selectedItem: '',
                       inputCurrentVolume: '',

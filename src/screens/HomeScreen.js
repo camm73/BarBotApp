@@ -3,18 +3,20 @@ import React from 'react';
 import {Text, View, StyleSheet, Alert, Dimensions} from 'react-native';
 import {Button} from 'react-native-elements';
 import Spacer from '../components/Spacer';
-import {SafeAreaView, withNavigationFocus} from 'react-navigation';
+import {withNavigationFocus} from 'react-navigation';
 import {ScrollView} from 'react-native-gesture-handler';
 import HeaderComponent from '../components/HeaderComponent';
 import MenuItem from '../components/MenuItem';
-import {getCocktailMenu, getNewBottles} from '../api/Control';
+import {
+  getCocktailMenu,
+  getNewBottles,
+  getPumpSupportDetails,
+} from '../api/Control';
 import {getThumbnail} from '../api/Cloud';
 import {toUpper} from '../utils/Tools';
 import ConnectionStatus from '../components/ConnectionStatus';
 
-import cocktailImages from '../config/cocktailImages';
 import BottleStatus from '../components/BottleStatus';
-import bottles from '../config/bottles.json';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -75,6 +77,7 @@ class HomeScreen extends React.Component {
       cocktailMenu: [],
       reload: false,
     });
+    this.configureBottleShelf();
     this.setCocktailMenu();
     this.loadBottleList();
     console.log('Reloaded');
@@ -92,10 +95,23 @@ class HomeScreen extends React.Component {
     return thumbnailLink;
   }
 
+  //Configures the bottle shelf based on available pump data
+  configureBottleShelf() {
+    getPumpSupportDetails().then(res => {
+      this.setState({
+        pumpDetails: res,
+        bottleCount: res.length,
+      });
+    });
+  }
+
   componentDidMount() {
     this.props.navigation.setParams({
       reloadCallback: this.reloadCallback.bind(this),
     });
+
+    this.configureBottleShelf();
+
     this.setCocktailMenu();
     this.loadBottleList();
   }
@@ -108,6 +124,7 @@ class HomeScreen extends React.Component {
 
     if (this.state.reloadMenu) {
       this.reloadCallback();
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         reloadMenu: false,
       });
@@ -120,7 +137,8 @@ class HomeScreen extends React.Component {
     reload: false,
     reloadMenu: false,
     cocktailThumbnails: {},
-    bottleCount: 8, //TODO: Tie this in with the API
+    bottleCount: 0, //8 is the default and then is updated by API request
+    pumpDetails: [],
   };
 
   render() {
@@ -137,55 +155,18 @@ class HomeScreen extends React.Component {
           <View style={styles.bottleContainer}>
             <ScrollView
               horizontal={true}
-              scrollEnabled={this.state.bottleCount > 8 ? true : false}>
-              <BottleStatus
-                number={1}
-                reload={this.state.reload}
-                bottleItems={this.state.bottleList}
-                reloadCallback={this.reloadCallback.bind(this)}
-              />
-              <BottleStatus
-                number={2}
-                reload={this.state.reload}
-                bottleItems={this.state.bottleList}
-                reloadCallback={this.reloadCallback.bind(this)}
-              />
-              <BottleStatus
-                number={3}
-                reload={this.state.reload}
-                bottleItems={this.state.bottleList}
-                reloadCallback={this.reloadCallback.bind(this)}
-              />
-              <BottleStatus
-                number={4}
-                reload={this.state.reload}
-                bottleItems={this.state.bottleList}
-                reloadCallback={this.reloadCallback.bind(this)}
-              />
-              <BottleStatus
-                number={5}
-                reload={this.state.reload}
-                bottleItems={this.state.bottleList}
-                reloadCallback={this.reloadCallback.bind(this)}
-              />
-              <BottleStatus
-                number={6}
-                reload={this.state.reload}
-                bottleItems={this.state.bottleList}
-                reloadCallback={this.reloadCallback.bind(this)}
-              />
-              <BottleStatus
-                number={7}
-                reload={this.state.reload}
-                bottleItems={this.state.bottleList}
-                reloadCallback={this.reloadCallback.bind(this)}
-              />
-              <BottleStatus
-                number={8}
-                reload={this.state.reload}
-                bottleItems={this.state.bottleList}
-                reloadCallback={this.reloadCallback.bind(this)}
-              />
+              scrollEnabled={this.state.bottleCount > 8 ? true : false}
+              keyboardShouldPersistTaps="handled">
+              {this.state.pumpDetails.map(pumpObj => (
+                <BottleStatus
+                  number={pumpObj.pumpNum}
+                  pumpType={pumpObj.type}
+                  pumpTime={pumpObj.pumpTime}
+                  reload={this.state.reload}
+                  bottleItems={this.state.bottleList}
+                  reloadCallback={this.reloadCallback.bind(this)}
+                />
+              ))}
             </ScrollView>
           </View>
 

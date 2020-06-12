@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {StyleSheet, View, Text, Alert} from 'react-native';
 import {Button} from 'react-native-elements';
@@ -56,7 +57,7 @@ class CalibrationBody extends React.Component {
             <View style={styles.calibrateButtons}>
               <Button
                 title="Start"
-                disabled={this.state.calRunning || this.state.tenthsOfSec != 0}
+                disabled={this.state.calRunning || this.state.tenthsOfSec !== 0}
                 buttonStyle={{
                   borderRadius: 20,
                   width: 175,
