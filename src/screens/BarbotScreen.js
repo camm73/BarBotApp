@@ -360,9 +360,18 @@ class BarbotScreen extends React.Component {
                   this.state.recipeName,
                   this.state.recipeIngredients,
                   this.state.recipeAmounts,
-                ).then(res => {
+                ).then(() => {
                   if (res === true) {
-                    Alert.alert('Successfully added ' + saveName + ' recipe!');
+                    Alert.alert(
+                      'Success',
+                      'Successfully added ' + saveName + ' recipe!',
+                      [
+                        {
+                          text: 'OK',
+                          onPress: this.props.navigation.state.params.reloadMenu(),
+                        },
+                      ],
+                    );
                   } else {
                     Alert.alert(
                       'Failed to add ' + saveName + ' recipe! Try again later.',
