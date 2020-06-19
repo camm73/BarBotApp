@@ -12,7 +12,7 @@ import {Button, Overlay} from 'react-native-elements';
 import Spacer from './Spacer';
 import {makeCocktail, getIngredients} from '../api/Control.js';
 import {toUpper} from '../utils/Tools';
-import {verifyImageExists, uploadImage} from '../api/Cloud';
+import {verifyImageExists, uploadImage, getThumbnail} from '../api/Cloud';
 import ImagePicker from 'react-native-image-picker';
 
 const defaultImage = require('../assets/defaultCocktail.jpg');
@@ -38,6 +38,7 @@ class MenuItem extends React.Component {
   state = {
     ingredients: {},
     imageExists: false,
+    thumbnailLink: '',
   };
 
   componentDidMount() {
@@ -52,9 +53,18 @@ class MenuItem extends React.Component {
   }
 
   setImageExists(status) {
-    this.setState({
-      imageExists: status,
-    });
+    //Load thumbnail
+    if (status === true) {
+      var link = getThumbnail(this.props.name);
+      this.setState({
+        thumbnailLink: link,
+        imageExists: true,
+      });
+    } else {
+      this.setState({
+        imageExists: status,
+      });
+    }
   }
 
   imageUploadCallback() {
@@ -76,7 +86,7 @@ class MenuItem extends React.Component {
               style={styles.imageStyle}
               source={
                 this.state.imageExists
-                  ? {uri: this.props.imageSrc}
+                  ? {uri: this.state.thumbnailLink}
                   : defaultImage
               }
             />
@@ -168,7 +178,7 @@ class MenuItem extends React.Component {
               style={styles.largeImage}
               source={
                 this.state.imageExists
-                  ? {uri: this.props.imageSrc}
+                  ? {uri: this.state.thumbnailLink}
                   : defaultImage
               }
             />
@@ -178,7 +188,7 @@ class MenuItem extends React.Component {
               style={styles.largeImage}
               source={
                 this.state.imageExists
-                  ? {uri: this.props.imageSrc}
+                  ? {uri: this.state.thumbnailLink}
                   : defaultImage
               }
             />

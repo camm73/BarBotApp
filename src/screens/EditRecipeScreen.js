@@ -15,33 +15,13 @@ class EditRecipeScreen extends React.Component {
     header: <HeaderComponent backVisible={true} returnPage={'ManageBarbot'} />,
   };
 
-  componentDidMount() {
-    //Load all cocktails
-  }
-
   state = {
     cocktailList: [],
-    cocktailThumbnails: {},
     lastKey: {},
     haltLoading: false,
     loading: false,
+    loadNum: 6,
   };
-
-  //Load thumbnail and add to state
-  loadThumbnail(cocktailName) {
-    if (!(cocktailName in this.state.cocktailThumbnails)) {
-      var thumbnailLink = getThumbnail(cocktailName);
-      this.setState({
-        cocktailThumbnails: {
-          ...this.state.cocktailThumbnails,
-          cocktailName: thumbnailLink,
-        },
-      });
-      return thumbnailLink;
-    } else {
-      return this.state.cocktailThumbnails[cocktailName];
-    }
-  }
 
   loadMoreRecipes() {
     //TODO: Add refresh ability
@@ -51,7 +31,7 @@ class EditRecipeScreen extends React.Component {
         loading: true,
       });
 
-      loadCocktailNames(6, this.state.lastKey)
+      loadCocktailNames(this.state.loadNum, this.state.lastKey)
         .then(res => {
           var cocktailNames = [];
 
@@ -88,12 +68,14 @@ class EditRecipeScreen extends React.Component {
   render() {
     return (
       <View style={styles.mainView}>
+        <Text style={styles.headerText}>Modify Recipes</Text>
         <FlatList
           contentContainerStyle={styles.scrollContainer}
           data={this.state.cocktailList}
-          onEndReachedThreshold={1}
+          onEndReachedThreshold={0.5}
+          maxToRenderPerBatch={2}
           onEndReached={this.loadMoreRecipes()}
-          initialNumToRender={6}
+          initialNumToRender={this.state.loadNum}
           renderItem={({item}) => (
             <View>
               <MenuItem name={item.name} editMode={true} />
@@ -176,9 +158,10 @@ const styles = StyleSheet.create({
   },
 
   scrollContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    marginTop: 25,
+    marginTop: 5,
+    minWidth: screenWidth,
+    paddingBottom: 120,
+    alignItems: 'center',
   },
 
   buttonRow: {

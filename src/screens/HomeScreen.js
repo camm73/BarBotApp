@@ -83,18 +83,6 @@ class HomeScreen extends React.Component {
     console.log('Reloaded');
   }
 
-  loadThumbnail(cocktailName) {
-    var thumbnailLink = getThumbnail(cocktailName);
-    this.setState({
-      cocktailThumbnails: {
-        ...this.state.cocktailThumbnails,
-        [cocktailName]: thumbnailLink,
-      },
-    });
-
-    return thumbnailLink;
-  }
-
   //Configures the bottle shelf based on available pump data
   configureBottleShelf() {
     getPumpSupportDetails().then(res => {
@@ -205,11 +193,6 @@ class HomeScreen extends React.Component {
               <View>
                 <MenuItem
                   name={toUpper(cocktail)}
-                  imageSrc={
-                    cocktail in this.state.cocktailThumbnails
-                      ? this.state.cocktailThumbnails[cocktail]
-                      : this.loadThumbnail(cocktail)
-                  }
                   reloadCallback={this.reloadCallback.bind(this)}
                 />
                 <Spacer height={20} />
