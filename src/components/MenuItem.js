@@ -14,6 +14,7 @@ import {makeCocktail, getIngredients} from '../api/Control.js';
 import {toUpper} from '../utils/Tools';
 import {verifyImageExists, uploadImage, getThumbnail} from '../api/Cloud';
 import ImagePicker from 'react-native-image-picker';
+import EditRecipeOverlay from './EditRecipeOverlay';
 
 const defaultImage = require('../assets/defaultCocktail.jpg');
 
@@ -39,6 +40,7 @@ class MenuItem extends React.Component {
     ingredients: {},
     imageExists: false,
     thumbnailLink: '',
+    editVisible: false,
   };
 
   componentDidMount() {
@@ -136,6 +138,21 @@ class MenuItem extends React.Component {
               buttonStyle={styles.buttonStyle}
               onPress={() => {
                 //TODO: Some state change to open editting overlay
+                this.setState({
+                  editVisible: true,
+                });
+              }}
+            />
+          )}
+
+          {this.props.editMode && (
+            <EditRecipeOverlay
+              visible={this.state.editVisible}
+              cocktailName={this.props.name}
+              closeCallback={() => {
+                this.setState({
+                  editVisible: false,
+                });
               }}
             />
           )}

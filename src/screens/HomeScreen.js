@@ -12,7 +12,6 @@ import {
   getNewBottles,
   getPumpSupportDetails,
 } from '../api/Control';
-import {getThumbnail} from '../api/Cloud';
 import {toUpper} from '../utils/Tools';
 import ConnectionStatus from '../components/ConnectionStatus';
 
@@ -184,9 +183,7 @@ class HomeScreen extends React.Component {
         <Spacer height={20} />
         <View style={styles.controlView}>
           <Text style={styles.textStyle}>Menu</Text>
-          <ScrollView
-            bounces={true}
-            contentContainerStyle={{paddingBottom: 90}}>
+          <ScrollView bounces={true} contentContainerStyle={styles.menuScroll}>
             <Spacer height={10} />
 
             {this.state.cocktailMenu.map(cocktail => (
@@ -267,6 +264,12 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
+  },
+
+  menuScroll: {
+    paddingBottom: 90,
+    minWidth: screenWidth,
+    alignItems: 'center',
   },
 });
 
