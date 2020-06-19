@@ -12,9 +12,9 @@ import {Button, Overlay} from 'react-native-elements';
 import Spacer from './Spacer';
 import {makeCocktail, getIngredients} from '../api/Control.js';
 import {toUpper} from '../utils/Tools';
-import {verifyImageExists, uploadImage, getThumbnail} from '../api/Cloud';
-import ImagePicker from 'react-native-image-picker';
+import {verifyImageExists, getThumbnail} from '../api/Cloud';
 import EditRecipeOverlay from './EditRecipeOverlay';
+import CocktailThumbnailButton from './CocktailThumbnailButton';
 
 const defaultImage = require('../assets/defaultCocktail.jpg');
 
@@ -24,12 +24,6 @@ const screenHeight = Dimensions.get('screen').height;
 var containerHeight = 130;
 
 const shotSize = 1.5; //fl oz
-
-var infoVisible = false;
-
-const imageOptions = {
-  quality: 0.05,
-};
 
 class MenuItem extends React.Component {
   constructor(props) {
@@ -41,6 +35,7 @@ class MenuItem extends React.Component {
     imageExists: false,
     thumbnailLink: '',
     editVisible: false,
+    infoVisible: false,
   };
 
   componentDidMount() {
@@ -70,7 +65,9 @@ class MenuItem extends React.Component {
   }
 
   imageUploadCallback() {
-    infoVisible = false;
+    this.setState({
+      infoVisible: false,
+    });
     this.props.reloadCallback();
   }
 
@@ -81,8 +78,9 @@ class MenuItem extends React.Component {
           <TouchableOpacity
             style={styles.imageTouch}
             onPress={() => {
-              infoVisible = true;
-              this.forceUpdate();
+              this.setState({
+                infoVisible: true,
+              });
             }}>
             <Image
               style={styles.imageStyle}
@@ -98,8 +96,9 @@ class MenuItem extends React.Component {
           <TouchableOpacity
             style={styles.imageTouch}
             onPress={() => {
-              infoVisible = true;
-              this.forceUpdate();
+              this.setState({
+                infoVisible: true,
+              });
             }}>
             <Text style={styles.textStyle}>{this.props.name}</Text>
           </TouchableOpacity>
@@ -159,57 +158,21 @@ class MenuItem extends React.Component {
         </View>
 
         <Overlay
-          isVisible={infoVisible}
+          isVisible={this.state.infoVisible}
           width={screenWidth - 100}
           height={screenHeight / 1.6}
           overlayStyle={styles.overlayStyle}>
           <Text style={styles.headerText}>{this.props.name}</Text>
-          <TouchableOpacity
-            onPress={() => {
-              ImagePicker.showImagePicker(imageOptions, response => {
-                if (response.didCancel) {
-                  console.log('User canceled image selection');
-                } else if (response.error) {
-                  console.log('Image Picker error: ' + response.error);
-                  Alert.alert(
-                    'There was an error trying to upload your image. Try again later!',
-                  );
-                } else {
-                  const source = {
-                    uri: response.uri,
-                    type: 'image/jpeg',
-                    name: toUpper(this.props.name) + '.jpg',
-                  };
-                  console.log(
-                    'Successfully selected image. Will upload now...',
-                  );
-                  uploadImage(
-                    this.props.name,
-                    source,
-                    this.imageUploadCallback.bind(this),
-                  );
-                }
-              });
-            }}>
-            <Image
-              style={styles.largeImage}
-              source={
-                this.state.imageExists
-                  ? {uri: this.state.thumbnailLink}
-                  : defaultImage
-              }
-            />
-          </TouchableOpacity>
-          {false && (
-            <Image
-              style={styles.largeImage}
-              source={
-                this.state.imageExists
-                  ? {uri: this.state.thumbnailLink}
-                  : defaultImage
-              }
-            />
-          )}
+
+          <CocktailThumbnailButton
+            name={this.props.name}
+            imageSrc={
+              this.state.imageExists
+                ? {uri: this.state.thumbnailLink}
+                : defaultImage
+            }
+          />
+
           <Spacer height={10} />
           <Text style={styles.textStyle}>Ingredients</Text>
 
@@ -228,8 +191,9 @@ class MenuItem extends React.Component {
             title="Done"
             buttonStyle={styles.buttonStyle}
             onPress={() => {
-              infoVisible = false;
-              this.forceUpdate();
+              this.setState({
+                infoVisible: false,
+              });
             }}
           />
         </Overlay>
