@@ -41,7 +41,9 @@ class HeaderComponent extends React.Component {
             <TouchableOpacity
               style={styles.textContainer}
               onPress={() => {
-                this.props.reloadCallback();
+                if (this.props.reloadCallback !== undefined) {
+                  this.props.reloadCallback();
+                }
               }}>
               <Text style={styles.textStyle}>BarBot</Text>
             </TouchableOpacity>

@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   Dimensions,
-  Image,
   TouchableOpacity,
   Alert,
 } from 'react-native';
@@ -75,22 +74,20 @@ class MenuItem extends React.Component {
     return (
       <View style={styles.containerStyle}>
         <View style={styles.imageContainer}>
-          <TouchableOpacity
-            style={styles.imageTouch}
+          <CocktailThumbnailButton
+            imageStyle={styles.imageStyle}
+            name={this.props.name}
+            imageSrc={
+              this.state.imageExists
+                ? {uri: this.state.thumbnailLink}
+                : defaultImage
+            }
             onPress={() => {
               this.setState({
                 infoVisible: true,
               });
-            }}>
-            <Image
-              style={styles.imageStyle}
-              source={
-                this.state.imageExists
-                  ? {uri: this.state.thumbnailLink}
-                  : defaultImage
-              }
-            />
-          </TouchableOpacity>
+            }}
+          />
         </View>
         <View style={styles.infoStyle}>
           <TouchableOpacity
@@ -171,6 +168,7 @@ class MenuItem extends React.Component {
                 ? {uri: this.state.thumbnailLink}
                 : defaultImage
             }
+            imageUploadCallback={this.imageUploadCallback.bind(this)}
           />
 
           <Spacer height={10} />

@@ -18,30 +18,41 @@ class CocktailThumbnailButton extends React.Component {
     return (
       <TouchableOpacity
         onPress={() => {
-          ImagePicker.showImagePicker(imageOptions, response => {
-            if (response.didCancel) {
-              console.log('User canceled image selection');
-            } else if (response.error) {
-              console.log('Image Picker error: ' + response.error);
-              Alert.alert(
-                'There was an error trying to upload your image. Try again later!',
-              );
-            } else {
-              const source = {
-                uri: response.uri,
-                type: 'image/jpeg',
-                name: toUpper(this.props.name) + '.jpg',
-              };
-              console.log('Successfully selected image. Will upload now...');
-              uploadImage(
-                this.props.name,
-                source,
-                this.imageUploadCallback.bind(this),
-              );
-            }
-          });
+          if (this.props.onPress === undefined) {
+            ImagePicker.showImagePicker(imageOptions, response => {
+              if (response.didCancel) {
+                console.log('User canceled image selection');
+              } else if (response.error) {
+                console.log('Image Picker error: ' + response.error);
+                Alert.alert(
+                  'There was an error trying to upload your image. Try again later!',
+                );
+              } else {
+                const source = {
+                  uri: response.uri,
+                  type: 'image/jpeg',
+                  name: toUpper(this.props.name) + '.jpg',
+                };
+                console.log('Successfully selected image. Will upload now...');
+                uploadImage(
+                  this.props.name,
+                  source,
+                  this.props.imageUploadCallback.bind(this),
+                );
+              }
+            });
+          } else {
+            this.props.onPress();
+          }
         }}>
-        <Image style={styles.largeImage} source={this.props.imageSrc} />
+        <Image
+          style={
+            this.props.imageStyle === undefined
+              ? styles.largeImage
+              : this.props.imageStyle
+          }
+          source={this.props.imageSrc}
+        />
       </TouchableOpacity>
     );
   }

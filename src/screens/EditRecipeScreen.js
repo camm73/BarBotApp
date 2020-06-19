@@ -11,8 +11,16 @@ var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 
 class EditRecipeScreen extends React.Component {
-  static navigationOptions = {
-    header: <HeaderComponent backVisible={true} returnPage={'ManageBarbot'} />,
+  static navigationOptions = ({navigation}) => {
+    return {
+      header: (
+        <HeaderComponent
+          backVisible={true}
+          returnPage={'ManageBarbot'}
+          reloadCallback={navigation.getParam('reloadCallback')}
+        />
+      ),
+    };
   };
 
   state = {
@@ -65,6 +73,20 @@ class EditRecipeScreen extends React.Component {
     }
   }
 
+  reloadCallback() {
+    this.setState({
+      cocktailList: [],
+      loading: false,
+      haltLoading: false,
+    });
+  }
+
+  componentDidMount() {
+    this.props.navigation.setParams({
+      reloadCallback: this.reloadCallback.bind(this),
+    });
+  }
+
   render() {
     return (
       <View style={styles.mainView}>
@@ -78,7 +100,11 @@ class EditRecipeScreen extends React.Component {
           initialNumToRender={this.state.loadNum}
           renderItem={({item}) => (
             <View>
-              <MenuItem name={item.name} editMode={true} />
+              <MenuItem
+                name={item.name}
+                editMode={true}
+                reloadCallback={this.reloadCallback.bind(this)}
+              />
               <Spacer height={25} />
             </View>
           )}
