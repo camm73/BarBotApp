@@ -34,6 +34,7 @@ const recipeOverlayWidth = screenWidth / 1.2;
 //const recipeOverlayHeight = screenHeight/1.2;
 const recipeOverlayHeight = 570;
 const iconScale = 0.8;
+const buttonSpacing = 30;
 
 class BarbotScreen extends React.Component {
   static navigationOptions = {
@@ -113,7 +114,7 @@ class BarbotScreen extends React.Component {
             <Text style={styles.iconText}>New Bottle</Text>
           </TouchableOpacity>
 
-          <Spacer width={35} />
+          <Spacer width={buttonSpacing} />
 
           <TouchableOpacity
             onPress={() => {
@@ -157,7 +158,7 @@ class BarbotScreen extends React.Component {
             </Text>
           </TouchableOpacity>
 
-          <Spacer width={30} />
+          <Spacer width={buttonSpacing} />
 
           <TouchableOpacity
             onPress={() => {
@@ -433,6 +434,23 @@ class BarbotScreen extends React.Component {
               source={require('../assets/removeAllIcon.png')}
             />
             <Text style={styles.iconText}>{'Remove\n All Bottles'}</Text>
+          </TouchableOpacity>
+
+          <Spacer width={buttonSpacing} />
+
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate('EditRecipe');
+            }}>
+            <ImageBackground
+              style={{
+                height: 120 * iconScale,
+                width: 120 * iconScale,
+                marginLeft: 20,
+              }}
+              source={require('../assets/editRecipeIcon.png')}
+            />
+            <Text style={styles.iconText}>{'Manage Recipes'}</Text>
           </TouchableOpacity>
         </View>
       </View>

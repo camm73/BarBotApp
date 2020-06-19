@@ -259,7 +259,7 @@ class BottleStatus extends React.Component {
 
                 console.log('CLOSE Item: ' + this.state.selectedItem);
               }}>
-              <Icon name="back" size={33} type="antdesign" />
+              <Icon name="arrow-back" size={33} />
             </TouchableOpacity>
           </View>
           <Text style={styles.headerStyle}>

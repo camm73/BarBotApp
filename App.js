@@ -8,6 +8,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import BarbotScreen from './src/screens/BarbotScreen';
 import BottleTutorial from './src/tutorials/BottleTutorial';
 import SettingsScreen from './src/screens/SettingsScreen';
+import EditRecipeScreen from './src/screens/EditRecipeScreen';
 import 'react-native-gesture-handler';
 import SplashScreen from 'react-native-splash-screen';
 
@@ -37,6 +38,10 @@ const AppNavigator = createStackNavigator(
 
     Settings: {
       screen: SettingsScreen,
+    },
+
+    EditRecipe: {
+      screen: EditRecipeScreen,
     },
   },
   {
