@@ -5,8 +5,12 @@ var s3 = new AWS.S3({
   secretAccessKey: awsCreds.secretAccessKey,
   region: awsCreds.region,
 });
+var dynamodb = new AWS.DynamoDB({
+  accessKeyId: awsCreds.accessKeyId,
+  secretAccessKey: awsCreds.secretAccessKey,
+  region: awsCreds.region,
+});
 import {toUpper} from '../utils/Tools';
-import React from 'react';
 import {Alert} from 'react-native';
 
 export function getThumbnail(cocktailName) {
@@ -72,5 +76,34 @@ export function uploadImage(name, imgSource, callback) {
     };
     xhr.setRequestHeader('Content-Type', 'image/jpeg');
     xhr.send(imgSource);
+  });
+}
+
+//Load set of cocktail names from Dynamodb
+export function loadCocktailNames(number, lastKey) {
+  //Add ability to consider lastKey
+  var params = {
+    TableName: 'BarBot-Recipe',
+    ExpressionAttributeNames: {
+      '#c': 'cocktailName',
+    },
+    ProjectionExpression: '#c',
+    Limit: number,
+    ExclusiveStartKey:
+      Object.keys(lastKey).length === 0 && lastKey.constructor === Object
+        ? undefined
+        : lastKey,
+  };
+
+  return new Promise(function(resolve, reject) {
+    dynamodb.scan(params, (err, data) => {
+      if (err) {
+        console.log(err, err.stack);
+        reject('Failed to retreived cocktail names. ' + err);
+      } else {
+        console.log(data);
+        resolve(data);
+      }
+    });
   });
 }

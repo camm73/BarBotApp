@@ -1,7 +1,11 @@
 import React from 'react';
-import {View, StyleSheet, Dimensions, Text} from 'react-native';
+import {View, StyleSheet, Dimensions, Text, FlatList} from 'react-native';
 import HeaderComponent from '../components/HeaderComponent';
 import {withNavigation} from 'react-navigation';
+import MenuItem from '../components/MenuItem';
+import {loadCocktailNames, getThumbnail} from '../api/Cloud';
+import Spacer from '../components/Spacer';
+import {toUpper} from '../utils/Tools';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -11,14 +15,93 @@ class EditRecipeScreen extends React.Component {
     header: <HeaderComponent backVisible={true} returnPage={'ManageBarbot'} />,
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    //Load all cocktails
+  }
 
-  state = {};
+  state = {
+    cocktailList: [],
+    cocktailThumbnails: {},
+    lastKey: {},
+    haltLoading: false,
+    loading: false,
+  };
+
+  //Load thumbnail and add to state
+  loadThumbnail(cocktailName) {
+    if (!(cocktailName in this.state.cocktailThumbnails)) {
+      var thumbnailLink = getThumbnail(cocktailName);
+      this.setState({
+        cocktailThumbnails: {
+          ...this.state.cocktailThumbnails,
+          cocktailName: thumbnailLink,
+        },
+      });
+      return thumbnailLink;
+    } else {
+      return this.state.cocktailThumbnails[cocktailName];
+    }
+  }
+
+  loadMoreRecipes() {
+    //TODO: Add refresh ability
+
+    if (!this.state.loading && !this.state.haltLoading) {
+      this.setState({
+        loading: true,
+      });
+
+      loadCocktailNames(6, this.state.lastKey)
+        .then(res => {
+          var cocktailNames = [];
+
+          for (var i = 0; i < res.Items.length; i++) {
+            cocktailNames.push({
+              name: toUpper(res.Items[i]['cocktailName']['S']),
+            });
+          }
+
+          this.setState({
+            cocktailList: [...this.state.cocktailList, ...cocktailNames],
+          });
+
+          console.log(cocktailNames);
+          if (res.hasOwnProperty('LastEvaluatedKey')) {
+            this.setState({
+              lastKey: res.LastEvaluatedKey,
+              loading: false,
+            });
+          } else {
+            this.setState({
+              lastKey: {},
+              haltLoading: true,
+              loading: false,
+            });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  }
 
   render() {
     return (
       <View style={styles.mainView}>
-        <Text>Testing</Text>
+        <FlatList
+          contentContainerStyle={styles.scrollContainer}
+          data={this.state.cocktailList}
+          onEndReachedThreshold={1}
+          onEndReached={this.loadMoreRecipes()}
+          initialNumToRender={6}
+          renderItem={({item}) => (
+            <View>
+              <MenuItem name={item.name} editMode={true} />
+              <Spacer height={25} />
+            </View>
+          )}
+          keyExtractor={item => item.name}
+        />
       </View>
     );
   }
@@ -93,12 +176,9 @@ const styles = StyleSheet.create({
   },
 
   scrollContainer: {
-    flexDirection: 'column',
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignContent: 'center',
-    maxHeight: 50,
+    flexDirection: 'column',
+    marginTop: 25,
   },
 
   buttonRow: {

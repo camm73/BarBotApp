@@ -93,30 +93,42 @@ class MenuItem extends React.Component {
           </TouchableOpacity>
 
           <Spacer height={20} />
-          <Button
-            title="Make Cocktail"
-            buttonStyle={styles.buttonStyle}
-            onPress={async () => {
-              console.log('Making cocktail: ' + this.props.name);
-              Alert.alert(
-                'Cocktail Confirmation',
-                'Are you sure you want to make a ' + this.props.name + '?',
-                [
-                  {
-                    text: 'Cancel',
-                    onPress: () => console.log('Canceled'),
-                    style: 'cancel',
-                  },
-                  {
-                    text: 'Make Cocktail',
-                    onPress: () => {
-                      makeCocktail(this.props.name);
+          {!this.props.editMode && (
+            <Button
+              title="Make Cocktail"
+              buttonStyle={styles.buttonStyle}
+              onPress={async () => {
+                console.log('Making cocktail: ' + this.props.name);
+                Alert.alert(
+                  'Cocktail Confirmation',
+                  'Are you sure you want to make a ' + this.props.name + '?',
+                  [
+                    {
+                      text: 'Cancel',
+                      onPress: () => console.log('Canceled'),
+                      style: 'cancel',
                     },
-                  },
-                ],
-              );
-            }}
-          />
+                    {
+                      text: 'Make Cocktail',
+                      onPress: () => {
+                        makeCocktail(this.props.name);
+                      },
+                    },
+                  ],
+                );
+              }}
+            />
+          )}
+
+          {this.props.editMode && (
+            <Button
+              title="Edit Cocktail"
+              buttonStyle={styles.buttonStyle}
+              onPress={() => {
+                //TODO: Some state change to open editting overlay
+              }}
+            />
+          )}
         </View>
 
         <Overlay
