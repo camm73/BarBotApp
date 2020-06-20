@@ -6,10 +6,10 @@ import {
   Dimensions,
   TouchableOpacity,
   Text,
-  TextInput,
 } from 'react-native';
 import {Overlay, Icon} from 'react-native-elements';
 import Spacer from '../components/Spacer';
+import CocktailThumbnailButton from '../components/CocktailThumbnailButton';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -41,19 +41,10 @@ class EditRecipeOverlay extends React.Component {
 
         <Text style={styles.textStyle}>Edit Recipe</Text>
 
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={{fontSize: 18, marginTop: 10}}>Cocktail Name: </Text>
-          <TextInput
-            style={styles.textInput}
-            maxLength={24}
-            value={this.state.recipeName}
-            onChangeText={text => {
-              this.setState({
-                recipeName: text,
-              });
-            }}
-          />
-        </View>
+        <CocktailThumbnailButton name={this.state.recipeName} />
+        <Text style={{fontSize: 18, marginTop: 10, textAlign: 'center'}}>
+          Cocktail Name: {this.state.recipeName}{' '}
+        </Text>
         <Spacer height={15} />
       </Overlay>
     );

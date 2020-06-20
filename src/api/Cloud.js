@@ -14,15 +14,14 @@ import {toUpper} from '../utils/Tools';
 import {Alert} from 'react-native';
 
 export function getThumbnail(cocktailName) {
-  console.log('GETTING THUMBNAIL');
+  //console.log('GETTING THUMBNAIL');
   var params = {
     Bucket: 'barbot-data',
     Key: toUpper(cocktailName) + '.jpg',
     Expires: 86400,
   };
-  var thumbPromise = s3.getSignedUrlPromise('getObject', params);
   var url = s3.getSignedUrl('getObject', params);
-  console.log(url);
+  //console.log(url);
   return url;
 }
 
