@@ -7,11 +7,13 @@ import {
   TouchableOpacity,
   Text,
   Alert,
+  ScrollView,
 } from 'react-native';
 import {Overlay, Icon, Button} from 'react-native-elements';
 import Spacer from '../components/Spacer';
 import CocktailThumbnailButton from '../components/CocktailThumbnailButton';
 import {deleteRecipe} from '../api/Cloud';
+import {getIngredients} from '../api/Control';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -20,10 +22,23 @@ const recipeOverlayWidth = screenWidth / 1.2;
 const recipeOverlayHeight = 570;
 const imageSize = 100;
 
+const shotSize = 1.5; //fl oz
+
 class EditRecipeOverlay extends React.Component {
   state = {
     recipeName: this.props.cocktailName,
+    ingredients: {},
   };
+
+  componentDidMount() {
+    getIngredients(this.state.recipeName)
+      .then(response => {
+        this.setState({
+          ingredients: response,
+        });
+      })
+      .catch(error => console.log(error));
+  }
 
   render() {
     return (
@@ -99,7 +114,28 @@ class EditRecipeOverlay extends React.Component {
             />
           </View>
         </View>
-        <Spacer height={15} />
+        <Text style={styles.ingredientLabel}>Ingredients</Text>
+        <ScrollView
+          style={{maxHeight: 120}}
+          contentContainerStyle={styles.ingredientScroll}>
+          {Object.keys(this.state.ingredients).map(key => (
+            <View style={styles.ingredientContainer}>
+              <Text style={styles.ingredientText}>
+                {key +
+                  ':  ' +
+                  this.state.ingredients[key] * shotSize +
+                  ' (fl oz)'}
+              </Text>
+              <Icon
+                name="remove"
+                type="font-awesome"
+                color="red"
+                onPress={() => {//TODO: Remove ingredients from the state object
+                }}
+              />
+            </View>
+          ))}
+        </ScrollView>
       </Overlay>
     );
   }
@@ -117,16 +153,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignContent: 'flex-start',
   },
-  textInput: {
-    height: 40,
-    width: screenWidth / 2.5,
-    borderColor: 'gray',
-    borderWidth: 2,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    marginTop: 15,
-    paddingHorizontal: 7,
-  },
   textStyle: {
     fontSize: 20,
     textDecorationLine: 'underline',
@@ -142,12 +168,14 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     paddingTop: 10,
+    maxHeight: imageSize + 15,
     textAlign: 'center',
   },
 
   topEditContainer: {
     flexDirection: 'column',
     width: recipeOverlayWidth - imageSize - 20,
+    height: imageSize,
   },
 
   deleteButton: {
@@ -155,5 +183,33 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 15,
     marginLeft: 8,
+  },
+
+  ingredientScroll: {
+    backgroundColor: 'darkgray',
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+
+  ingredientText: {
+    fontSize: 18,
+    paddingBottom: 4,
+  },
+
+  ingredientContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    borderBottomColor: 'black',
+    borderBottomWidth: 2,
+    paddingVertical: 5,
+  },
+
+  ingredientLabel: {
+    textAlign: 'center',
+    fontSize: 18,
+    textDecorationLine: 'underline',
+    marginBottom: 2,
   },
 });
