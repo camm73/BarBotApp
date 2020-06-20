@@ -106,3 +106,27 @@ export function loadCocktailNames(number, lastKey) {
     });
   });
 }
+
+//Delete recipe from dynamo table
+export function deleteRecipe(recipeName) {
+  var params = {
+    Key: {
+      cocktailName: {
+        S: recipeName,
+      },
+    },
+    TableName: 'BarBot-Recipe',
+  };
+
+  return new Promise(function(resolve, reject) {
+    dynamodb.deleteItem(params, (err, data) => {
+      if (err) {
+        console.log(err, err.stack);
+        reject(false);
+      } else {
+        console.log(data);
+        resolve(true);
+      }
+    });
+  });
+}
