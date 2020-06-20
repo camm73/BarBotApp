@@ -14,7 +14,7 @@ import {toUpper} from '../utils/Tools';
 import {Alert} from 'react-native';
 
 export function getThumbnail(cocktailName) {
-  //console.log('GETTING THUMBNAIL');
+  console.log('GETTING THUMBNAIL for ' + cocktailName);
   var params = {
     Bucket: 'barbot-data',
     Key: toUpper(cocktailName) + '.jpg',

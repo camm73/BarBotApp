@@ -1,18 +1,38 @@
 import React from 'react';
 import {TouchableOpacity, Image, Alert, StyleSheet} from 'react-native';
-import {uploadImage} from '../api/Cloud';
+import {uploadImage, verifyImageExists, getThumbnail} from '../api/Cloud';
 import ImagePicker from 'react-native-image-picker';
 import {toUpper} from '../utils/Tools';
+
+const defaultImage = require('../assets/defaultCocktail.jpg');
 
 const imageOptions = {
   quality: 0.05,
 };
 
-//Requires props: (name, imageSrc)
+//Requires props: (name) optional: (requestImage, imageSrc, imageStyle)
 class CocktailThumbnailButton extends React.Component {
-  state = {};
+  state = {
+    thumbnailImage:
+      this.props.imageSrc === undefined ? defaultImage : this.props.imageSrc,
+  };
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (this.props.requestImage) {
+      //Load image and set thumbnailImage in state
+      verifyImageExists(this.props.name, this.setThumbnailImage.bind(this));
+    }
+  }
+
+  setThumbnailImage(status) {
+    //Load thumbnail
+    if (status === true) {
+      var link = getThumbnail(this.props.name);
+      this.setState({
+        thumbnailImage: {uri: link},
+      });
+    }
+  }
 
   render() {
     return (
@@ -51,7 +71,11 @@ class CocktailThumbnailButton extends React.Component {
               ? styles.largeImage
               : this.props.imageStyle
           }
-          source={this.props.imageSrc}
+          source={
+            this.props.requestImage
+              ? this.state.thumbnailImage
+              : this.props.imageSrc
+          }
         />
       </TouchableOpacity>
     );

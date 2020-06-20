@@ -41,7 +41,10 @@ class EditRecipeOverlay extends React.Component {
 
         <Text style={styles.textStyle}>Edit Recipe</Text>
 
-        <CocktailThumbnailButton name={this.state.recipeName} />
+        <CocktailThumbnailButton
+          name={this.state.recipeName}
+          requestImage={true}
+        />
         <Text style={{fontSize: 18, marginTop: 10, textAlign: 'center'}}>
           Cocktail Name: {this.state.recipeName}{' '}
         </Text>
