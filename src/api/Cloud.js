@@ -112,7 +112,7 @@ export function deleteRecipe(recipeName) {
   var params = {
     Key: {
       cocktailName: {
-        S: recipeName,
+        S: recipeName.toLowerCase(),
       },
     },
     TableName: 'BarBot-Recipe',
@@ -125,6 +125,48 @@ export function deleteRecipe(recipeName) {
         reject(false);
       } else {
         console.log(data);
+        resolve(true);
+      }
+    });
+  });
+}
+
+//Uses push_item since we have the full object to replace it
+export function updateRecipe(recipeName, ingredients) {
+  var ingredArr = [];
+  var amountObj = {};
+
+  //Create ingredient array and amount object
+  for (var name in ingredients) {
+    ingredArr.push({S: name.toLowerCase()});
+    amountObj[name] = {N: ingredients[name].toString()};
+  }
+
+  var itemVal = {
+    cocktailName: {
+      S: recipeName,
+    },
+    ingredients: {
+      L: ingredArr,
+    },
+    amounts: {
+      M: amountObj,
+    },
+  };
+
+  console.log(itemVal);
+
+  var params = {
+    Item: itemVal,
+    TableName: 'BarBot-Recipe',
+  };
+
+  return new Promise(function(resolve, reject) {
+    dynamodb.putItem(params, (err, data) => {
+      if (err) {
+        console.log(err, err.stack);
+        reject('There was an error updating recipe: ' + recipeName);
+      } else {
         resolve(true);
       }
     });

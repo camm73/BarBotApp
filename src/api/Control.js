@@ -175,7 +175,7 @@ export async function addRecipe(recipeName, ingredients, amounts) {
         }
       })
       .catch(error => {
-        reject('false');
+        reject(false);
         console.log(error);
       });
   });

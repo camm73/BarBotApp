@@ -12,7 +12,7 @@ import {
 import {Overlay, Icon, Button} from 'react-native-elements';
 import Spacer from '../components/Spacer';
 import CocktailThumbnailButton from '../components/CocktailThumbnailButton';
-import {deleteRecipe} from '../api/Cloud';
+import {deleteRecipe, updateRecipe} from '../api/Cloud';
 import {getIngredients} from '../api/Control';
 
 var screenWidth = Dimensions.get('window').width;
@@ -28,9 +28,14 @@ class EditRecipeOverlay extends React.Component {
   state = {
     recipeName: this.props.cocktailName,
     ingredients: {},
+    changeMade: false,
   };
 
   componentDidMount() {
+    this.loadIngredients();
+  }
+
+  loadIngredients() {
     getIngredients(this.state.recipeName)
       .then(response => {
         this.setState({
@@ -38,6 +43,13 @@ class EditRecipeOverlay extends React.Component {
         });
       })
       .catch(error => console.log(error));
+  }
+
+  resetComponent() {
+    this.loadIngredients();
+    this.setState({
+      changeMade: false,
+    });
   }
 
   render() {
@@ -49,10 +61,57 @@ class EditRecipeOverlay extends React.Component {
         overlayStyle={styles.overlay}>
         <View style={styles.backButtonRow}>
           <TouchableOpacity
-            onPress={() => {
+            onPress={
+              () => {
+                if (this.state.changeMade) {
+                  Alert.alert(
+                    'Save Recipe?',
+                    'Do you want to save changes to recipe before exitting?',
+                    [
+                      {text: 'Go Back', onPress: () => {}},
+                      {
+                        text: 'Discard Changes',
+                        onPress: () => {
+                          this.props.closeCallback();
+                          this.resetComponent();
+                        },
+                      },
+                      {
+                        text: 'Save Changes',
+                        onPress: () => {
+                          //TODO: Call function to save all changes
+                          updateRecipe(
+                            this.state.recipeName,
+                            this.state.ingredients,
+                          )
+                            .then(res => {
+                              if (res === true) {
+                                this.props.closeCallback();
+                                this.resetComponent();
+                                Alert.alert('Successfully updated recipe!');
+                              } else {
+                                this.props.closeCallback();
+                                this.resetComponent();
+                              }
+                            })
+                            .catch(err => {
+                              console.log(err);
+                              Alert.alert(
+                                'There was an error updating recipe!',
+                              );
+                            });
+                        },
+                      },
+                    ],
+                  );
+                } else {
+                  this.props.closeCallback();
+                  this.resetComponent();
+                }
+              }
               //TODO: Reset the component and use callback to close overlay
-              this.props.closeCallback();
-            }}>
+              //this.props.closeCallback();
+            }>
             <Icon name="back" size={33} type="antdesign" />
           </TouchableOpacity>
         </View>
@@ -93,9 +152,19 @@ class EditRecipeOverlay extends React.Component {
                         deleteRecipe(this.state.recipeName).then(res => {
                           if (res === true) {
                             Alert.alert(
+                              'Removal Success',
                               'Successfully deleted ' +
                                 this.state.recipeName +
                                 ' from the database.',
+                              [
+                                {
+                                  text: 'OK',
+                                  onPress: () => {
+                                    this.props.closeCallback();
+                                    this.resetComponent();
+                                  },
+                                },
+                              ],
                             );
                           } else {
                             Alert.alert(
@@ -130,7 +199,16 @@ class EditRecipeOverlay extends React.Component {
                 name="remove"
                 type="font-awesome"
                 color="red"
-                onPress={() => {//TODO: Remove ingredients from the state object
+                size={32}
+                onPress={() => {
+                  //TODO: Remove ingredients from the state object
+                  console.log('Remove: ' + key);
+                  var tmpObj = this.state.ingredients;
+                  delete tmpObj[key];
+                  this.setState({
+                    ingredients: tmpObj,
+                    changeMade: true,
+                  });
                 }}
               />
             </View>

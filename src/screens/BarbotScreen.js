@@ -357,11 +357,11 @@ class BarbotScreen extends React.Component {
                 this.state.recipeAmounts.length > 0
               ) {
                 var saveName = this.state.recipeName;
-                var res = addRecipe(
+                addRecipe(
                   this.state.recipeName,
                   this.state.recipeIngredients,
                   this.state.recipeAmounts,
-                ).then(() => {
+                ).then(res => {
                   if (res === true) {
                     Alert.alert(
                       'Success',
@@ -439,6 +439,7 @@ class BarbotScreen extends React.Component {
           <Spacer width={buttonSpacing} />
 
           <TouchableOpacity
+            disabled={false} //REMOVE WHEN FINISHED
             onPress={() => {
               this.props.navigation.navigate('EditRecipe');
             }}>
