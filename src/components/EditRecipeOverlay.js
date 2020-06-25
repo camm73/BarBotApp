@@ -185,7 +185,7 @@ class EditRecipeOverlay extends React.Component {
         </View>
         <Text style={styles.ingredientLabel}>Ingredients</Text>
         <ScrollView
-          style={{maxHeight: 120}}
+          style={{maxHeight: 180}}
           contentContainerStyle={styles.ingredientScroll}>
           {Object.keys(this.state.ingredients).map(key => (
             <View style={styles.ingredientContainer}>
