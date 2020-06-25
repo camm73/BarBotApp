@@ -14,12 +14,13 @@ import Spacer from '../components/Spacer';
 import CocktailThumbnailButton from '../components/CocktailThumbnailButton';
 import {deleteRecipe, updateRecipe} from '../api/Cloud';
 import {getIngredients} from '../api/Control';
+import EditIngredientsComponent from './EditIngredientsComponent';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 
 const recipeOverlayWidth = screenWidth / 1.2;
-const recipeOverlayHeight = 570;
+const recipeOverlayHeight = 600;
 const imageSize = 100;
 
 const shotSize = 1.5; //fl oz
@@ -29,6 +30,7 @@ class EditRecipeOverlay extends React.Component {
     recipeName: this.props.cocktailName,
     ingredients: {},
     changeMade: false,
+    editIngredients: false,
   };
 
   componentDidMount() {
@@ -50,6 +52,34 @@ class EditRecipeOverlay extends React.Component {
     this.setState({
       changeMade: false,
     });
+  }
+
+  getIngredientAmounts() {
+    var amounts = [];
+    for (var key in Object.keys(this.state.ingredients)) {
+      console.log(this.state.ingredients[key]);
+      amounts.push(this.state.ingredients[key]);
+    }
+
+    return amounts;
+  }
+
+  //Callback for EditIngredients Component
+  saveIngredients(recipeIngreds, recipeAmts) {
+    if (recipeIngreds.length > 0 && recipeAmts.length > 0) {
+      var newIngreds = {};
+
+      //console.log(recipeIngreds);
+      console.log(recipeAmts);
+      for (var i = 0; i < recipeIngreds.length; i++) {
+        newIngreds[recipeIngreds[i]] = parseFloat(recipeAmts[i] / shotSize);
+      }
+
+      this.setState({
+        ingredients: newIngreds,
+        editIngredients: false,
+      });
+    }
   }
 
   render() {
@@ -117,103 +147,116 @@ class EditRecipeOverlay extends React.Component {
         </View>
 
         <Text style={styles.textStyle}>Edit Recipe</Text>
+        {!this.state.editIngredients && (
+          <>
+            <View style={styles.topSection}>
+              <CocktailThumbnailButton
+                name={this.state.recipeName}
+                requestImage={true}
+                imageStyle={styles.imageStyle}
+              />
+              <View style={styles.topEditContainer}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 18,
+                    textDecorationLine: 'underline',
+                  }}>
+                  {this.state.recipeName}
+                </Text>
+                <Button
+                  buttonStyle={styles.deleteButton}
+                  title="Delete Cocktail"
+                  onPress={() => {
+                    Alert.alert(
+                      'Confirm Delete',
+                      'Are you sure you want to delete this recipe?',
+                      [
+                        {
+                          text: 'Cancel',
+                          onPress: () => {},
+                        },
+                        {
+                          text: 'Delete',
+                          onPress: () => {
+                            //Delete from dynamo (Maybe delete photo from S3 in the future)
+                            deleteRecipe(this.state.recipeName).then(res => {
+                              if (res === true) {
+                                Alert.alert(
+                                  'Removal Success',
+                                  'Successfully deleted ' +
+                                    this.state.recipeName +
+                                    ' from the database.',
+                                  [
+                                    {
+                                      text: 'OK',
+                                      onPress: () => {
+                                        this.props.closeCallback();
+                                        this.resetComponent();
+                                      },
+                                    },
+                                  ],
+                                );
+                              } else {
+                                Alert.alert(
+                                  'There was an error trying to delete ' +
+                                    this.state.recipeName +
+                                    ' from the database.',
+                                );
+                              }
+                            });
+                            //TODO: Tell Barbot (and IoT core) to refresh list
+                          },
+                        },
+                      ],
+                    );
+                  }}
+                />
+              </View>
+            </View>
+            <Text style={styles.textStyle}>Ingredients</Text>
 
-        <View style={styles.topSection}>
-          <CocktailThumbnailButton
-            name={this.state.recipeName}
-            requestImage={true}
-            imageStyle={styles.imageStyle}
-          />
-          <View style={styles.topEditContainer}>
-            <Text
-              style={{
-                textAlign: 'center',
-                fontSize: 18,
-                textDecorationLine: 'underline',
-              }}>
-              {this.state.recipeName}
-            </Text>
+            <ScrollView
+              style={{minHeight: 120, maxHeight: 120}}
+              contentContainerStyle={styles.ingredientScroll}>
+              {Object.keys(this.state.ingredients).length === 0 && (
+                <Text style={styles.ingredientText}>
+                  No Ingredients Selected
+                </Text>
+              )}
+              {Object.keys(this.state.ingredients).map(key => (
+                <View style={styles.ingredientContainer}>
+                  <Text style={styles.ingredientText}>{key + ':  '}</Text>
+                  <Text style={styles.ingredientText}>
+                    {this.state.ingredients[key] * shotSize + ' fl oz'}
+                  </Text>
+                </View>
+              ))}
+            </ScrollView>
+
             <Button
-              buttonStyle={styles.deleteButton}
-              title="Delete Cocktail"
+              buttonStyle={styles.lightButtonStyle}
+              title="Edit Ingredients"
               onPress={() => {
-                Alert.alert(
-                  'Confirm Delete',
-                  'Are you sure you want to delete this recipe?',
-                  [
-                    {
-                      text: 'Cancel',
-                      onPress: () => {},
-                    },
-                    {
-                      text: 'Delete',
-                      onPress: () => {
-                        //Delete from dynamo (Maybe delete photo from S3 in the future)
-                        deleteRecipe(this.state.recipeName).then(res => {
-                          if (res === true) {
-                            Alert.alert(
-                              'Removal Success',
-                              'Successfully deleted ' +
-                                this.state.recipeName +
-                                ' from the database.',
-                              [
-                                {
-                                  text: 'OK',
-                                  onPress: () => {
-                                    this.props.closeCallback();
-                                    this.resetComponent();
-                                  },
-                                },
-                              ],
-                            );
-                          } else {
-                            Alert.alert(
-                              'There was an error trying to delete ' +
-                                this.state.recipeName +
-                                ' from the database.',
-                            );
-                          }
-                        });
-                        //TODO: Tell Barbot (and IoT core) to refresh list
-                      },
-                    },
-                  ],
-                );
+                this.setState({
+                  editIngredients: true,
+                });
               }}
             />
-          </View>
-        </View>
-        <Text style={styles.ingredientLabel}>Ingredients</Text>
-        <ScrollView
-          style={{maxHeight: 180}}
-          contentContainerStyle={styles.ingredientScroll}>
-          {Object.keys(this.state.ingredients).map(key => (
-            <View style={styles.ingredientContainer}>
-              <Text style={styles.ingredientText}>
-                {key +
-                  ':  ' +
-                  this.state.ingredients[key] * shotSize +
-                  ' (fl oz)'}
-              </Text>
-              <Icon
-                name="remove"
-                type="font-awesome"
-                color="red"
-                size={32}
-                onPress={() => {
-                  //TODO: Remove ingredients from the state object
-                  console.log('Remove: ' + key);
-                  var tmpObj = this.state.ingredients;
-                  delete tmpObj[key];
-                  this.setState({
-                    ingredients: tmpObj,
-                    changeMade: true,
-                  });
-                }}
-              />
-            </View>
-          ))}
-        </ScrollView>
+
+            <Button buttonStyle={styles.saveButtonStyle} title="Save Recipe" />
+          </>
+        )}
+
+        {this.state.editIngredients && (
+          <EditIngredientsComponent
+            recipeIngredients={Object.keys(this.state.ingredients)}
+            recipeAmounts={Object.keys(this.state.ingredients).map(key =>
+              (this.state.ingredients[key] * shotSize).toString(),
+            )}
+            saveRecipe={this.saveIngredients.bind(this)}
+          />
+        )}
       </Overlay>
     );
   }
@@ -279,8 +322,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 12,
-    borderBottomColor: 'black',
-    borderBottomWidth: 2,
     paddingVertical: 5,
   },
 
@@ -289,5 +330,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textDecorationLine: 'underline',
     marginBottom: 2,
+  },
+
+  lightButtonStyle: {
+    borderRadius: 20,
+    width: 175,
+    backgroundColor: '#7295A6',
+    alignSelf: 'center',
+  },
+
+  saveButtonStyle: {
+    backgroundColor: '#3E525C',
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    marginTop: 15,
   },
 });

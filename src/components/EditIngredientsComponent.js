@@ -4,6 +4,7 @@ import {View, ScrollView, StyleSheet, Text, Dimensions} from 'react-native';
 import {toUpper} from '../utils/Tools';
 import IngredientItem from '../components/IngredientItem';
 import {Button} from 'react-native-elements';
+import {getAllBottles} from '../api/Control';
 
 var screenWidth = Dimensions.get('window').width;
 //var screenHeight = Dimensions.get('window').height;
@@ -12,13 +13,15 @@ const recipeOverlayWidth = screenWidth / 1.2;
 
 class EditIngredientsComponent extends React.Component {
   state = {
-    ingredientCount: 0,
+    ingredientCount: this.props.recipeIngredients.length,
     recipeIngredients: this.props.recipeIngredients,
     recipeAmounts: this.props.recipeAmounts,
-    fullBottleList: this.props.fullBottleList,
+    fullBottleList: [],
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.loadBottleList();
+  }
 
   setIngredValue(ingredient) {
     this.setState({
@@ -31,6 +34,25 @@ class EditIngredientsComponent extends React.Component {
   setAmountValue(amount) {
     this.state.recipeAmounts.push(amount);
     this.forceUpdate();
+  }
+
+  loadBottleList() {
+    getAllBottles().then(response => {
+      var fullList = [];
+      //console.log(response);
+      for (var i = 0; i < response.length; i++) {
+        fullList.push({
+          id: i,
+          name: response[i],
+        });
+      }
+
+      //console.log(fullList);
+
+      this.setState({
+        fullBottleList: fullList,
+      });
+    });
   }
 
   render() {
@@ -76,7 +98,9 @@ class EditIngredientsComponent extends React.Component {
 
               <View style={{flexDirection: 'column', alignItems: 'center'}}>
                 {this.state.recipeAmounts.map(amount => (
-                  <Text style={styles.ingredientText}>{toUpper(amount)}</Text>
+                  <Text style={styles.ingredientText}>
+                    {toUpper(amount) + '  fl oz'}
+                  </Text>
                 ))}
               </View>
             </View>
@@ -93,7 +117,12 @@ class EditIngredientsComponent extends React.Component {
         <Button
           title="Save Recipe"
           buttonStyle={styles.buttonStyle}
-          onPress={this.props.saveRecipe()}
+          onPress={() => {
+            this.props.saveRecipe(
+              this.state.recipeIngredients,
+              this.state.recipeAmounts,
+            );
+          }}
         />
       </View>
     );

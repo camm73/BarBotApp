@@ -53,7 +53,7 @@ class EditRecipeScreen extends React.Component {
             cocktailList: [...this.state.cocktailList, ...cocktailNames],
           });
 
-          console.log(cocktailNames);
+          //console.log(cocktailNames);
           if (res.hasOwnProperty('LastEvaluatedKey')) {
             this.setState({
               lastKey: res.LastEvaluatedKey,

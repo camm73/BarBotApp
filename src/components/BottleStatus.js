@@ -116,7 +116,7 @@ class BottleStatus extends React.Component {
       //Set current volume
       getCurrentBottleVolume(this.state.bottleName)
         .then(response => {
-          console.log('Current bottle volume: ' + response);
+          //console.log('Current bottle volume: ' + response);
           this.setState({
             currentVolume: response,
           });
@@ -130,7 +130,7 @@ class BottleStatus extends React.Component {
 
       //Set Initial volume
       getInitBottleVolume(this.state.bottleName).then(response => {
-        console.log('Initial Volume: ' + response);
+        //console.log('Initial Volume: ' + response);
         this.setState({
           initVolume: response,
         });
@@ -189,7 +189,7 @@ class BottleStatus extends React.Component {
         this.setState({
           bottleName: response,
         });
-        console.log('BOTTLE NAME: ' + response);
+        //console.log('BOTTLE NAME: ' + response);
       })
       .then(() => {
         //Set the bottle volumes the first time

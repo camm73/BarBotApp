@@ -14,7 +14,7 @@ import {toUpper} from '../utils/Tools';
 import {Alert} from 'react-native';
 
 export function getThumbnail(cocktailName) {
-  console.log('GETTING THUMBNAIL for ' + cocktailName);
+  //console.log('GETTING THUMBNAIL for ' + cocktailName);
   var params = {
     Bucket: 'barbot-data',
     Key: toUpper(cocktailName) + '.jpg',
@@ -100,7 +100,7 @@ export function loadCocktailNames(number, lastKey) {
         console.log(err, err.stack);
         reject('Failed to retreived cocktail names. ' + err);
       } else {
-        console.log(data);
+        //console.log(data);
         resolve(data);
       }
     });

@@ -43,29 +43,9 @@ class BarbotScreen extends React.Component {
   };
 
   componentDidMount() {
-    this.loadBottleList();
     checkAlcoholMode().then(res => {
       this.setState({
         alcoholMode: res,
-      });
-    });
-  }
-
-  loadBottleList() {
-    getAllBottles().then(response => {
-      var fullList = [];
-
-      for (var i = 0; i < response.length; i++) {
-        fullList.push({
-          id: i,
-          name: response[i],
-        });
-      }
-
-      //console.log(fullList);
-
-      this.setState({
-        fullBottleList: fullList,
       });
     });
   }
@@ -77,7 +57,6 @@ class BarbotScreen extends React.Component {
     recipeName: '',
     recipeIngredients: [],
     recipeAmounts: [],
-    fullBottleList: [],
     ingredientCount: 0,
     alcoholMode: false,
     alcoholCheck: false,
@@ -319,124 +298,8 @@ class BarbotScreen extends React.Component {
           <EditIngredientsComponent
             recipeIngredients={this.state.recipeIngredients}
             recipeAmounts={this.state.recipeAmounts}
-            fullBottleList={this.state.fullBottleList}
             saveRecipe={this.saveRecipe.bind(this)}
           />
-          {false && (
-            <View>
-              <Text style={styles.subtext}>Ingredients</Text>
-              <Spacer height={5} />
-
-              <View
-                style={{
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  alignContent: 'center',
-                  maxHeight: 80,
-                  height:
-                    this.state.ingredientCount * 25 < 80
-                      ? this.state.ingredientCount * 25
-                      : 80,
-                }}>
-                <ScrollView
-                  bounces={true}
-                  contentContainerStyle={{
-                    maxWidth: recipeOverlayWidth - 20,
-                    width: recipeOverlayWidth - 20,
-                    backgroundColor: 'gray',
-                    borderRadius: 10,
-                    borderColor: 'black',
-                    borderWidth: 1,
-                  }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignContent: 'space-between',
-                      justifyContent: 'space-evenly',
-                    }}>
-                    <View
-                      style={{flexDirection: 'column', alignItems: 'center'}}>
-                      {this.state.recipeIngredients.map(ingredient => (
-                        <Text style={styles.ingredientText}>
-                          {toUpper(ingredient)}
-                        </Text>
-                      ))}
-                    </View>
-
-                    <View
-                      style={{flexDirection: 'column', alignItems: 'center'}}>
-                      {this.state.recipeAmounts.map(amount => (
-                        <Text style={styles.ingredientText}>
-                          {toUpper(amount)}
-                        </Text>
-                      ))}
-                    </View>
-                  </View>
-                </ScrollView>
-              </View>
-
-              <Spacer height={5} />
-
-              <IngredientItem
-                bottleItems={this.state.fullBottleList}
-                overlayWidth={recipeOverlayWidth}
-                ingredCallback={this.setIngredValue.bind(this)}
-                amountCallback={this.setAmountValue.bind(this)}
-              />
-
-              <Spacer height={15} />
-              <Button
-                title="Save Recipe"
-                buttonStyle={styles.buttonStyle}
-                onPress={() => {
-                  if (
-                    this.state.recipeName !== '' &&
-                    this.state.recipeIngredients.length > 0 &&
-                    this.state.recipeAmounts.length > 0
-                  ) {
-                    var saveName = this.state.recipeName;
-                    addRecipe(
-                      this.state.recipeName,
-                      this.state.recipeIngredients,
-                      this.state.recipeAmounts,
-                    ).then(res => {
-                      console.log('Add Recipe result: ' + res);
-                      if (res === true) {
-                        Alert.alert(
-                          'Success',
-                          'Successfully added ' + saveName + ' recipe!',
-                          [
-                            {
-                              text: 'OK',
-                              onPress: this.props.navigation.state.params.reloadMenu(),
-                            },
-                          ],
-                        );
-                      } else {
-                        Alert.alert(
-                          'Failed to add ' +
-                            saveName +
-                            ' recipe! Try again later.',
-                        );
-                      }
-                    });
-                    this.setState({
-                      newRecipeVisible: false,
-                      recipeName: '',
-                      recipeIngredients: [],
-                      recipeAmounts: [],
-                      ingredientCount: 0,
-                    });
-                  } else {
-                    Alert.alert(
-                      'You must fill out all the appropriate fields!',
-                    );
-                  }
-                }}
-              />
-            </View>
-          )}
         </Overlay>
 
         <View style={styles.buttonRow}>
