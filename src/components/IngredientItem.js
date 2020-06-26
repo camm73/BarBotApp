@@ -24,6 +24,7 @@ class IngredientItem extends React.Component {
           <View style={styles.ingredient}>
             <SearchableDropdown
               onItemSelect={item => {
+                console.log('Item select: ' + item.name);
                 this.setState({
                   selectedItem: item.name,
                 });

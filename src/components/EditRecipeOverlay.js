@@ -218,6 +218,7 @@ class EditRecipeOverlay extends React.Component {
 
             <ScrollView
               style={{minHeight: 120, maxHeight: 120}}
+              keyboardShouldPersistTaps="handled"
               contentContainerStyle={styles.ingredientScroll}>
               {Object.keys(this.state.ingredients).length === 0 && (
                 <Text style={styles.ingredientText}>

@@ -49,8 +49,11 @@ class EditIngredientsComponent extends React.Component {
   loadBottleList() {
     getAllBottles().then(response => {
       var fullList = [];
-      //console.log(response);
       for (var i = 0; i < response.length; i++) {
+        if (this.props.recipeIngredients.includes(response[i])) {
+          //console.log('Skipping: ' + response[i]);
+          continue;
+        }
         fullList.push({
           id: i,
           name: response[i],
@@ -84,6 +87,7 @@ class EditIngredientsComponent extends React.Component {
           }}>
           <ScrollView
             bounces={true}
+            keyboardShouldPersistTaps="handled"
             contentContainerStyle={{
               maxWidth: recipeOverlayWidth - 20,
               width: recipeOverlayWidth - 20,

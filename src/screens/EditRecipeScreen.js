@@ -93,6 +93,7 @@ class EditRecipeScreen extends React.Component {
         <Text style={styles.headerText}>Modify Recipes</Text>
         <FlatList
           contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
           data={this.state.cocktailList}
           onEndReachedThreshold={0.5}
           maxToRenderPerBatch={2}
