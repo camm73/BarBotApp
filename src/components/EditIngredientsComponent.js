@@ -1,10 +1,18 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {View, ScrollView, StyleSheet, Text, Dimensions} from 'react-native';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import {toUpper} from '../utils/Tools';
 import IngredientItem from '../components/IngredientItem';
 import {Button} from 'react-native-elements';
 import {getAllBottles} from '../api/Control';
+import Spacer from '../components/Spacer';
 
 var screenWidth = Dimensions.get('window').width;
 //var screenHeight = Dimensions.get('window').height;
@@ -17,6 +25,8 @@ class EditIngredientsComponent extends React.Component {
     recipeIngredients: this.props.recipeIngredients,
     recipeAmounts: this.props.recipeAmounts,
     fullBottleList: [],
+    editIngredient: '',
+    editAmount: '',
   };
 
   componentDidMount() {
@@ -65,11 +75,11 @@ class EditIngredientsComponent extends React.Component {
             alignItems: 'center',
             justifyContent: 'center',
             alignContent: 'center',
-            maxHeight: 80,
+            maxHeight: 90,
             height:
-              this.state.ingredientCount * 25 < 80
-                ? this.state.ingredientCount * 25
-                : 80,
+              this.state.ingredientCount * 30 < 100
+                ? this.state.ingredientCount * 30
+                : 100,
             paddingBottom: 5,
           }}>
           <ScrollView
@@ -82,27 +92,29 @@ class EditIngredientsComponent extends React.Component {
               borderColor: 'black',
               borderWidth: 1,
             }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignContent: 'space-between',
-                justifyContent: 'space-evenly',
-              }}>
-              <View style={{flexDirection: 'column', alignItems: 'center'}}>
-                {this.state.recipeIngredients.map(ingredient => (
-                  <Text style={styles.ingredientText}>
-                    {toUpper(ingredient)}
-                  </Text>
-                ))}
-              </View>
-
-              <View style={{flexDirection: 'column', alignItems: 'center'}}>
-                {this.state.recipeAmounts.map(amount => (
-                  <Text style={styles.ingredientText}>
-                    {toUpper(amount) + '  fl oz'}
-                  </Text>
-                ))}
-              </View>
+            <View style={{flexDirection: 'column', alignItems: 'center'}}>
+              {this.state.recipeIngredients.map((ingredient, index) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setState({
+                      editIngredient: ingredient,
+                      editAmount: this.state.recipeAmounts[index],
+                    });
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                    }}>
+                    <Text style={styles.ingredientText}>
+                      {toUpper(ingredient)}
+                    </Text>
+                    <Spacer width={35} />
+                    <Text style={styles.ingredientText}>
+                      {toUpper(this.state.recipeAmounts[index]) + '  fl oz'}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
             </View>
           </ScrollView>
         </View>
@@ -112,6 +124,8 @@ class EditIngredientsComponent extends React.Component {
           overlayWidth={recipeOverlayWidth}
           ingredCallback={this.setIngredValue.bind(this)}
           amountCallback={this.setAmountValue.bind(this)}
+          selectedItem={this.state.editIngredient}
+          selectedAmount={this.state.editAmount}
         />
 
         <Button
@@ -138,7 +152,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignContent: 'center',
-    maxHeight: 50,
+    maxHeight: 60,
   },
   subtext: {
     fontSize: 18,
@@ -147,8 +161,9 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   ingredientText: {
-    fontSize: 16,
+    fontSize: 19,
     textAlign: 'center',
+    paddingBottom: 2,
   },
   buttonStyle: {
     backgroundColor: '#3E525C',
