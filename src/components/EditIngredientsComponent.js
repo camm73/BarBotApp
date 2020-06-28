@@ -13,6 +13,7 @@ import IngredientItem from '../components/IngredientItem';
 import {Button} from 'react-native-elements';
 import {getAllBottles} from '../api/Control';
 import Spacer from '../components/Spacer';
+import SearchableSelect from '../components/SearchableSelect';
 
 var screenWidth = Dimensions.get('window').width;
 //var screenHeight = Dimensions.get('window').height;
@@ -80,8 +81,8 @@ class EditIngredientsComponent extends React.Component {
             alignContent: 'center',
             maxHeight: 90,
             height:
-              this.state.ingredientCount * 30 < 100
-                ? this.state.ingredientCount * 30
+              this.state.ingredientCount * 35 < 100
+                ? this.state.ingredientCount * 35
                 : 100,
             paddingBottom: 5,
           }}>
@@ -123,14 +124,18 @@ class EditIngredientsComponent extends React.Component {
           </ScrollView>
         </View>
 
-        <IngredientItem
-          bottleItems={this.state.fullBottleList}
-          overlayWidth={recipeOverlayWidth}
-          ingredCallback={this.setIngredValue.bind(this)}
-          amountCallback={this.setAmountValue.bind(this)}
-          selectedItem={this.state.editIngredient}
-          selectedAmount={this.state.editAmount}
-        />
+        <SearchableSelect />
+
+        {false && (
+          <IngredientItem
+            bottleItems={this.state.fullBottleList}
+            overlayWidth={recipeOverlayWidth}
+            ingredCallback={this.setIngredValue.bind(this)}
+            amountCallback={this.setAmountValue.bind(this)}
+            selectedItem={this.state.editIngredient}
+            selectedAmount={this.state.editAmount}
+          />
+        )}
 
         <Button
           title="Save Recipe"
