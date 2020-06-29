@@ -1,33 +1,50 @@
+/* eslint-disable react/no-did-update-set-state */
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {View, FlatList, StyleSheet, TextInput, Keyboard} from 'react-native';
 import {Button} from 'react-native-elements';
-
-const data = [
-  {id: '1', name: 'Test1'},
-  {id: '2', name: 'Test2'},
-  {id: '3', name: 'Test3'},
-  {id: '4', name: 'blah'},
-  {id: '5', name: 'margarita'},
-];
 
 const defaultWidth = 120;
 const defaultHeight = 40;
 const defaultBorderRadius = 8;
 const defaultListHeight = 130;
 
+//Needs (data and selectItemCallback) as props
 class SearchableSelect extends React.Component {
   state = {
     listVisible: false,
     inputText: '',
+    ignoreDefault: false,
   };
 
   componentDidMount() {}
+
+  componentDidUpdate() {
+    /*
+    console.log('Resetting Searchable Select');
+    console.log('Reset param: ' + this.props.reset);
+    console.log('Initial Item: ' + this.props.initialItem);
+    console.log('Input Text: ' + this.state.inputText);
+    console.log('Ignore Default: ' + this.state.ignoreDefault);
+    console.log('========================================');
+    */
+    if (this.props.reset && this.state.inputText !== '') {
+      this.setState({
+        inputText: '',
+        ignoreDefault: false,
+      });
+    }
+
+    if (this.props.reset && this.props.initialItem !== '') {
+      this.props.clearInitialItems();
+    }
+  }
 
   render() {
     return (
       <View>
         <TextInput
+          placeholder={this.props.placeholder}
           style={{
             width: this.props.width,
             height:
@@ -45,9 +62,14 @@ class SearchableSelect extends React.Component {
             padding: 5,
             marginBottom: 5,
           }}
-          value={this.state.inputText}
+          value={
+            this.state.ignoreDefault
+              ? this.state.inputText
+              : this.props.initialItem
+          }
           onChangeText={text => {
             this.setState({
+              ignoreDefault: true,
               inputText: text,
             });
           }}
@@ -100,11 +122,12 @@ class SearchableSelect extends React.Component {
                 }}
                 onPress={() => {
                   this.setState({
-                    inputText: item.name,
+                    inputText: item.value,
                     listVisible: false,
+                    ignoreDefault: true,
                   });
                   Keyboard.dismiss();
-                  console.log('Item: ' + item.name + ' pressed button');
+                  this.props.selectItemCallback(item.value);
                 }}
               />
             )}
@@ -116,5 +139,3 @@ class SearchableSelect extends React.Component {
 }
 
 export default SearchableSelect;
-
-const styles = StyleSheet.create({});

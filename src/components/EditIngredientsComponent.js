@@ -13,7 +13,6 @@ import IngredientItem from '../components/IngredientItem';
 import {Button} from 'react-native-elements';
 import {getAllBottles} from '../api/Control';
 import Spacer from '../components/Spacer';
-import SearchableSelect from '../components/SearchableSelect';
 
 var screenWidth = Dimensions.get('window').width;
 //var screenHeight = Dimensions.get('window').height;
@@ -58,6 +57,7 @@ class EditIngredientsComponent extends React.Component {
         fullList.push({
           id: i,
           name: response[i],
+          value: response[i],
         });
       }
 
@@ -81,9 +81,9 @@ class EditIngredientsComponent extends React.Component {
             alignContent: 'center',
             maxHeight: 90,
             height:
-              this.state.ingredientCount * 35 < 100
+              this.state.ingredientCount * 35 < 82
                 ? this.state.ingredientCount * 35
-                : 100,
+                : 82,
             paddingBottom: 5,
           }}>
           <ScrollView
@@ -101,9 +101,15 @@ class EditIngredientsComponent extends React.Component {
               {this.state.recipeIngredients.map((ingredient, index) => (
                 <TouchableOpacity
                   onPress={() => {
+                    var oldIngreds = this.state.recipeIngredients;
+                    oldIngreds.splice(index, 1);
+
+                    var newIngredCount = this.state.ingredientCount - 1;
                     this.setState({
                       editIngredient: ingredient,
                       editAmount: this.state.recipeAmounts[index],
+                      recipeIngredients: oldIngreds,
+                      ingredientCount: newIngredCount,
                     });
                   }}>
                   <View
@@ -124,21 +130,23 @@ class EditIngredientsComponent extends React.Component {
           </ScrollView>
         </View>
 
-        <SearchableSelect />
-
-        {false && (
-          <IngredientItem
-            bottleItems={this.state.fullBottleList}
-            overlayWidth={recipeOverlayWidth}
-            ingredCallback={this.setIngredValue.bind(this)}
-            amountCallback={this.setAmountValue.bind(this)}
-            selectedItem={this.state.editIngredient}
-            selectedAmount={this.state.editAmount}
-          />
-        )}
+        <IngredientItem
+          bottleItems={this.state.fullBottleList}
+          overlayWidth={recipeOverlayWidth}
+          ingredCallback={this.setIngredValue.bind(this)}
+          amountCallback={this.setAmountValue.bind(this)}
+          selectedItem={this.state.editIngredient}
+          selectedAmount={this.state.editAmount}
+          clearInitialItems={() => {
+            this.setState({
+              editAmount: '',
+              editIngredient: '',
+            });
+          }}
+        />
 
         <Button
-          title="Save Recipe"
+          title="Save Ingredient Changes"
           buttonStyle={styles.buttonStyle}
           onPress={() => {
             this.props.saveRecipe(

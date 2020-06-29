@@ -133,7 +133,6 @@ class MenuItem extends React.Component {
               title="Edit Cocktail"
               buttonStyle={styles.buttonStyle}
               onPress={() => {
-                //TODO: Some state change to open editting overlay
                 this.setState({
                   editVisible: true,
                 });
@@ -145,7 +144,9 @@ class MenuItem extends React.Component {
             <EditRecipeOverlay
               visible={this.state.editVisible}
               cocktailName={this.props.name}
+              reloadCallback={this.reloadCallback}
               closeCallback={() => {
+                this.props.reloadCallback();
                 this.setState({
                   editVisible: false,
                 });
