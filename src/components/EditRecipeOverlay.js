@@ -76,6 +76,7 @@ class EditRecipeOverlay extends React.Component {
       this.setState({
         ingredients: newIngreds,
         editIngredients: false,
+        changeMade: true,
       });
     }
   }

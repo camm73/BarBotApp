@@ -191,6 +191,10 @@ export function getIngredients(recipeName) {
         reject('Error loading recipe ' + recipeName + ' from dynamo!');
       } else {
         var newObj = {};
+        if (Object.keys(data).length === 0) {
+          reject('Recipe: ' + recipeName + " doesn't exist in database");
+          return;
+        }
         var rawObj = data.Item.amounts.M;
         var ingredNames = Object.keys(data.Item.amounts.M);
 
