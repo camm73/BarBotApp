@@ -144,7 +144,7 @@ export function updateRecipe(recipeName, ingredients) {
 
   var itemVal = {
     cocktailName: {
-      S: recipeName,
+      S: recipeName.toLowerCase(),
     },
     ingredients: {
       L: ingredArr,
@@ -168,6 +168,30 @@ export function updateRecipe(recipeName, ingredients) {
         reject('There was an error updating recipe: ' + recipeName);
       } else {
         resolve(true);
+      }
+    });
+  });
+}
+
+//Get ingredients for recipe from dynamo
+export function getIngredients(recipeName) {
+  var params = {
+    Key: {
+      cocktailName: {
+        S: recipeName.toLowerCase(),
+      },
+    },
+    TableName: 'BarBot-Recipe',
+  };
+
+  return new Promise(function(resolve, reject) {
+    dynamodb.getItem(params, (data, err) => {
+      if (err) {
+        console.log(err, err.stack);
+        reject('Error loading recipe ' + recipeName + ' from dynamo!');
+      } else {
+        console.log(data);
+        resolve({});
       }
     });
   });

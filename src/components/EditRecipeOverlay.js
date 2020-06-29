@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {Overlay, Icon, Button} from 'react-native-elements';
 import CocktailThumbnailButton from '../components/CocktailThumbnailButton';
-import {addRecipe, deleteRecipe} from '../api/Cloud';
+import {updateRecipe, deleteRecipe} from '../api/Cloud';
 import {getIngredients} from '../api/Control';
 import EditIngredientsComponent from './EditIngredientsComponent';
 
@@ -82,32 +82,23 @@ class EditRecipeOverlay extends React.Component {
   }
 
   //Replaces old recipe in dynamodb
-  updateRecipe() {
-    addRecipe(
-      this.props.cocktailName,
-      Object.keys(this.state.ingredients),
-      this.getIngredientAmounts(),
-    ).then(res => {
-      console.log('Add Recipe result: ' + res);
-      if (res === true) {
-        Alert.alert(
-          'Success',
-          'Successfully added ' + this.props.cocktailName + ' recipe!',
-          [
-            {
-              text: 'OK',
-              onPress: this.props.reloadCallback,
-            },
-          ],
-        );
-      } else {
-        Alert.alert(
-          'Failed to add ' +
-            this.props.cocktailName +
-            ' recipe! Try again later.',
-        );
-      }
-    });
+  saveRecipe() {
+    updateRecipe(this.state.recipeName, this.state.ingredients)
+      .then(res => {
+        if (res === true) {
+          this.props.closeCallback();
+          this.resetComponent();
+          this.props.reloadCallback();
+          Alert.alert('Successfully updated recipe!');
+        } else {
+          this.props.closeCallback();
+          this.resetComponent();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        Alert.alert('There was an error updating recipe!');
+      });
   }
 
   render() {
@@ -143,29 +134,7 @@ class EditRecipeOverlay extends React.Component {
                           text: 'Save Changes',
                           onPress: () => {
                             //TODO: Call function to save all changes
-                            this.updateRecipe();
-                            /*
-                            updateRecipe(
-                              this.state.recipeName,
-                              this.state.ingredients,
-                            )
-                              .then(res => {
-                                if (res === true) {
-                                  this.props.closeCallback();
-                                  this.resetComponent();
-                                  Alert.alert('Successfully updated recipe!');
-                                } else {
-                                  this.props.closeCallback();
-                                  this.resetComponent();
-                                }
-                              })
-                              .catch(err => {
-                                console.log(err);
-                                Alert.alert(
-                                  'There was an error updating recipe!',
-                                );
-                              });
-                              */
+                            this.saveRecipe();
                           },
                         },
                       ],
@@ -286,7 +255,7 @@ class EditRecipeOverlay extends React.Component {
               buttonStyle={styles.saveButtonStyle}
               title="Save Recipe"
               onPress={() => {
-                console.log(this.state.recipeName + ' will be saved');
+                this.saveRecipe();
               }}
             />
           </>

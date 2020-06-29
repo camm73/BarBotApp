@@ -144,9 +144,8 @@ class MenuItem extends React.Component {
             <EditRecipeOverlay
               visible={this.state.editVisible}
               cocktailName={this.props.name}
-              reloadCallback={this.reloadCallback}
+              reloadCallback={this.props.reloadCallback}
               closeCallback={() => {
-                this.props.reloadCallback();
                 this.setState({
                   editVisible: false,
                 });

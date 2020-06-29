@@ -78,11 +78,6 @@ class SearchableSelect extends React.Component {
               listVisible: true,
             });
           }}
-          onBlur={() => {
-            this.setState({
-              listVisible: false,
-            });
-          }}
         />
         {this.state.listVisible && (
           <FlatList
