@@ -9,9 +9,9 @@ import {
 } from 'react-native';
 import {Button, Overlay} from 'react-native-elements';
 import Spacer from './Spacer';
-import {makeCocktail, getIngredients} from '../api/Control.js';
+import {makeCocktail} from '../api/Control.js';
 import {toUpper} from '../utils/Tools';
-import {verifyImageExists, getThumbnail} from '../api/Cloud';
+import {verifyImageExists, getThumbnail, getIngredients} from '../api/Cloud';
 import EditRecipeOverlay from './EditRecipeOverlay';
 import CocktailThumbnailButton from './CocktailThumbnailButton';
 

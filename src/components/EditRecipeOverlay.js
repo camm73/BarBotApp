@@ -11,8 +11,7 @@ import {
 } from 'react-native';
 import {Overlay, Icon, Button} from 'react-native-elements';
 import CocktailThumbnailButton from '../components/CocktailThumbnailButton';
-import {updateRecipe, deleteRecipe} from '../api/Cloud';
-import {getIngredients} from '../api/Control';
+import {updateRecipe, deleteRecipe, getIngredients} from '../api/Cloud';
 import EditIngredientsComponent from './EditIngredientsComponent';
 
 var screenWidth = Dimensions.get('window').width;
@@ -86,10 +85,16 @@ class EditRecipeOverlay extends React.Component {
     updateRecipe(this.state.recipeName, this.state.ingredients)
       .then(res => {
         if (res === true) {
-          this.props.closeCallback();
-          this.resetComponent();
-          this.props.reloadCallback();
-          Alert.alert('Successfully updated recipe!');
+          Alert.alert('Update Success', 'Successfully updated recipe!', [
+            {
+              text: 'OK',
+              onPress: () => {
+                this.props.closeCallback();
+                this.resetComponent();
+                this.props.reloadCallback();
+              },
+            },
+          ]);
         } else {
           this.props.closeCallback();
           this.resetComponent();
@@ -222,24 +227,32 @@ class EditRecipeOverlay extends React.Component {
             </View>
             <Text style={styles.textStyle}>Ingredients</Text>
 
-            <ScrollView
-              style={{minHeight: 110, maxHeight: 110}}
-              keyboardShouldPersistTaps="handled"
-              contentContainerStyle={styles.ingredientScroll}>
-              {Object.keys(this.state.ingredients).length === 0 && (
-                <Text style={styles.ingredientText}>
-                  No Ingredients Selected
-                </Text>
-              )}
-              {Object.keys(this.state.ingredients).map(key => (
-                <View style={styles.ingredientContainer}>
-                  <Text style={styles.ingredientText}>{key + ':  '}</Text>
+            <View
+              style={{
+                maxHeight: 110,
+                height:
+                  Object.keys(this.state.ingredients).length * 35 < 105
+                    ? Object.keys(this.state.ingredients).length * 35
+                    : 105,
+              }}>
+              <ScrollView
+                keyboardShouldPersistTaps="handled"
+                contentContainerStyle={styles.ingredientScroll}>
+                {Object.keys(this.state.ingredients).length === 0 && (
                   <Text style={styles.ingredientText}>
-                    {this.state.ingredients[key] * shotSize + ' fl oz'}
+                    No Ingredients Selected
                   </Text>
-                </View>
-              ))}
-            </ScrollView>
+                )}
+                {Object.keys(this.state.ingredients).map(key => (
+                  <View style={styles.ingredientContainer}>
+                    <Text style={styles.ingredientText}>{key + ':  '}</Text>
+                    <Text style={styles.ingredientText}>
+                      {this.state.ingredients[key] * shotSize + ' fl oz'}
+                    </Text>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
 
             <Button
               buttonStyle={styles.lightButtonStyle}

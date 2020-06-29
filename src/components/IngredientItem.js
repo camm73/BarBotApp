@@ -15,11 +15,15 @@ class IngredientItem extends React.Component {
     selectedAmount: '',
     resetText: false,
     value: '',
+    amountChanged: false,
+    ingredChanged: false,
   };
 
   resetSelectComponents() {
     this.setState({
       triggerReset: true,
+      amountChanged: false,
+      ingredChanged: false,
     });
 
     setTimeout(() => {
@@ -41,8 +45,10 @@ class IngredientItem extends React.Component {
             clearInitialItems={this.props.clearInitialItems}
             width={this.props.overlayWidth / 1.5}
             selectItemCallback={item => {
+              console.log('Setting ingredient to :' + item);
               this.setState({
                 selectedItem: item,
+                ingredChanged: true,
               });
             }}
           />
@@ -55,8 +61,10 @@ class IngredientItem extends React.Component {
             width={this.props.overlayWidth / 4.5}
             clearInitialItems={this.props.clearInitialItems}
             selectItemCallback={item => {
+              console.log('Setting amount to :' + item);
               this.setState({
                 selectedAmount: item,
+                amountChanged: true,
               });
             }}
           />
@@ -74,41 +82,36 @@ class IngredientItem extends React.Component {
             titleStyle={styles.buttonText}
             buttonStyle={styles.lightButtonStyle}
             onPress={() => {
-              if (
-                this.state.selectedAmount !== '' &&
-                this.state.selectedItem !== ''
-              ) {
+              if (this.state.ingredChanged && this.state.amountChanged) {
+                if (
+                  this.state.selectedAmount === '' ||
+                  this.state.selectedItem === ''
+                ) {
+                  Alert.alert(
+                    'You must select both an ingredient and amount before adding.',
+                  );
+                  return;
+                }
+                console.log('Both changed');
                 this.props.ingredCallback(this.state.selectedItem);
                 this.props.amountCallback(this.state.selectedAmount);
               } else if (
-                this.props.selectedItem !== '' &&
-                this.props.selectedAmount !== ''
+                this.state.ingredChanged &&
+                !this.state.amountChanged
               ) {
-                this.props.ingredCallback(this.props.selectedItem);
-                this.props.amountCallback(this.props.selectedAmount);
-              } else if (
-                this.state.selectedItem !== '' &&
-                this.props.selectedAmount !== ''
-              ) {
+                console.log('Ingred changed: ' + this.state.selectedItem);
                 this.props.ingredCallback(this.state.selectedItem);
                 this.props.amountCallback(this.props.selectedAmount);
               } else if (
-                this.props.selectedItem !== '' &&
-                this.state.selectedAmount !== ''
+                !this.state.ingredChanged &&
+                this.state.amountChanged
               ) {
+                console.log('Amount changed: ' + this.state.selectedAmount);
                 this.props.ingredCallback(this.props.selectedItem);
                 this.props.amountCallback(this.state.selectedAmount);
               } else {
-                console.log(
-                  'Selected Item (props): ' + this.props.selectedItem,
-                );
-                console.log(
-                  'Selected Amount (props): ' + this.props.selectedAmount,
-                );
-                console.log('Selected Item: ' + this.state.selectedItem);
-                console.log('Selected Amount: ' + this.state.selectedAmount);
-                Alert.alert('You must have both an ingredient and amount');
-                return;
+                this.props.ingredCallback(this.props.selectedItem);
+                this.props.amountCallback(this.props.selectedAmount);
               }
 
               this.setState({

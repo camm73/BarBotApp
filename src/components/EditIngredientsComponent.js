@@ -104,11 +104,16 @@ class EditIngredientsComponent extends React.Component {
                     var oldIngreds = this.state.recipeIngredients;
                     oldIngreds.splice(index, 1);
 
+                    var editAmt = this.state.recipeAmounts[index];
+                    var oldAmts = this.state.recipeAmounts;
+                    oldAmts.splice(index, 1);
+
                     var newIngredCount = this.state.ingredientCount - 1;
                     this.setState({
                       editIngredient: ingredient,
-                      editAmount: this.state.recipeAmounts[index],
+                      editAmount: editAmt,
                       recipeIngredients: oldIngreds,
+                      recipeAmounts: oldAmts,
                       ingredientCount: newIngredCount,
                     });
                   }}>

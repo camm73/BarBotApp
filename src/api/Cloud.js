@@ -185,13 +185,20 @@ export function getIngredients(recipeName) {
   };
 
   return new Promise(function(resolve, reject) {
-    dynamodb.getItem(params, (data, err) => {
+    dynamodb.getItem(params, (err, data) => {
       if (err) {
         console.log(err, err.stack);
         reject('Error loading recipe ' + recipeName + ' from dynamo!');
       } else {
-        console.log(data);
-        resolve({});
+        var newObj = {};
+        var rawObj = data.Item.amounts.M;
+        var ingredNames = Object.keys(data.Item.amounts.M);
+
+        for (var i = 0; i < ingredNames.length; i++) {
+          newObj[ingredNames[i]] = parseFloat(rawObj[ingredNames[i]].N);
+        }
+
+        resolve(newObj);
       }
     });
   });
