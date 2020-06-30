@@ -41,9 +41,10 @@ var overlayHeight = 500;
 class BottleStatus extends React.Component {
   constructor(props) {
     super(props);
-
     this.reloadPercentage();
   }
+
+  _isMounted = false;
 
   state = {
     level: 'N/A',
@@ -83,17 +84,21 @@ class BottleStatus extends React.Component {
       getBottlePercent(this.state.bottleName)
         .then(response => {
           //console.log(response)
-          this.setState({
-            level: response,
-            textColor: this.getTextColor(response),
-          });
+          if (this._isMounted) {
+            this.setState({
+              level: response,
+              textColor: this.getTextColor(response),
+            });
+          }
         })
         .catch(error => {
           //console.log(error);
-          this.setState({
-            level: 'N/A',
-            textColor: 'black',
-          });
+          if (this._isMounted) {
+            this.setState({
+              level: 'N/A',
+              textColor: 'black',
+            });
+          }
         });
     }
 
@@ -102,13 +107,15 @@ class BottleStatus extends React.Component {
   }
 
   resetBottle() {
-    this.props.reloadCallback();
-    this.reloadPercentage();
-    this.setState({
-      bottleName: 'N/A',
-      currentVolume: 'N/A',
-      initVolume: 'N/A',
-    });
+    if (this._isMounted) {
+      this.props.reloadCallback();
+      this.reloadPercentage();
+      this.setState({
+        bottleName: 'N/A',
+        currentVolume: 'N/A',
+        initVolume: 'N/A',
+      });
+    }
   }
 
   setBottleVolumes() {
@@ -117,23 +124,29 @@ class BottleStatus extends React.Component {
       getCurrentBottleVolume(this.state.bottleName)
         .then(response => {
           //console.log('Current bottle volume: ' + response);
-          this.setState({
-            currentVolume: response,
-          });
+          if (this._isMounted) {
+            this.setState({
+              currentVolume: response,
+            });
+          }
         })
         .catch(error => {
           console.log(error);
-          this.setState({
-            currentVolume: 'N/A',
-          });
+          if (this._isMounted) {
+            this.setState({
+              currentVolume: 'N/A',
+            });
+          }
         });
 
       //Set Initial volume
       getInitBottleVolume(this.state.bottleName).then(response => {
         //console.log('Initial Volume: ' + response);
-        this.setState({
-          initVolume: response,
-        });
+        if (this._isMounted) {
+          this.setState({
+            initVolume: response,
+          });
+        }
       });
     }
   }
@@ -183,18 +196,23 @@ class BottleStatus extends React.Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     //Set the bottle name
     getBottleName(this.props.number)
       .then(response => {
-        this.setState({
-          bottleName: response,
-        });
+        if (this._isMounted) {
+          this.setState({
+            bottleName: response,
+          });
+        }
         //console.log('BOTTLE NAME: ' + response);
       })
       .then(() => {
-        //Set the bottle volumes the first time
-        this.setBottleVolumes();
-        this.reloadPercentage();
+        if (this._isMounted) {
+          //Set the bottle volumes the first time
+          this.setBottleVolumes();
+          this.reloadPercentage();
+        }
       });
 
     setInterval(() => {
@@ -206,15 +224,17 @@ class BottleStatus extends React.Component {
     //TODO: Removed temporarily
   }
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
   componentDidUpdate() {
     if (this.props.reload) {
       console.log('RESETTING BOTTLE!!');
       this.resetBottle();
     }
+  }
+
+  //Signify that component has been unmounted to prevent memory leaks
+  componentWillUnmount() {
+    this._isMounted = false;
+    clearInterval(this.interval);
   }
 
   render() {
@@ -249,266 +269,271 @@ class BottleStatus extends React.Component {
           width={overlayWidth}
           height={overlayHeight}
           overlayStyle={styles.overlay}>
-          <View style={styles.backButtonRow}>
-            <TouchableOpacity
-              onPress={() => {
-                this.setState({
-                  detailsVisible: false,
-                  selectedItem: '',
-                });
+          <>
+            <View style={styles.backButtonRow}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({
+                    detailsVisible: false,
+                    selectedItem: '',
+                  });
 
-                console.log('CLOSE Item: ' + this.state.selectedItem);
-              }}>
-              <Icon name="back" size={33} type="antdesign" />
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.headerStyle}>
-            {this.state.bottleName === 'N/A'
-              ? 'Add New Bottle'
-              : toUpper(this.state.bottleName)}
-          </Text>
+                  console.log('CLOSE Item: ' + this.state.selectedItem);
+                }}>
+                <Icon name="back" size={33} type="antdesign" />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.headerStyle}>
+              {this.state.bottleName === 'N/A'
+                ? 'Add New Bottle'
+                : toUpper(this.state.bottleName)}
+            </Text>
 
-          <View style={styles.bodyContainer}>
-            {this.state.bottleName !== 'N/A' && (
-              <View>
-                <View style={styles.progressContainer}>
-                  <Text style={{paddingTop: 6, paddingRight: 5, fontSize: 16}}>
-                    Level:
-                  </Text>
-                  <ProgressBar
-                    width={220}
-                    height={30}
-                    value={this.state.level === 'N/A' ? 0 : this.state.level}
-                  />
-                  <Spacer height={40} />
+            <View style={styles.bodyContainer}>
+              {this.state.bottleName !== 'N/A' && (
+                <View>
+                  <View style={styles.progressContainer}>
+                    <Text
+                      style={{paddingTop: 6, paddingRight: 5, fontSize: 16}}>
+                      Level:
+                    </Text>
+                    <ProgressBar
+                      width={220}
+                      height={30}
+                      value={this.state.level === 'N/A' ? 0 : this.state.level}
+                    />
+                    <Spacer height={40} />
+                  </View>
+
+                  <View style={styles.statsContainer}>
+                    <Text style={styles.textStyle}>
+                      Remaining Volume: {this.state.currentVolume} [mL]
+                    </Text>
+                    <Text style={styles.textStyle}>
+                      Original Volume: {this.state.initVolume} [mL]
+                    </Text>
+                  </View>
+
+                  <View
+                    style={{flexDirection: 'row', justifyContent: 'center'}}>
+                    <Text
+                      style={{
+                        textDecorationLine: 'underline',
+                        fontSize: 18,
+                        textAlign: 'center',
+                        alignSelf: 'center',
+                        paddingRight: 10,
+                        paddingLeft: 30,
+                      }}>
+                      Bottle Management
+                    </Text>
+                    {
+                      //TODO: ICON TEMPORARILY DISABLED FOR RELEASE ISSUE FIX
+                    }
+                    <Icon
+                      name="help"
+                      disabled={true}
+                      size={28}
+                      onPress={() => {
+                        //this.openInstructions();
+                      }}
+                    />
+                  </View>
                 </View>
+              )}
 
-                <View style={styles.statsContainer}>
-                  <Text style={styles.textStyle}>
-                    Remaining Volume: {this.state.currentVolume} [mL]
-                  </Text>
-                  <Text style={styles.textStyle}>
-                    Original Volume: {this.state.initVolume} [mL]
-                  </Text>
-                </View>
-
-                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                  <Text
-                    style={{
-                      textDecorationLine: 'underline',
-                      fontSize: 18,
-                      textAlign: 'center',
-                      alignSelf: 'center',
-                      paddingRight: 10,
-                      paddingLeft: 30,
-                    }}>
-                    Bottle Management
-                  </Text>
-                  {
-                    //TODO: ICON TEMPORARILY DISABLED FOR RELEASE ISSUE FIX
-                  }
-                  <Icon
-                    name="help"
-                    disabled={true}
-                    size={28}
-                    onPress={() => {
-                      //this.openInstructions();
-                    }}
-                  />
-                </View>
-              </View>
-            )}
-
-            {this.state.bottleName !== 'N/A' && (
-              <View style={styles.buttonContainer}>
-                <Button
-                  title="Remove Bottle"
-                  buttonStyle={styles.buttonStyle}
-                  onPress={async () => {
-                    removeBottle(this.props.number, this.state.bottleName)
-                      .then(res => {
-                        if (res === 'true') {
-                          this.resetBottle();
-                        } else if (res === 'busy') {
-                          console.log('Barbot is busy...');
-                          Alert.alert('Barbot is busy! Try again soon.');
-                        } else {
+              {this.state.bottleName !== 'N/A' && (
+                <View style={styles.buttonContainer}>
+                  <Button
+                    title="Remove Bottle"
+                    buttonStyle={styles.buttonStyle}
+                    onPress={async () => {
+                      removeBottle(this.props.number, this.state.bottleName)
+                        .then(res => {
+                          if (res === 'true') {
+                            this.resetBottle();
+                          } else if (res === 'busy') {
+                            console.log('Barbot is busy...');
+                            Alert.alert('Barbot is busy! Try again soon.');
+                          } else {
+                            console.log(
+                              'Error removing bottle ' +
+                                this.state.bottleName +
+                                ': ' +
+                                res,
+                            );
+                          }
+                        })
+                        .catch(error => {
                           console.log(
                             'Error removing bottle ' +
                               this.state.bottleName +
                               ': ' +
-                              res,
+                              error,
                           );
-                        }
-                      })
-                      .catch(error => {
-                        console.log(
-                          'Error removing bottle ' +
-                            this.state.bottleName +
-                            ': ' +
-                            error,
-                        );
-                        Alert.alert('Error removing bottle: ' + error);
+                          Alert.alert('Error removing bottle: ' + error);
+                        });
+                    }}
+                  />
+                  <Spacer height={10} />
+                  <Button
+                    title="Prime Bottle"
+                    buttonStyle={styles.buttonStyle}
+                    onPressIn={() => {
+                      pumpOn(this.props.number);
+                    }}
+                    onPressOut={() => {
+                      pumpOff(this.props.number);
+                    }}
+                  />
+                  <Spacer height={10} />
+                  <Button
+                    title={'Calibrate Pump ' + this.props.number}
+                    buttonStyle={styles.buttonStyle}
+                    onPress={() => {
+                      this.setState({
+                        detailsVisible: false,
+                        calibrateVisible: true,
                       });
-                  }}
-                />
-                <Spacer height={10} />
-                <Button
-                  title="Prime Bottle"
-                  buttonStyle={styles.buttonStyle}
-                  onPressIn={() => {
-                    pumpOn(this.props.number);
-                  }}
-                  onPressOut={() => {
-                    pumpOff(this.props.number);
-                  }}
-                />
-                <Spacer height={10} />
-                <Button
-                  title={'Calibrate Pump ' + this.props.number}
-                  buttonStyle={styles.buttonStyle}
-                  onPress={() => {
-                    this.setState({
-                      detailsVisible: false,
-                      calibrateVisible: true,
-                    });
-                  }}
-                />
-              </View>
-            )}
-            {this.state.bottleName === 'N/A' && (
-              <View style={styles.buttonContainer}>
-                <SearchableDropdown
-                  onItemSelect={item => {
-                    console.log('You selected: ' + item);
-                    this.setState({
-                      selectedItem: item.name,
-                    });
-                  }}
-                  containerStyle={{padding: 5}}
-                  itemStyle={{
-                    padding: 10,
-                    marginTop: 2,
-                    backgroundColor: '#ddd',
-                    borderColor: '#bbb',
-                    borderWidth: 1,
-                    borderRadius: 5,
-                  }}
-                  itemTextStyle={{color: '#222'}}
-                  itemsContainerStyle={{maxHeight: 120}}
-                  items={this.props.bottleItems}
-                  resetValue={false}
-                  textInputProps={{
-                    placeholder: 'Select a bottle...',
-                    underlineColorAndroid: 'transparent',
-                    style: {
-                      padding: 12,
+                    }}
+                  />
+                </View>
+              )}
+              {this.state.bottleName === 'N/A' && (
+                <View style={styles.buttonContainer}>
+                  <SearchableDropdown
+                    onItemSelect={item => {
+                      console.log('You selected: ' + item);
+                      this.setState({
+                        selectedItem: item.name,
+                      });
+                    }}
+                    containerStyle={{padding: 5}}
+                    itemStyle={{
+                      padding: 10,
+                      marginTop: 2,
+                      backgroundColor: '#ddd',
+                      borderColor: '#bbb',
                       borderWidth: 1,
-                      borderColor: '#ccc',
                       borderRadius: 5,
+                    }}
+                    itemTextStyle={{color: '#222'}}
+                    itemsContainerStyle={{maxHeight: 120}}
+                    items={this.props.bottleItems}
+                    resetValue={false}
+                    textInputProps={{
+                      placeholder: 'Select a bottle...',
+                      underlineColorAndroid: 'transparent',
+                      style: {
+                        padding: 12,
+                        borderWidth: 1,
+                        borderColor: '#ccc',
+                        borderRadius: 5,
+                        backgroundColor: 'white',
+                        width: overlayWidth / 1.5,
+                      },
+                      onTextChange: text => console.log(text),
+                    }}
+                    listProps={{
+                      nestedScrollEnabled: true,
+                    }}
+                  />
+                  <Spacer height={10} />
+                  <Text style={styles.textStyle}>
+                    Current Bottle Volume (mL):
+                  </Text>
+                  <TextInput
+                    style={{
+                      width: overlayWidth / 3,
+                      height: 30,
                       backgroundColor: 'white',
-                      width: overlayWidth / 1.5,
-                    },
-                    onTextChange: text => console.log(text),
-                  }}
-                  listProps={{
-                    nestedScrollEnabled: true,
-                  }}
-                />
-                <Spacer height={10} />
-                <Text style={styles.textStyle}>
-                  Current Bottle Volume (mL):
-                </Text>
-                <TextInput
-                  style={{
-                    width: overlayWidth / 3,
-                    height: 30,
-                    backgroundColor: 'white',
-                    borderColor: 'gray',
-                    borderWidth: 1,
-                    borderRadius: 5,
-                  }}
-                  keyboardType="number-pad"
-                  onChangeText={text => {
-                    this.processVolumeInput(text, true);
-                  }}
-                  maxLength={4}
-                  value={this.state.inputCurrentVolume}
-                />
+                      borderColor: 'gray',
+                      borderWidth: 1,
+                      borderRadius: 5,
+                    }}
+                    keyboardType="number-pad"
+                    onChangeText={text => {
+                      this.processVolumeInput(text, true);
+                    }}
+                    maxLength={4}
+                    value={this.state.inputCurrentVolume}
+                  />
 
-                <Spacer height={10} />
-                <Text style={styles.textStyle}>
-                  Initial Bottle Volume (mL):
-                </Text>
-                <TextInput
-                  style={{
-                    width: overlayWidth / 3,
-                    height: 30,
-                    backgroundColor: 'white',
-                    borderColor: 'gray',
-                    borderWidth: 1,
-                    borderRadius: 5,
-                  }}
-                  keyboardType="number-pad"
-                  onChangeText={text => {
-                    this.processVolumeInput(text, false);
-                  }}
-                  maxLength={4}
-                  value={this.state.inputInitVolume}
-                />
-                <Spacer height={10} />
+                  <Spacer height={10} />
+                  <Text style={styles.textStyle}>
+                    Initial Bottle Volume (mL):
+                  </Text>
+                  <TextInput
+                    style={{
+                      width: overlayWidth / 3,
+                      height: 30,
+                      backgroundColor: 'white',
+                      borderColor: 'gray',
+                      borderWidth: 1,
+                      borderRadius: 5,
+                    }}
+                    keyboardType="number-pad"
+                    onChangeText={text => {
+                      this.processVolumeInput(text, false);
+                    }}
+                    maxLength={4}
+                    value={this.state.inputInitVolume}
+                  />
+                  <Spacer height={10} />
 
-                <Button
-                  title="Add Bottle"
-                  disabled={
-                    this.state.selectedItem === '' ||
-                    this.state.inputCurrentVolume === '' ||
-                    this.state.inputInitVolume === ''
-                  }
-                  buttonStyle={styles.buttonStyle}
-                  onPress={async () => {
-                    //Validate input volumes (Technically not possible to be less than zero, but leaving here in case changes are made to numpad input)
-                    if (this.state.inputCurrentVolume < 0) {
-                      Alert.alert('Current Volume cannot be less than 0!');
-                      return;
-                    } else if (this.state.inputInitVolume < 0) {
-                      Alert.alert('Initial Volume cannot be less than 0!');
-                      return;
-                    } else if (
-                      this.state.inputCurrentVolume > this.state.inputInitVolume
-                    ) {
-                      Alert.alert(
-                        'Current volume cannot be larger than initial volume!',
-                      );
-                      return;
+                  <Button
+                    title="Add Bottle"
+                    disabled={
+                      this.state.selectedItem === '' ||
+                      this.state.inputCurrentVolume === '' ||
+                      this.state.inputInitVolume === ''
                     }
+                    buttonStyle={styles.buttonStyle}
+                    onPress={async () => {
+                      //Validate input volumes (Technically not possible to be less than zero, but leaving here in case changes are made to numpad input)
+                      if (this.state.inputCurrentVolume < 0) {
+                        Alert.alert('Current Volume cannot be less than 0!');
+                        return;
+                      } else if (this.state.inputInitVolume < 0) {
+                        Alert.alert('Initial Volume cannot be less than 0!');
+                        return;
+                      } else if (
+                        this.state.inputCurrentVolume >
+                        this.state.inputInitVolume
+                      ) {
+                        Alert.alert(
+                          'Current volume cannot be larger than initial volume!',
+                        );
+                        return;
+                      }
 
-                    var res = await addBottle(
-                      this.state.selectedItem,
-                      this.props.number,
-                      this.state.inputCurrentVolume,
-                      this.state.inputInitVolume,
-                    );
-                    console.log('ADDING BOTTLE RESULT: ' + res);
-                    if (res === false) {
-                      Alert.alert(
-                        'There was an error adding your bottle. Please try again later',
+                      var res = await addBottle(
+                        this.state.selectedItem,
+                        this.props.number,
+                        this.state.inputCurrentVolume,
+                        this.state.inputInitVolume,
                       );
-                    }
-                    this.setState({
-                      selectedItem: '',
-                      inputCurrentVolume: '',
-                      inputInitVolume: '',
-                    });
+                      console.log('ADDING BOTTLE RESULT: ' + res);
+                      if (res === false) {
+                        Alert.alert(
+                          'There was an error adding your bottle. Please try again later',
+                        );
+                      }
+                      this.setState({
+                        selectedItem: '',
+                        inputCurrentVolume: '',
+                        inputInitVolume: '',
+                      });
 
-                    this.componentDidMount();
-                    this.props.reloadCallback();
-                    this.reloadPercentage();
-                  }}
-                />
-              </View>
-            )}
-          </View>
+                      this.componentDidMount();
+                      this.props.reloadCallback();
+                      this.reloadPercentage();
+                    }}
+                  />
+                </View>
+              )}
+            </View>
+          </>
         </Overlay>
 
         <Overlay
@@ -516,68 +541,70 @@ class BottleStatus extends React.Component {
           width={overlayWidth}
           height={overlayHeight}
           overlayStyle={styles.overlay}>
-          <View style={styles.backButtonRow}>
-            <TouchableOpacity
-              onPress={() => {
-                this.setState({
-                  detailsVisible: true,
-                  calibrateVisible: false,
-                  slideNum: 1,
-                  selectedItem: '',
-                });
-              }}>
-              <Icon name="back" size={33} type="antdesign" />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.headerStyle}>
-            {'Calibrate Pump ' + this.props.number}
-          </Text>
-          <Spacer height={10} />
-          <CalibrationBody
-            slide={this.state.slideNum}
-            pumpNum={this.props.number}
-          />
-
-          <View style={styles.calibrateControl}>
-            {this.state.slideNum > 1 && (
-              <Button
-                title="Prev"
-                buttonStyle={styles.calibrateButtons}
-                onPress={() => {
-                  this.setState({
-                    slideNum: this.state.slideNum - 1,
-                  });
-                }}
-              />
-            )}
-
-            {this.state.slideNum < calibrationSlideCount && (
-              <Button
-                title="Next"
-                buttonStyle={styles.calibrateButtons}
-                onPress={() => {
-                  this.setState({
-                    slideNum: this.state.slideNum + 1,
-                  });
-                }}
-              />
-            )}
-
-            {this.state.slideNum === calibrationSlideCount && (
-              <Button
-                title="Done"
-                buttonStyle={styles.calibrateButtons}
+          <>
+            <View style={styles.backButtonRow}>
+              <TouchableOpacity
                 onPress={() => {
                   this.setState({
                     detailsVisible: true,
                     calibrateVisible: false,
                     slideNum: 1,
+                    selectedItem: '',
                   });
-                }}
-              />
-            )}
-          </View>
+                }}>
+                <Icon name="back" size={33} type="antdesign" />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.headerStyle}>
+              {'Calibrate Pump ' + this.props.number}
+            </Text>
+            <Spacer height={10} />
+            <CalibrationBody
+              slide={this.state.slideNum}
+              pumpNum={this.props.number}
+            />
+
+            <View style={styles.calibrateControl}>
+              {this.state.slideNum > 1 && (
+                <Button
+                  title="Prev"
+                  buttonStyle={styles.calibrateButtons}
+                  onPress={() => {
+                    this.setState({
+                      slideNum: this.state.slideNum - 1,
+                    });
+                  }}
+                />
+              )}
+
+              {this.state.slideNum < calibrationSlideCount && (
+                <Button
+                  title="Next"
+                  buttonStyle={styles.calibrateButtons}
+                  onPress={() => {
+                    this.setState({
+                      slideNum: this.state.slideNum + 1,
+                    });
+                  }}
+                />
+              )}
+
+              {this.state.slideNum === calibrationSlideCount && (
+                <Button
+                  title="Done"
+                  buttonStyle={styles.calibrateButtons}
+                  onPress={() => {
+                    this.setState({
+                      detailsVisible: true,
+                      calibrateVisible: false,
+                      slideNum: 1,
+                    });
+                  }}
+                />
+              )}
+            </View>
+          </>
         </Overlay>
       </View>
     );

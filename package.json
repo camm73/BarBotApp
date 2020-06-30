@@ -9,6 +9,7 @@
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
   },
   "dependencies": {
+    "abort-controller": "^3.0.0",
     "aws-amplify": "^1.2.4",
     "aws-amplify-react-native": "^2.2.3",
     "aws-sdk": "^2.610.0",

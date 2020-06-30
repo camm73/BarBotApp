@@ -1,14 +1,22 @@
 import React from 'react';
 import {Alert} from 'react-native';
-const thumbnailApi = require('../config/thumbnailApi.json');
+import AbortController from 'abort-controller';
+
+//const thumbnailApi = require('../config/thumbnailApi.json');
 
 const barbotAddress = 'http://barbot.local:5000/';
 const shotSize = 1.5;
 
 export async function makeCocktail(name) {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 60000);
+
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'cocktail/' + encodeURI(name.toLowerCase()) + '/', {
       method: 'GET',
+      signal: abortController.signal,
     })
       .then(response => response.text())
       .then(responseText => {
@@ -34,9 +42,14 @@ export async function makeCocktail(name) {
 
 //Remove bottles from every pump
 export async function removeAllBottles() {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 30000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'removeAllBottles/', {
       method: 'GET',
+      signal: abortController.signal,
     })
       .then(response => response.text())
       .then(responseText => {
@@ -59,9 +72,15 @@ export async function removeAllBottles() {
 //TODO: Migrate reverse and pumpOn call to the removeBottle function on server-side
 export async function removeBottle(number, bottleName) {
   var result = '';
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 30000);
+
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'removeBottle/' + bottleName, {
       method: 'GET',
+      signal: abortController.signal,
     })
       .then(response => response.text())
       .then(responseJson => {
@@ -79,9 +98,15 @@ export async function removeBottle(number, bottleName) {
 
 //Check whether alcoholMode is enabled or not
 export async function checkAlcoholMode() {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 15000);
+
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'getAlcoholMode/', {
       method: 'GET',
+      signal: abortController.signal,
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -95,9 +120,14 @@ export async function checkAlcoholMode() {
 }
 
 export async function setAlcoholMode(modeSetting) {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'alcoholMode/', {
       method: 'POST',
+      signal: abortController.signal,
       body: JSON.stringify({
         enable: modeSetting,
       }),
@@ -118,6 +148,10 @@ export async function setAlcoholMode(modeSetting) {
 }
 
 export async function addBottle(bottleName, pumpNum, volume, originalVolume) {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(
       barbotAddress +
@@ -132,6 +166,7 @@ export async function addBottle(bottleName, pumpNum, volume, originalVolume) {
         '/',
       {
         method: 'GET',
+        signal: abortController.signal,
       },
     )
       .then(response => response.json())
@@ -153,9 +188,15 @@ export async function addRecipe(recipeName, ingredients, amounts) {
     amounts[i] = parseFloat(oldAmount.replace(/.oz/g, '')) / shotSize;
   }
 
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 15000);
+
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'addRecipe/', {
       method: 'POST',
+      signal: abortController.signal,
       body: JSON.stringify({
         name: recipeName,
         ingredients: ingredients,
@@ -182,9 +223,14 @@ export async function addRecipe(recipeName, ingredients, amounts) {
 }
 
 export async function getNewBottles() {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 30000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'getBottles/', {
       method: 'GET',
+      signal: abortController.signal,
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -198,9 +244,14 @@ export async function getNewBottles() {
 }
 
 export async function getAllBottles() {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 30000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'getAllBottles/', {
       method: 'GET',
+      signal: abortController.signal,
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -214,9 +265,14 @@ export async function getAllBottles() {
 }
 
 export async function addNewBottle(bottleName, isAlcohol) {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'newBottle/' + bottleName + '/alcohol=' + isAlcohol, {
       method: 'GET',
+      signal: abortController.signal,
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -230,9 +286,14 @@ export async function addNewBottle(bottleName, isAlcohol) {
 }
 
 export async function reverse() {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 10000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'reverse/', {
       method: 'GET',
+      signal: abortController.signal,
     })
       .then(response => response.text())
       .then(responseText => {
@@ -247,8 +308,13 @@ export async function reverse() {
 }
 
 export async function pumpOn(number) {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 15000);
   fetch(barbotAddress + 'pumpOn/' + number.toString() + '/', {
     method: 'GET',
+    signal: abortController.signal,
   })
     .then(response => response.text())
     .then(responseText => {
@@ -260,6 +326,10 @@ export async function pumpOn(number) {
 }
 
 export async function calibratePump(number, time) {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(
       barbotAddress +
@@ -269,6 +339,7 @@ export async function calibratePump(number, time) {
         time.replace('.', '%2E'),
       {
         method: 'GET',
+        signal: abortController.signal,
       },
     )
       .then(response => response.json())
@@ -284,9 +355,14 @@ export async function calibratePump(number, time) {
 }
 
 export async function getPumpSupportDetails() {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'pumpSupportDetails/', {
       method: 'GET',
+      signal: abortController.signal,
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -302,9 +378,14 @@ export async function getPumpSupportDetails() {
 }
 
 export async function getCurrentBottleVolume(bottleName) {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'volume/' + bottleName + '/', {
       method: 'GET',
+      signal: abortController.signal,
     })
       .then(response => response.json())
       .then(responseText => {
@@ -319,9 +400,14 @@ export async function getCurrentBottleVolume(bottleName) {
 }
 
 export async function getInitBottleVolume(bottleName) {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'initVolume/' + bottleName + '/', {
       method: 'GET',
+      signal: abortController.signal,
     })
       .then(response => response.json())
       .then(responseText => {
@@ -336,8 +422,13 @@ export async function getInitBottleVolume(bottleName) {
 }
 
 export async function pumpOff(number) {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 15000);
   fetch(barbotAddress + 'pumpOff/' + number.toString() + '/', {
     method: 'GET',
+    signal: abortController.signal,
   })
     .then(response => response.text())
     .then(responseText => {
@@ -349,9 +440,14 @@ export async function pumpOff(number) {
 }
 
 export async function isOnline() {
+  const abortController = new AbortController();
+  setTimeout(() => {
+    abortController.abort();
+  }, 5000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'heartbeat/', {
       method: 'GET',
+      signal: abortController.signal,
     })
       .then(response => response.text())
       .then(text => {

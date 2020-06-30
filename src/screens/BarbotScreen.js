@@ -201,62 +201,64 @@ class BarbotScreen extends React.Component {
           width={screenWidth / 1.3}
           height={265}
           overlayStyle={styles.overlay}>
-          <View style={styles.backButtonRow}>
-            <TouchableOpacity
+          <>
+            <View style={styles.backButtonRow}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({
+                    newBottleVisible: false,
+                    alcoholCheck: false,
+                  });
+                }}>
+                <Icon name="back" size={33} type="antdesign" />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.textStyle}>Add Bottle</Text>
+
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={{fontSize: 18, marginTop: 10}}>Bottle Name: </Text>
+              <TextInput
+                style={styles.textInput}
+                maxLength={24}
+                onChangeText={text => {
+                  this.setState({
+                    inputBottle: text,
+                  });
+                }}
+              />
+            </View>
+            <Spacer height={10} />
+            <CheckBox
+              title="Is alcohol?"
+              checked={this.state.alcoholCheck}
+              containerStyle={{
+                borderRadius: 10,
+                backgroundColor: 'white',
+              }}
               onPress={() => {
                 this.setState({
-                  newBottleVisible: false,
-                  alcoholCheck: false,
-                });
-              }}>
-              <Icon name="back" size={33} type="antdesign" />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.textStyle}>Add Bottle</Text>
-
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={{fontSize: 18, marginTop: 10}}>Bottle Name: </Text>
-            <TextInput
-              style={styles.textInput}
-              maxLength={24}
-              onChangeText={text => {
-                this.setState({
-                  inputBottle: text,
+                  alcoholCheck: !this.state.alcoholCheck,
                 });
               }}
             />
-          </View>
-          <Spacer height={10} />
-          <CheckBox
-            title="Is alcohol?"
-            checked={this.state.alcoholCheck}
-            containerStyle={{
-              borderRadius: 10,
-              backgroundColor: 'white',
-            }}
-            onPress={() => {
-              this.setState({
-                alcoholCheck: !this.state.alcoholCheck,
-              });
-            }}
-          />
-          <Spacer height={20} />
-          <Button
-            title="Add Bottle"
-            buttonStyle={styles.lightButtonStyle}
-            onPress={() => {
-              addNewBottle(
-                this.state.inputBottle,
-                this.state.alcoholCheck ? 'true' : 'false',
-              );
-              this.setState({
-                newBottleVisible: false,
-                inputBottle: '',
-                alcoholCheck: false,
-              });
-            }}
-          />
+            <Spacer height={20} />
+            <Button
+              title="Add Bottle"
+              buttonStyle={styles.lightButtonStyle}
+              onPress={() => {
+                addNewBottle(
+                  this.state.inputBottle,
+                  this.state.alcoholCheck ? 'true' : 'false',
+                );
+                this.setState({
+                  newBottleVisible: false,
+                  inputBottle: '',
+                  alcoholCheck: false,
+                });
+              }}
+            />
+          </>
         </Overlay>
 
         <Overlay
@@ -264,42 +266,44 @@ class BarbotScreen extends React.Component {
           width={recipeOverlayWidth}
           height={recipeOverlayHeight}
           overlayStyle={styles.overlay}>
-          <View style={styles.backButtonRow}>
-            <TouchableOpacity
-              onPress={() => {
-                this.setState({
-                  newRecipeVisible: false,
-                  recipeName: '',
-                  recipeIngredients: [],
-                  recipeAmounts: [],
-                  ingredientCount: 0,
-                });
-              }}>
-              <Icon name="back" size={33} type="antdesign" />
-            </TouchableOpacity>
-          </View>
+          <>
+            <View style={styles.backButtonRow}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({
+                    newRecipeVisible: false,
+                    recipeName: '',
+                    recipeIngredients: [],
+                    recipeAmounts: [],
+                    ingredientCount: 0,
+                  });
+                }}>
+                <Icon name="back" size={33} type="antdesign" />
+              </TouchableOpacity>
+            </View>
 
-          <Text style={styles.textStyle}>Add Recipe</Text>
+            <Text style={styles.textStyle}>Add Recipe</Text>
 
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={{fontSize: 18, marginTop: 10}}>Cocktail Name: </Text>
-            <TextInput
-              style={styles.textInput}
-              maxLength={24}
-              onChangeText={text => {
-                this.setState({
-                  recipeName: text,
-                });
-              }}
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={{fontSize: 18, marginTop: 10}}>Cocktail Name: </Text>
+              <TextInput
+                style={styles.textInput}
+                maxLength={24}
+                onChangeText={text => {
+                  this.setState({
+                    recipeName: text,
+                  });
+                }}
+              />
+            </View>
+            <Spacer height={15} />
+
+            <EditIngredientsComponent
+              recipeIngredients={this.state.recipeIngredients}
+              recipeAmounts={this.state.recipeAmounts}
+              saveRecipe={this.saveRecipe.bind(this)}
             />
-          </View>
-          <Spacer height={15} />
-
-          <EditIngredientsComponent
-            recipeIngredients={this.state.recipeIngredients}
-            recipeAmounts={this.state.recipeAmounts}
-            saveRecipe={this.saveRecipe.bind(this)}
-          />
+          </>
         </Overlay>
 
         <View style={styles.buttonRow}>

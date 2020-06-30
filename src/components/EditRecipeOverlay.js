@@ -31,25 +31,32 @@ class EditRecipeOverlay extends React.Component {
     editIngredients: false,
   };
 
+  _isMounted = false;
+
   componentDidMount() {
+    this._isMounted = true;
     this.loadIngredients();
   }
 
   loadIngredients() {
     getIngredients(this.state.recipeName)
       .then(response => {
-        this.setState({
-          ingredients: response,
-        });
+        if (this._isMounted) {
+          this.setState({
+            ingredients: response,
+          });
+        }
       })
       .catch(error => console.log(error));
   }
 
   resetComponent() {
     this.loadIngredients();
-    this.setState({
-      changeMade: false,
-    });
+    if (this._isMounted) {
+      this.setState({
+        changeMade: false,
+      });
+    }
   }
 
   getIngredientAmounts() {
@@ -73,11 +80,13 @@ class EditRecipeOverlay extends React.Component {
         newIngreds[recipeIngreds[i]] = parseFloat(recipeAmts[i] / shotSize);
       }
 
-      this.setState({
-        ingredients: newIngreds,
-        editIngredients: false,
-        changeMade: true,
-      });
+      if (this._isMounted) {
+        this.setState({
+          ingredients: newIngreds,
+          editIngredients: false,
+          changeMade: true,
+        });
+      }
     }
   }
 
@@ -105,6 +114,11 @@ class EditRecipeOverlay extends React.Component {
         console.log(err);
         Alert.alert('There was an error updating recipe!');
       });
+  }
+
+  //Make sure setState doesn't run after unmount
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {

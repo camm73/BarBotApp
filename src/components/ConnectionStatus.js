@@ -4,6 +4,8 @@ import {View, Text, Alert} from 'react-native';
 import {isOnline} from '../api/Control';
 
 class ConnectionStatus extends React.Component {
+  _isMounted = false;
+
   state = {
     color: 'red',
     textContent: 'Disconnected',
@@ -13,7 +15,7 @@ class ConnectionStatus extends React.Component {
   checkOnline() {
     isOnline()
       .then(response => {
-        if (response === 'online') {
+        if (response === 'online' && this._isMounted) {
           this.setState({
             textContent: 'Connected',
             color: 'limegreen',
@@ -21,15 +23,19 @@ class ConnectionStatus extends React.Component {
         }
       })
       .catch(error => {
-        this.setState({
-          textContent: 'Disconnected',
-          color: 'red',
-        });
+        if (this._isMounted) {
+          this.setState({
+            textContent: 'Disconnected',
+            color: 'red',
+          });
+        }
         console.log(error);
       });
   }
 
   componentDidMount() {
+    this._isMounted = true;
+
     this.checkOnline();
 
     if (!this.state.hearbeatRunning) {
@@ -40,6 +46,11 @@ class ConnectionStatus extends React.Component {
         hearbeatRunning: true,
       });
     }
+  }
+
+  //Stop state from updating after unmount
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {

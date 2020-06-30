@@ -29,6 +29,8 @@ class MenuItem extends React.Component {
     super(props);
   }
 
+  _isMounted = false;
+
   state = {
     ingredients: {},
     imageExists: false,
@@ -38,11 +40,14 @@ class MenuItem extends React.Component {
   };
 
   componentDidMount() {
+    this._isMounted = true;
     getIngredients(this.props.name)
       .then(response => {
-        this.setState({
-          ingredients: response,
-        });
+        if (this._isMounted) {
+          this.setState({
+            ingredients: response,
+          });
+        }
       })
       .catch(error => console.log(error));
     verifyImageExists(this.props.name, this.setImageExists.bind(this));
@@ -52,22 +57,33 @@ class MenuItem extends React.Component {
     //Load thumbnail
     if (status === true) {
       var link = getThumbnail(this.props.name);
-      this.setState({
-        thumbnailLink: link,
-        imageExists: true,
-      });
+      if (this._isMounted) {
+        this.setState({
+          thumbnailLink: link,
+          imageExists: true,
+        });
+      }
     } else {
-      this.setState({
-        imageExists: status,
-      });
+      if (this._isMounted) {
+        this.setState({
+          imageExists: status,
+        });
+      }
     }
   }
 
   imageUploadCallback() {
-    this.setState({
-      infoVisible: false,
-    });
+    if (this._isMounted) {
+      this.setState({
+        infoVisible: false,
+      });
+    }
     this.props.reloadCallback();
+  }
+
+  //Make sure updates don't occur after unmounting
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {
@@ -159,41 +175,43 @@ class MenuItem extends React.Component {
           width={screenWidth - 100}
           height={screenHeight / 1.6}
           overlayStyle={styles.overlayStyle}>
-          <Text style={styles.headerText}>{this.props.name}</Text>
+          <>
+            <Text style={styles.headerText}>{this.props.name}</Text>
 
-          <CocktailThumbnailButton
-            name={this.props.name}
-            imageSrc={
-              this.state.imageExists
-                ? {uri: this.state.thumbnailLink}
-                : defaultImage
-            }
-            imageUploadCallback={this.imageUploadCallback.bind(this)}
-          />
+            <CocktailThumbnailButton
+              name={this.props.name}
+              imageSrc={
+                this.state.imageExists
+                  ? {uri: this.state.thumbnailLink}
+                  : defaultImage
+              }
+              imageUploadCallback={this.imageUploadCallback.bind(this)}
+            />
 
-          <Spacer height={10} />
-          <Text style={styles.textStyle}>Ingredients</Text>
+            <Spacer height={10} />
+            <Text style={styles.textStyle}>Ingredients</Text>
 
-          {Object.keys(this.state.ingredients).map(key => (
-            <View>
-              <Text style={styles.ingredientText}>
-                {toUpper(key) +
-                  ':  ' +
-                  this.state.ingredients[key] * shotSize +
-                  ' (fl oz)'}
-              </Text>
-              <Spacer height={10} />
-            </View>
-          ))}
-          <Button
-            title="Done"
-            buttonStyle={styles.buttonStyle}
-            onPress={() => {
-              this.setState({
-                infoVisible: false,
-              });
-            }}
-          />
+            {Object.keys(this.state.ingredients).map(key => (
+              <View key={key}>
+                <Text style={styles.ingredientText}>
+                  {toUpper(key) +
+                    ':  ' +
+                    this.state.ingredients[key] * shotSize +
+                    ' (fl oz)'}
+                </Text>
+                <Spacer height={10} />
+              </View>
+            ))}
+            <Button
+              title="Done"
+              buttonStyle={styles.buttonStyle}
+              onPress={() => {
+                this.setState({
+                  infoVisible: false,
+                });
+              }}
+            />
+          </>
         </Overlay>
       </View>
     );

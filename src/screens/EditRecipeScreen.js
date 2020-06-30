@@ -109,7 +109,7 @@ class EditRecipeScreen extends React.Component {
               <Spacer height={25} />
             </View>
           )}
-          keyExtractor={item => item.name}
+          keyExtractor={(item, index) => index.toString()}
         />
       </View>
     );

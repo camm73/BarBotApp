@@ -146,6 +146,7 @@ class HomeScreen extends React.Component {
               keyboardShouldPersistTaps="handled">
               {this.state.pumpDetails.map(pumpObj => (
                 <BottleStatus
+                  key={pumpObj.pumpNum}
                   number={pumpObj.pumpNum}
                   pumpType={pumpObj.type}
                   pumpTime={pumpObj.pumpTime}
@@ -187,7 +188,7 @@ class HomeScreen extends React.Component {
             <Spacer height={10} />
 
             {this.state.cocktailMenu.map(cocktail => (
-              <View>
+              <View key={cocktail}>
                 <MenuItem
                   name={toUpper(cocktail)}
                   reloadCallback={this.reloadCallback.bind(this)}
