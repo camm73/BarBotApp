@@ -33,6 +33,15 @@ class HeaderComponent extends React.Component {
                       this.props.navigation.navigate('ManageBarbot');
                     } else {
                       this.props.navigation.navigate('Home');
+                      var routes = this.props.navigation.state.routes;
+
+                      //Find reloadCallback in route params
+                      for (var i in routes) {
+                        if (routes[i].routeName === 'Home') {
+                          routes[i].params.reloadCallback();
+                          break;
+                        }
+                      }
                     }
                   }}
                 />
