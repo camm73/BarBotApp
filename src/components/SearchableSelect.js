@@ -1,7 +1,14 @@
 /* eslint-disable react/no-did-update-set-state */
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {View, FlatList, StyleSheet, TextInput, Keyboard} from 'react-native';
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  TextInput,
+  Keyboard,
+  Alert,
+} from 'react-native';
 import {Button} from 'react-native-elements';
 
 const defaultWidth = 120;
@@ -11,10 +18,16 @@ const defaultListHeight = 130;
 
 //Needs (data and selectItemCallback) as props
 class SearchableSelect extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.input = React.createRef();
+  }
   state = {
     listVisible: false,
     inputText: '',
     ignoreDefault: false,
+    isScrolling: false,
   };
 
   componentDidMount() {}
@@ -45,6 +58,8 @@ class SearchableSelect extends React.Component {
       <View>
         <TextInput
           placeholder={this.props.placeholder}
+          ref={this.input}
+          returnKeyType="done"
           style={{
             width: this.props.width,
             height:
@@ -78,6 +93,18 @@ class SearchableSelect extends React.Component {
               listVisible: true,
             });
           }}
+          onSubmitEditing={() => {
+            this.setState({
+              listVisible: false,
+            });
+          }}
+          onBlur={() => {
+            if (!this.state.isScrolling) {
+              this.setState({
+                listVisible: false,
+              });
+            }
+          }}
         />
         {this.state.listVisible && (
           <FlatList
@@ -91,6 +118,20 @@ class SearchableSelect extends React.Component {
                   : 120,
             }}
             keyboardShouldPersistTaps={'handled'}
+            onScrollBeginDrag={() => {
+              this.setState({
+                isScrolling: true,
+              });
+            }}
+            decelerationRate={0.99}
+            onMomentumScrollEnd={() => {
+              if(!this.input.current.isFocused()){
+                this.input.current.focus();
+              }
+              this.setState({
+                isScrolling: false,
+              });
+            }}
             renderItem={({item}) => (
               <Button
                 primary
@@ -116,6 +157,7 @@ class SearchableSelect extends React.Component {
                   padding: 0,
                 }}
                 onPress={() => {
+                  console.log('Selected: ' + item.value);
                   this.setState({
                     inputText: item.value,
                     listVisible: false,

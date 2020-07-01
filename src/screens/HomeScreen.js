@@ -59,8 +59,9 @@ class HomeScreen extends React.Component {
       var newList = [];
       for (var i = 0; i < list.length; i++) {
         newList.push({
-          id: i,
+          id: i.toString(),
           name: list[i],
+          value: list[i],
         });
       }
 
