@@ -27,7 +27,6 @@ import {toUpper} from '../utils/Tools';
 import ProgressBar from '../components/ProgressBar';
 import {withNavigation} from 'react-navigation';
 import CalibrationBody, {calibrationSlideCount} from './CalibrationBody';
-import SearchableDropdown from 'react-native-searchable-dropdown';
 import SearchableSelect from './SearchableSelect';
 
 const scaleFactor = 1.5;
@@ -412,45 +411,6 @@ class BottleStatus extends React.Component {
                     placeholder={'Select a bottle...'}
                     width={overlayWidth / 1.4}
                   />
-                  {false && (
-                    <SearchableDropdown
-                      onItemSelect={item => {
-                        //console.log('You selected: ' + item);
-                        this.setState({
-                          selectedItem: item.name,
-                        });
-                      }}
-                      containerStyle={{padding: 5}}
-                      itemStyle={{
-                        padding: 10,
-                        marginTop: 2,
-                        backgroundColor: '#ddd',
-                        borderColor: '#bbb',
-                        borderWidth: 1,
-                        borderRadius: 5,
-                      }}
-                      itemTextStyle={{color: '#222'}}
-                      itemsContainerStyle={{maxHeight: 120}}
-                      items={this.props.bottleItems}
-                      resetValue={false}
-                      textInputProps={{
-                        placeholder: 'Select a bottle...',
-                        underlineColorAndroid: 'transparent',
-                        style: {
-                          padding: 12,
-                          borderWidth: 1,
-                          borderColor: '#ccc',
-                          borderRadius: 5,
-                          backgroundColor: 'white',
-                          width: overlayWidth / 1.5,
-                        },
-                        onTextChange: text => {},
-                      }}
-                      listProps={{
-                        nestedScrollEnabled: true,
-                      }}
-                    />
-                  )}
                   <Spacer height={10} />
                   <Text style={styles.textStyle}>
                     Current Bottle Volume (mL):
