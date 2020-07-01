@@ -85,6 +85,8 @@ class EditRecipeScreen extends React.Component {
     this.props.navigation.setParams({
       reloadCallback: this.reloadCallback.bind(this),
     });
+    //Load initial recipes
+    this.loadMoreRecipes();
   }
 
   render() {
@@ -95,9 +97,9 @@ class EditRecipeScreen extends React.Component {
           contentContainerStyle={styles.scrollContainer}
           keyboardShouldPersistTaps="handled"
           data={this.state.cocktailList}
-          onEndReachedThreshold={0.5}
-          maxToRenderPerBatch={2}
-          onEndReached={this.loadMoreRecipes()}
+          onEndReachedThreshold={0.8}
+          maxToRenderPerBatch={5}
+          onEndReached={this.loadMoreRecipes.bind(this)}
           initialNumToRender={this.state.loadNum}
           renderItem={({item}) => (
             <View>

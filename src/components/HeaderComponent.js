@@ -9,7 +9,6 @@ import {
   Alert,
 } from 'react-native';
 //import {Button} from 'react-native-elements';
-import Spacer from '../components/Spacer';
 import {withNavigation, SafeAreaView} from 'react-navigation';
 import {Icon} from 'react-native-elements';
 
@@ -17,6 +16,10 @@ var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 
 class HeaderComponent extends React.Component {
+  state = {
+    disableRefresh: false,
+  };
+
   render() {
     if (this.props.backVisible || this.props.settingsVisible) {
       return (
@@ -51,7 +54,18 @@ class HeaderComponent extends React.Component {
               style={styles.textContainer}
               onPress={() => {
                 if (this.props.reloadCallback !== undefined) {
-                  this.props.reloadCallback();
+                  if (!this.state.disableRefresh) {
+                    this.props.reloadCallback();
+                    this.setState({
+                      disableRefresh: true,
+                    });
+
+                    setTimeout(() => {
+                      this.setState({
+                        disableRefresh: false,
+                      });
+                    }, 2000);
+                  }
                 }
               }}>
               <Text style={styles.textStyle}>BarBot</Text>
@@ -77,7 +91,18 @@ class HeaderComponent extends React.Component {
             <TouchableOpacity
               style={styles.textContainer}
               onPress={() => {
-                this.props.reloadCallback();
+                if (!this.state.disableRefresh) {
+                  this.props.reloadCallback();
+                  this.setState({
+                    disableRefresh: true,
+                  });
+
+                  setTimeout(() => {
+                    this.setState({
+                      disableRefresh: false,
+                    });
+                  }, 2000);
+                }
               }}>
               <Text style={styles.textStyle}>BarBot</Text>
             </TouchableOpacity>

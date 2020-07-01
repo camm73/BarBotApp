@@ -226,7 +226,7 @@ class BottleStatus extends React.Component {
 
   componentDidUpdate() {
     if (this.props.reload) {
-      console.log('RESETTING BOTTLE!!');
+      //console.log('RESETTING BOTTLE!!');
       this.resetBottle();
     }
   }
@@ -245,7 +245,7 @@ class BottleStatus extends React.Component {
             this.setState({
               detailsVisible: true,
             });
-            console.log('Item: ' + this.state.selectedItem);
+            //console.log('Item: ' + this.state.selectedItem);
           }}>
           <View style={{paddingHorizontal: 0.8}}>
             <ImageBackground
@@ -278,7 +278,7 @@ class BottleStatus extends React.Component {
                     selectedItem: '',
                   });
 
-                  console.log('CLOSE Item: ' + this.state.selectedItem);
+                  //console.log('CLOSE Item: ' + this.state.selectedItem);
                 }}>
                 <Icon name="back" size={33} type="antdesign" />
               </TouchableOpacity>
@@ -403,7 +403,7 @@ class BottleStatus extends React.Component {
                 <View style={styles.buttonContainer}>
                   <SearchableDropdown
                     onItemSelect={item => {
-                      console.log('You selected: ' + item);
+                      //console.log('You selected: ' + item);
                       this.setState({
                         selectedItem: item.name,
                       });
@@ -432,7 +432,7 @@ class BottleStatus extends React.Component {
                         backgroundColor: 'white',
                         width: overlayWidth / 1.5,
                       },
-                      onTextChange: text => console.log(text),
+                      onTextChange: text => {},
                     }}
                     listProps={{
                       nestedScrollEnabled: true,

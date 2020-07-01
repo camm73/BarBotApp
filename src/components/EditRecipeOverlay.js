@@ -126,12 +126,12 @@ class EditRecipeOverlay extends React.Component {
       <Overlay
         width={recipeOverlayWidth}
         height={recipeOverlayHeight}
-        visible={this.props.visible}
+        isVisible={this.props.visible}
         overlayStyle={styles.overlay}>
-        <View style={styles.backButtonRow}>
-          <TouchableOpacity
-            onPress={
-              () => {
+        <>
+          <View style={styles.backButtonRow}>
+            <TouchableOpacity
+              onPress={() => {
                 if (this.state.editIngredients) {
                   this.setState({
                     editIngredients: false,
@@ -164,140 +164,140 @@ class EditRecipeOverlay extends React.Component {
                     this.resetComponent();
                   }
                 }
-              }
-              //TODO: Reset the component and use callback to close overlay
-              //this.props.closeCallback();
-            }>
-            <Icon name="back" size={33} type="antdesign" />
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.textStyle}>Edit Recipe</Text>
-        {!this.state.editIngredients && (
-          <>
-            <View style={styles.topSection}>
-              <CocktailThumbnailButton
-                name={this.state.recipeName}
-                requestImage={true}
-                imageStyle={styles.imageStyle}
-              />
-              <View style={styles.topEditContainer}>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    fontSize: 18,
-                    textDecorationLine: 'underline',
-                  }}>
-                  {this.state.recipeName}
-                </Text>
-                <Button
-                  buttonStyle={styles.deleteButton}
-                  title="Delete Cocktail"
-                  onPress={() => {
-                    Alert.alert(
-                      'Confirm Delete',
-                      'Are you sure you want to delete this recipe?',
-                      [
-                        {
-                          text: 'Cancel',
-                          onPress: () => {},
-                        },
-                        {
-                          text: 'Delete',
-                          onPress: () => {
-                            //Delete from dynamo (Maybe delete photo from S3 in the future)
-                            deleteRecipe(this.state.recipeName).then(res => {
-                              if (res === true) {
-                                Alert.alert(
-                                  'Removal Success',
-                                  'Successfully deleted ' +
-                                    this.state.recipeName +
-                                    ' from the database.',
-                                  [
-                                    {
-                                      text: 'OK',
-                                      onPress: () => {
-                                        this.props.closeCallback();
-                                        this.resetComponent();
-                                      },
-                                    },
-                                  ],
-                                );
-                              } else {
-                                Alert.alert(
-                                  'There was an error trying to delete ' +
-                                    this.state.recipeName +
-                                    ' from the database.',
-                                );
-                              }
-                            });
-                            //TODO: Tell Barbot (and IoT core) to refresh list
-                          },
-                        },
-                      ],
-                    );
-                  }}
-                />
-              </View>
-            </View>
-            <Text style={styles.textStyle}>Ingredients</Text>
-
-            <View
-              style={{
-                maxHeight: 110,
-                height:
-                  Object.keys(this.state.ingredients).length * 35 < 105
-                    ? Object.keys(this.state.ingredients).length * 35
-                    : 105,
               }}>
-              <ScrollView
-                keyboardShouldPersistTaps="handled"
-                contentContainerStyle={styles.ingredientScroll}>
-                {Object.keys(this.state.ingredients).length === 0 && (
-                  <Text style={styles.ingredientText}>
-                    No Ingredients Selected
+              <Icon name="back" size={33} type="antdesign" />
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.textStyle}>Edit Recipe</Text>
+          {!this.state.editIngredients && (
+            <>
+              <View style={styles.topSection}>
+                <CocktailThumbnailButton
+                  name={this.state.recipeName}
+                  requestImage={true}
+                  imageStyle={styles.imageStyle}
+                />
+                <View style={styles.topEditContainer}>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      fontSize: 18,
+                      textDecorationLine: 'underline',
+                    }}>
+                    {this.state.recipeName}
                   </Text>
-                )}
-                {Object.keys(this.state.ingredients).map(key => (
-                  <View style={styles.ingredientContainer}>
-                    <Text style={styles.ingredientText}>{key + ':  '}</Text>
-                    <Text style={styles.ingredientText}>
-                      {this.state.ingredients[key] * shotSize + ' fl oz'}
-                    </Text>
-                  </View>
-                ))}
-              </ScrollView>
-            </View>
+                  <Button
+                    buttonStyle={styles.deleteButton}
+                    title="Delete Cocktail"
+                    onPress={() => {
+                      Alert.alert(
+                        'Confirm Delete',
+                        'Are you sure you want to delete this recipe?',
+                        [
+                          {
+                            text: 'Cancel',
+                            onPress: () => {},
+                          },
+                          {
+                            text: 'Delete',
+                            onPress: () => {
+                              //Delete from dynamo (Maybe delete photo from S3 in the future)
+                              deleteRecipe(this.state.recipeName).then(res => {
+                                if (res === true) {
+                                  Alert.alert(
+                                    'Removal Success',
+                                    'Successfully deleted ' +
+                                      this.state.recipeName +
+                                      ' from the database.',
+                                    [
+                                      {
+                                        text: 'OK',
+                                        onPress: () => {
+                                          this.props.closeCallback();
+                                          this.resetComponent();
+                                        },
+                                      },
+                                    ],
+                                  );
+                                } else {
+                                  Alert.alert(
+                                    'There was an error trying to delete ' +
+                                      this.state.recipeName +
+                                      ' from the database.',
+                                  );
+                                }
+                              });
+                              //TODO: Tell Barbot (and IoT core) to refresh list
+                            },
+                          },
+                        ],
+                      );
+                    }}
+                  />
+                </View>
+              </View>
+              <Text style={styles.textStyle}>Ingredients</Text>
 
-            <Button
-              buttonStyle={styles.lightButtonStyle}
-              title="Edit Ingredients"
-              onPress={() => {
-                this.setState({
-                  editIngredients: true,
-                });
-              }}
+              <View
+                style={{
+                  maxHeight: 110,
+                  height:
+                    Object.keys(this.state.ingredients).length * 35 < 105
+                      ? Object.keys(this.state.ingredients).length * 35
+                      : 105,
+                }}>
+                <ScrollView
+                  keyboardShouldPersistTaps="handled"
+                  contentContainerStyle={styles.ingredientScroll}>
+                  <>
+                    {Object.keys(this.state.ingredients).length === 0 && (
+                      <Text style={styles.ingredientText}>
+                        No Ingredients Selected
+                      </Text>
+                    )}
+                    {Object.keys(this.state.ingredients).map(key => (
+                      <View style={styles.ingredientContainer} key={key}>
+                        <Text style={styles.ingredientText}>{key + ':  '}</Text>
+                        <Text style={styles.ingredientText}>
+                          {this.state.ingredients[key] * shotSize + ' fl oz'}
+                        </Text>
+                      </View>
+                    ))}
+                  </>
+                </ScrollView>
+              </View>
+
+              <Button
+                buttonStyle={styles.lightButtonStyle}
+                title="Edit Ingredients"
+                onPress={() => {
+                  this.setState({
+                    editIngredients: true,
+                  });
+                }}
+              />
+
+              <Button
+                buttonStyle={styles.saveButtonStyle}
+                title="Save Recipe"
+                onPress={() => {
+                  this.saveRecipe();
+                }}
+              />
+            </>
+          )}
+
+          {this.state.editIngredients && (
+            <EditIngredientsComponent
+              recipeIngredients={Object.keys(this.state.ingredients)}
+              recipeAmounts={Object.keys(this.state.ingredients).map(key =>
+                (this.state.ingredients[key] * shotSize).toString(),
+              )}
+              saveRecipe={this.saveIngredients.bind(this)}
             />
-
-            <Button
-              buttonStyle={styles.saveButtonStyle}
-              title="Save Recipe"
-              onPress={() => {
-                this.saveRecipe();
-              }}
-            />
-          </>
-        )}
-
-        {this.state.editIngredients && (
-          <EditIngredientsComponent
-            recipeIngredients={Object.keys(this.state.ingredients)}
-            recipeAmounts={Object.keys(this.state.ingredients).map(key =>
-              (this.state.ingredients[key] * shotSize).toString(),
-            )}
-            saveRecipe={this.saveIngredients.bind(this)}
-          />
-        )}
+          )}
+        </>
       </Overlay>
     );
   }
