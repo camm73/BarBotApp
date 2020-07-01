@@ -387,7 +387,7 @@ export async function getCurrentBottleVolume(bottleName) {
       method: 'GET',
       signal: abortController.signal,
     })
-      .then(response => response.json())
+      .then(response => response.text())
       .then(responseText => {
         //console.log('Current Volume of ' + bottleName + ' is: ' + responseText);
         resolve(responseText);
@@ -409,7 +409,7 @@ export async function getInitBottleVolume(bottleName) {
       method: 'GET',
       signal: abortController.signal,
     })
-      .then(response => response.json())
+      .then(response => response.text())
       .then(responseText => {
         //console.log('Initial Volume of ' + bottleName + ' is: ' + responseText);
         resolve(responseText);

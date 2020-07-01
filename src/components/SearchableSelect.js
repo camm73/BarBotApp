@@ -125,7 +125,7 @@ class SearchableSelect extends React.Component {
             }}
             decelerationRate={0.99}
             onMomentumScrollEnd={() => {
-              if(!this.input.current.isFocused()){
+              if (!this.input.current.isFocused()) {
                 this.input.current.focus();
               }
               this.setState({
