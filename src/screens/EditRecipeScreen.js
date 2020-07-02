@@ -45,7 +45,7 @@ class EditRecipeScreen extends React.Component {
 
           for (var i = 0; i < res.Items.length; i++) {
             cocktailNames.push({
-              name: toUpper(res.Items[i]['cocktailName']['S']),
+              name: toUpper(res.Items[i].cocktailName.S),
             });
           }
 
@@ -74,11 +74,17 @@ class EditRecipeScreen extends React.Component {
   }
 
   reloadCallback() {
-    this.setState({
-      cocktailList: [],
-      loading: false,
-      haltLoading: false,
-    });
+    this.setState(
+      {
+        cocktailList: [],
+        loading: false,
+        haltLoading: false,
+        lastKey: {},
+      },
+      () => {
+        this.loadMoreRecipes();
+      },
+    );
   }
 
   componentDidMount() {
@@ -111,7 +117,7 @@ class EditRecipeScreen extends React.Component {
               <Spacer height={25} />
             </View>
           )}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => item.name}
         />
       </View>
     );

@@ -55,8 +55,8 @@ class EditIngredientsComponent extends React.Component {
           continue;
         }
         fullList.push({
-          id: i,
-          name: response[i],
+          id: i.toString(),
+          name: response[i].toString(),
           value: response[i],
         });
       }

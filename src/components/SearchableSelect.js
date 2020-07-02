@@ -132,6 +132,7 @@ class SearchableSelect extends React.Component {
                 isScrolling: false,
               });
             }}
+            keyExtractor={(item, index) => item.name}
             renderItem={({item}) => (
               <Button
                 primary
