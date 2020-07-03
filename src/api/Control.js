@@ -29,6 +29,10 @@ export async function makeCocktail(name) {
           Alert.alert(
             'BarBot does not have the necessary ingredients for this cocktail. Sorry!',
           );
+        } else if (responseText === 'error') {
+          Alert.alert(
+            'An unexpected error occurred while BarBot was making your cocktail!',
+          );
         }
         resolve('DONE');
       })
@@ -55,11 +59,15 @@ export async function removeAllBottles() {
       .then(responseText => {
         if (responseText === 'true') {
           console.log('Successfully removed all bottles!');
-          resolve(responseText);
+        } else if (responseText === 'busy') {
+          console.log('Barbot is busy!');
+        } else if (responseText === 'error') {
+          console.log('Error removing all bottles');
         } else {
           console.log('Failed to remove all bottles');
-          resolve(responseText);
         }
+
+        resolve(responseText);
       })
       .catch(error => {
         console.log('Issue removing all bottles!');
@@ -545,6 +553,23 @@ export async function getBottleName(number) {
       .catch(error => {
         console.log(error);
         reject(error);
+      });
+  });
+}
+
+//Refreshes local recipes on the pi by fetching from dynamo
+export async function refreshRecipes() {
+  return new Promise(function(resolve, reject) {
+    fetch(barbotAddress + 'refreshRecipes/', {
+      methods: 'GET',
+    })
+      .then(response => response.text())
+      .then(resText => {
+        resolve(resText);
+      })
+      .catch(error => {
+        console.log(error);
+        reject('Error refreshing cocktail recipes');
       });
   });
 }

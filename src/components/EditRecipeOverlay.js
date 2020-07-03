@@ -13,6 +13,7 @@ import {Overlay, Icon, Button} from 'react-native-elements';
 import CocktailThumbnailButton from '../components/CocktailThumbnailButton';
 import {updateRecipe, deleteRecipe, getIngredients} from '../api/Cloud';
 import EditIngredientsComponent from './EditIngredientsComponent';
+import {refreshRecipes} from '../api/Control';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -99,6 +100,13 @@ class EditRecipeOverlay extends React.Component {
             {
               text: 'OK',
               onPress: () => {
+                refreshRecipes()
+                  .then(res => {
+                    this.props.reloadCallback();
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
                 this.props.closeCallback();
                 this.resetComponent();
                 this.props.reloadCallback();

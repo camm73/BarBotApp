@@ -14,6 +14,7 @@ import {toUpper} from '../utils/Tools';
 import {verifyImageExists, getThumbnail, getIngredients} from '../api/Cloud';
 import EditRecipeOverlay from './EditRecipeOverlay';
 import CocktailThumbnailButton from './CocktailThumbnailButton';
+import LoadingComponent from './LoadingComponent';
 
 const defaultImage = require('../assets/defaultCocktail.jpg');
 
@@ -37,6 +38,7 @@ class MenuItem extends React.Component {
     thumbnailLink: '',
     editVisible: false,
     infoVisible: false,
+    isMaking: false,
   };
 
   componentDidMount() {
@@ -89,6 +91,11 @@ class MenuItem extends React.Component {
   render() {
     return (
       <View style={styles.containerStyle}>
+        <LoadingComponent
+          title="Making Cocktail"
+          message="Please wait while BarBot makes your cocktail."
+          visible={this.state.isMaking}
+        />
         <View style={styles.imageContainer}>
           <CocktailThumbnailButton
             imageStyle={styles.imageStyle}
@@ -135,7 +142,15 @@ class MenuItem extends React.Component {
                     {
                       text: 'Make Cocktail',
                       onPress: () => {
-                        makeCocktail(this.props.name);
+                        this.setState({
+                          isMaking: true,
+                        });
+                        makeCocktail(this.props.name).then(res => {
+                          console.log("Toggling off");
+                          this.setState({
+                            isMaking: false,
+                          });
+                        });
                       },
                     },
                   ],

@@ -17,16 +17,16 @@ import HeaderComponent from '../components/HeaderComponent';
 import Spacer from '../components/Spacer';
 import {
   addNewBottle,
-  getAllBottles,
+  refreshRecipes,
   addRecipe,
   cleanPumps,
   removeAllBottles,
   checkAlcoholMode,
   setAlcoholMode,
 } from '../api/Control';
-import IngredientItem from '../components/IngredientItem';
 import {toUpper} from '../utils/Tools';
 import EditIngredientsComponent from '../components/EditIngredientsComponent';
+import LoadingComponent from '../components/LoadingComponent';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -60,6 +60,9 @@ class BarbotScreen extends React.Component {
     ingredientCount: 0,
     alcoholMode: false,
     alcoholCheck: false,
+    loadingMessage: '',
+    loadingTitle: '',
+    showLoading: false,
   };
 
   //Callback for EditIngredients Component
@@ -79,7 +82,16 @@ class BarbotScreen extends React.Component {
             [
               {
                 text: 'OK',
-                onPress: this.props.navigation.state.params.reloadMenu(),
+                onPress: () => {
+                  refreshRecipes()
+                    .then(res => {
+                      this.props.navigation.state.params.reloadMenu();
+                    })
+                    .catch(err => {
+                      console.log(err);
+                      this.props.navigation.state.params.reloadMenu();
+                    });
+                },
               },
             ],
           );
@@ -104,6 +116,11 @@ class BarbotScreen extends React.Component {
   render() {
     return (
       <View style={styles.mainView}>
+        <LoadingComponent
+          title={this.state.loadingTitle}
+          message={this.state.loadingMessage}
+          visible={this.state.showLoading}
+        />
         <Text style={styles.headerText}>Manage Menu</Text>
 
         <View style={styles.buttonRow}>
@@ -154,7 +171,11 @@ class BarbotScreen extends React.Component {
                 });
             }}>
             <ImageBackground
-              style={{height: 120 * iconScale, width: 120 * iconScale}}
+              style={{
+                height: 120 * iconScale,
+                width: 120 * iconScale,
+                marginLeft: 10,
+              }}
               source={require('../assets/alcoholModeIcon.png')}
             />
             <Text style={styles.iconText}>
@@ -323,6 +344,13 @@ class BarbotScreen extends React.Component {
                     text: 'Confirm',
                     onPress: () => {
                       console.log('Starting removal of all bottles...');
+                      this.setState({
+                        showLoading: true,
+                        loadingMessage:
+                          'Please wait while BarBot removes your bottles.',
+                        loadingTitle: 'Removing Bottles',
+                      });
+
                       removeAllBottles().then(response => {
                         if (response === 'true') {
                           this.props.navigation.state.params.resetBottles();
@@ -331,9 +359,17 @@ class BarbotScreen extends React.Component {
                           Alert.alert(
                             'BarBot is busy right now! Try again soon.',
                           );
+                        } else if (response === 'error') {
+                          Alert.alert(
+                            'There was an error trying to remove all bottles!',
+                          );
                         } else {
                           Alert.alert('Failed to remove all bottles!');
                         }
+
+                        this.setState({
+                          showLoading: false,
+                        });
                       });
                     },
                   },

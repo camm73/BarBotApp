@@ -11,6 +11,7 @@ import {
   getCocktailMenu,
   getNewBottles,
   getPumpSupportDetails,
+  refreshRecipes,
 } from '../api/Control';
 import {toUpper} from '../utils/Tools';
 import ConnectionStatus from '../components/ConnectionStatus';

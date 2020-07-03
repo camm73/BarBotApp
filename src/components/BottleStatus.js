@@ -28,6 +28,7 @@ import ProgressBar from '../components/ProgressBar';
 import {withNavigation} from 'react-navigation';
 import CalibrationBody, {calibrationSlideCount} from './CalibrationBody';
 import SearchableSelect from './SearchableSelect';
+import LoadingComponent from '../components/LoadingComponent';
 
 const scaleFactor = 1.5;
 
@@ -58,6 +59,7 @@ class BottleStatus extends React.Component {
     inputCurrentVolume: '',
     slideNum: 1,
     selectedItem: '',
+    isRemoving: false,
   };
 
   getTextColor(num) {
@@ -240,6 +242,11 @@ class BottleStatus extends React.Component {
   render() {
     return (
       <View>
+        <LoadingComponent
+          title="Removing Bottle"
+          message={'Please wait while bottle is removed.'}
+          visible={this.state.isRemoving}
+        />
         <TouchableOpacity
           onPress={() => {
             this.setState({
@@ -276,6 +283,8 @@ class BottleStatus extends React.Component {
                   this.setState({
                     detailsVisible: false,
                     selectedItem: '',
+                    inputInitVolume: '',
+                    inputCurrentVolume: '',
                   });
 
                   //console.log('CLOSE Item: ' + this.state.selectedItem);
@@ -348,6 +357,10 @@ class BottleStatus extends React.Component {
                     title="Remove Bottle"
                     buttonStyle={styles.buttonStyle}
                     onPress={async () => {
+                      this.setState({
+                        isRemoving: true,
+                        detailsVisible: false,
+                      });
                       removeBottle(this.props.number, this.state.bottleName)
                         .then(res => {
                           if (res === 'true') {
@@ -363,6 +376,11 @@ class BottleStatus extends React.Component {
                                 res,
                             );
                           }
+
+                          this.setState({
+                            isRemoving: false,
+                            detailsVisible: true,
+                          });
                         })
                         .catch(error => {
                           console.log(
@@ -371,6 +389,10 @@ class BottleStatus extends React.Component {
                               ': ' +
                               error,
                           );
+                          this.setState({
+                            isRemoving: false,
+                            detailsVisible: true,
+                          });
                           Alert.alert('Error removing bottle: ' + error);
                         });
                     }}
