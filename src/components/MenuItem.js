@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   View,
@@ -6,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from 'react-native';
 import {Button, Overlay} from 'react-native-elements';
 import Spacer from './Spacer';
@@ -208,25 +210,38 @@ class MenuItem extends React.Component {
                   : defaultImage
               }
               imageUploadCallback={this.imageUploadCallback.bind(this)}
+              imageStyle={{
+                width: screenHeight / 5,
+                height: screenHeight / 5,
+                borderRadius: 5,
+                alignSelf: 'center',
+              }}
             />
 
             <Spacer height={10} />
             <Text style={styles.textStyle}>Ingredients</Text>
+            <ScrollView
+              contentContainerStyle={{flex: 1, paddingTop: 10}}
+              keyboardShouldPersistTaps="handled"
+              scrollEnabled={
+                Object.keys(this.state.ingredients).length > 3 ? true : false
+              }>
+              {Object.keys(this.state.ingredients).map(key => (
+                <View key={key}>
+                  <Text style={styles.ingredientText}>
+                    {toUpper(key) +
+                      ':  ' +
+                      this.state.ingredients[key] * shotSize +
+                      ' (fl oz)'}
+                  </Text>
+                  <Spacer height={10} />
+                </View>
+              ))}
+            </ScrollView>
 
-            {Object.keys(this.state.ingredients).map(key => (
-              <View key={key}>
-                <Text style={styles.ingredientText}>
-                  {toUpper(key) +
-                    ':  ' +
-                    this.state.ingredients[key] * shotSize +
-                    ' (fl oz)'}
-                </Text>
-                <Spacer height={10} />
-              </View>
-            ))}
             <Button
               title="Done"
-              buttonStyle={styles.buttonStyle}
+              buttonStyle={styles.doneButton}
               onPress={() => {
                 this.setState({
                   infoVisible: false,
@@ -307,6 +322,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: 175,
     backgroundColor: '#7295A6',
+  },
+
+  doneButton: {
+    borderRadius: 20,
+    width: 175,
+    backgroundColor: '#7295A6',
+    marginBottom: 15,
+    marginTop: 8,
   },
 
   overlayStyle: {
