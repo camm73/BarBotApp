@@ -202,7 +202,27 @@ class BarbotScreen extends React.Component {
                     text: 'Confirm',
                     onPress: () => {
                       console.log('Starting flush of all pumps...');
-                      cleanPumps();
+                      this.setState({
+                        showLoading: true,
+                        loadingMessage: 'Flushing your ingredient pumps...',
+                        loadingTitle: 'Flushing Pumps',
+                      });
+                      cleanPumps()
+                        .then(res => {
+                          this.setState({
+                            showLoading: false,
+                            loadingMessage: '',
+                            loadingTitle: '',
+                          });
+                        })
+                        .catch(err => {
+                          console.log(err);
+                          this.setState({
+                            showLoading: false,
+                            loadingMessage: '',
+                            loadingTitle: '',
+                          });
+                        });
                     },
                   },
                 ],
@@ -351,26 +371,31 @@ class BarbotScreen extends React.Component {
                         loadingTitle: 'Removing Bottles',
                       });
 
-                      removeAllBottles().then(response => {
-                        if (response === 'true') {
-                          this.props.navigation.state.params.resetBottles();
-                          Alert.alert('Successfully removed all bottles!');
-                        } else if (response === 'busy') {
-                          Alert.alert(
-                            'BarBot is busy right now! Try again soon.',
-                          );
-                        } else if (response === 'error') {
-                          Alert.alert(
-                            'There was an error trying to remove all bottles!',
-                          );
-                        } else {
-                          Alert.alert('Failed to remove all bottles!');
-                        }
+                      removeAllBottles()
+                        .then(response => {
+                          if (response === 'true') {
+                            this.props.navigation.state.params.resetBottles();
+                            Alert.alert('Successfully removed all bottles!');
+                          } else if (response === 'busy') {
+                            Alert.alert(
+                              'BarBot is busy right now! Try again soon.',
+                            );
+                          } else if (response === 'error') {
+                            Alert.alert(
+                              'There was an error trying to remove all bottles!',
+                            );
+                          } else {
+                            Alert.alert('Failed to remove all bottles!');
+                          }
 
-                        this.setState({
-                          showLoading: false,
+                          this.setState({
+                            showLoading: false,
+                          });
+                        })
+                        .catch(err => {
+                          console.log(err);
+                          this.setState({showLoading: false});
                         });
-                      });
                     },
                   },
                 ],

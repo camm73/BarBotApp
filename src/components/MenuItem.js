@@ -145,12 +145,19 @@ class MenuItem extends React.Component {
                         this.setState({
                           isMaking: true,
                         });
-                        makeCocktail(this.props.name).then(res => {
-                          console.log("Toggling off");
-                          this.setState({
-                            isMaking: false,
+                        makeCocktail(this.props.name)
+                          .then(res => {
+                            console.log('Toggling off');
+                            this.setState({
+                              isMaking: false,
+                            });
+                          })
+                          .catch(err => {
+                            console.log(err);
+                            this.setState({
+                              isMaking: false,
+                            });
                           });
-                        });
                       },
                     },
                   ],
