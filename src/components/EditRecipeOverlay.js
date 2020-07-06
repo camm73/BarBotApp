@@ -13,7 +13,7 @@ import {Overlay, Icon, Button} from 'react-native-elements';
 import CocktailThumbnailButton from '../components/CocktailThumbnailButton';
 import {updateRecipe, deleteRecipe, getIngredients} from '../api/Cloud';
 import EditIngredientsComponent from './EditIngredientsComponent';
-import {refreshRecipes} from '../api/Control';
+import {refreshRecipes, updateIgnoreIngredients} from '../api/Control';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -70,6 +70,51 @@ class EditRecipeOverlay extends React.Component {
     return amounts;
   }
 
+  //Handles press of ingredient opacity to change whether ingredient is ignored
+  handleIgnoreIngredient(ingredient) {
+    if (this.props.ignoreIngredients.includes(ingredient)) {
+      //Remove from ignore ingredients if confirmed
+      Alert.alert(
+        'Un-Ignore Ingredient?',
+        ingredient + ' is currently ignored. Do you want to un-ignore it?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => {},
+          },
+          {
+            text: 'Yes',
+            onPress: () => {
+              updateIgnoreIngredients(ingredient, false).then(res => {
+                this.props.reloadCallback();
+              });
+            },
+          },
+        ],
+      );
+    } else {
+      //Add to ignore ingredients if confirmed
+      Alert.alert(
+        'Ignore Ingredient?',
+        ingredient + ' is not currently ignored. Do you want to ignore it?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => {},
+          },
+          {
+            text: 'Yes',
+            onPress: () => {
+              updateIgnoreIngredients(ingredient, true).then(res => {
+                this.props.reloadCallback();
+              });
+            },
+          },
+        ],
+      );
+    }
+  }
+
   //Callback for EditIngredients Component
   saveIngredients(recipeIngreds, recipeAmts) {
     if (recipeIngreds.length > 0 && recipeAmts.length > 0) {
@@ -91,7 +136,7 @@ class EditRecipeOverlay extends React.Component {
     }
   }
 
-  //Replaces old recipe in dynamodb
+  //Replaces old recipe in dynamodbt
   saveRecipe() {
     updateRecipe(this.state.recipeName, this.state.ingredients)
       .then(res => {
@@ -265,12 +310,20 @@ class EditRecipeOverlay extends React.Component {
                       </Text>
                     )}
                     {Object.keys(this.state.ingredients).map(key => (
-                      <View style={styles.ingredientContainer} key={key}>
-                        <Text style={styles.ingredientText}>{key + ':  '}</Text>
-                        <Text style={styles.ingredientText}>
-                          {this.state.ingredients[key] * shotSize + ' fl oz'}
-                        </Text>
-                      </View>
+                      <TouchableOpacity
+                        key={key}
+                        onPress={() => {
+                          this.handleIgnoreIngredient(key);
+                        }}>
+                        <View style={styles.ingredientContainer}>
+                          <Text style={styles.ingredientText}>
+                            {key + ':  '}
+                          </Text>
+                          <Text style={styles.ingredientText}>
+                            {this.state.ingredients[key] * shotSize + ' fl oz'}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
                     ))}
                   </>
                 </ScrollView>
@@ -372,6 +425,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 12,
     paddingVertical: 5,
+  },
+
+  ingredientOpacity: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 
   ingredientLabel: {

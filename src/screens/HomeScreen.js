@@ -21,8 +21,6 @@ import BottleStatus from '../components/BottleStatus';
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 
-var manageVisible = true;
-
 class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -128,78 +126,118 @@ class HomeScreen extends React.Component {
     cocktailThumbnails: {},
     bottleCount: 0, //8 is the default and then is updated by API request
     pumpDetails: [],
+    manageVisible: false,
   };
+
+  //Callback for ConnectionStatus to manage the display
+  toggleConnected(status) {
+    if (status === true) {
+      this.setState({
+        manageVisible: true,
+      });
+    } else {
+      this.setState({
+        manageVisible: false,
+      });
+    }
+  }
 
   render() {
     return (
       <View style={styles.mainView}>
-        <View style={styles.statusView}>
-          {/*<Text style={styles.textStyle}>Your BarBot</Text>*/}
-          {/*<Text style={styles.infoText}>Connection Status:</Text>*/}
-          <ConnectionStatus />
-          {false && <Text style={styles.infoText}>Online/Offline:</Text>}
-          <Spacer height={10} />
-          {/*<Text style={{fontSize: 18, textDecorationLine: 'underline'}}>Ingredient Status:</Text>
-                        <Spacer height={10} /> */}
-          <View style={styles.bottleContainer}>
-            <ScrollView
-              horizontal={true}
-              scrollEnabled={this.state.bottleCount > 8 ? true : false}
-              keyboardShouldPersistTaps="handled">
-              {this.state.pumpDetails.map(pumpObj => (
-                <BottleStatus
-                  key={pumpObj.pumpNum}
-                  number={pumpObj.pumpNum}
-                  pumpType={pumpObj.type}
-                  pumpTime={pumpObj.pumpTime}
-                  reload={this.state.reload}
-                  bottleItems={this.state.bottleList}
-                  reloadCallback={this.reloadCallback.bind(this)}
-                />
-              ))}
-            </ScrollView>
-          </View>
-
-          <Spacer height={5} />
-          {manageVisible && (
-            <Button
-              title="Manage BarBot"
-              buttonStyle={styles.manageButton}
-              titleStyle={{fontSize: 16}}
-              onPress={() => {
-                this.props.navigation.navigate('ManageBarbot', {
-                  resetBottles: () => {
-                    this.setState({
-                      reload: true,
-                    });
-                  },
-                  reloadMenu: () => {
-                    this.setState({
-                      reloadMenu: true,
-                    });
-                  },
-                });
-              }}
-            />
-          )}
-        </View>
-        <Spacer height={20} />
-        <View style={styles.controlView}>
-          <Text style={styles.textStyle}>Menu</Text>
-          <ScrollView bounces={true} contentContainerStyle={styles.menuScroll}>
-            <Spacer height={10} />
-
-            {this.state.cocktailMenu.map(cocktail => (
-              <View key={cocktail}>
-                <MenuItem
-                  name={toUpper(cocktail)}
-                  reloadCallback={this.reloadCallback.bind(this)}
-                />
-                <Spacer height={20} />
+        <ConnectionStatus toggleConnected={this.toggleConnected.bind(this)} />
+        {this.state.manageVisible && (
+          <>
+            <View style={styles.statusView}>
+              <View style={styles.bottleContainer}>
+                <ScrollView
+                  horizontal={true}
+                  scrollEnabled={this.state.bottleCount > 8 ? true : false}
+                  keyboardShouldPersistTaps="handled">
+                  {this.state.pumpDetails.map(pumpObj => (
+                    <BottleStatus
+                      key={pumpObj.pumpNum}
+                      number={pumpObj.pumpNum}
+                      pumpType={pumpObj.type}
+                      pumpTime={pumpObj.pumpTime}
+                      reload={this.state.reload}
+                      bottleItems={this.state.bottleList}
+                      reloadCallback={this.reloadCallback.bind(this)}
+                    />
+                  ))}
+                </ScrollView>
               </View>
-            ))}
-          </ScrollView>
-        </View>
+              <Button
+                title="Manage BarBot"
+                buttonStyle={styles.manageButton}
+                titleStyle={{fontSize: 16}}
+                onPress={() => {
+                  this.props.navigation.navigate('ManageBarbot', {
+                    resetBottles: () => {
+                      this.setState({
+                        reload: true,
+                      });
+                    },
+                    reloadMenu: () => {
+                      this.setState({
+                        reloadMenu: true,
+                      });
+                    },
+                  });
+                }}
+              />
+            </View>
+            <Spacer height={20} />
+            <View style={styles.controlView}>
+              <Text style={styles.textStyle}>Menu</Text>
+              <ScrollView
+                bounces={true}
+                contentContainerStyle={styles.menuScroll}>
+                <Spacer height={10} />
+
+                {this.state.cocktailMenu.map(cocktail => (
+                  <View key={cocktail}>
+                    <MenuItem
+                      name={toUpper(cocktail)}
+                      reloadCallback={this.reloadCallback.bind(this)}
+                    />
+                    <Spacer height={20} />
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+          </>
+        )}
+
+        {!this.state.manageVisible && (
+          <View style={styles.offlineContainer}>
+            <Text style={styles.offlineTitle}>
+              It appears that BarBot is offline. Please try the following:
+            </Text>
+            <Text style={styles.offlineMessage}>
+              1. Press the "BarBot" Logo at the top of the screen to attempt to
+              refresh the connection.
+            </Text>
+            <Text style={styles.offlineMessage}>
+              2. Make sure BarBot is connected to wifi
+            </Text>
+            <Text style={styles.offlineMessage}>
+              3. Ensure your phone is connected to the same network
+            </Text>
+            <Spacer height={30} />
+            <Text style={styles.offlineTitle}>
+              If these fail, reconfigure wifi settings:
+            </Text>
+            <Text style={styles.offlineMessage}>
+              1. Check your wifi settings for a wifi network named "BarBot" and
+              connect to it.
+            </Text>
+            <Text style={styles.offlineMessage}>
+              2. Re-open the BarBot app and you will be able to reconfigure the
+              BarBot wifi settings.
+            </Text>
+          </View>
+        )}
       </View>
     );
   }
@@ -225,6 +263,7 @@ const styles = StyleSheet.create({
   bottleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 5,
   },
 
   scrollStyle: {
@@ -273,6 +312,24 @@ const styles = StyleSheet.create({
     paddingBottom: 90,
     minWidth: screenWidth,
     alignItems: 'center',
+  },
+
+  offlineContainer: {
+    flex: 1,
+    marginTop: 30,
+  },
+
+  offlineMessage: {
+    textAlign: 'center',
+    fontSize: 18,
+    paddingHorizontal: 10,
+  },
+
+  offlineTitle: {
+    textAlign: 'center',
+    fontSize: 18,
+    paddingHorizontal: 10,
+    textDecorationLine: 'underline',
   },
 });
 

@@ -20,6 +20,7 @@ class ConnectionStatus extends React.Component {
             textContent: 'Connected',
             color: 'limegreen',
           });
+          this.props.toggleConnected(true);
         }
       })
       .catch(error => {
@@ -28,6 +29,7 @@ class ConnectionStatus extends React.Component {
             textContent: 'Disconnected',
             color: 'red',
           });
+          this.props.toggleConnected(false);
         }
         console.log(error);
       });

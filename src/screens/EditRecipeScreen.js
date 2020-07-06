@@ -4,6 +4,7 @@ import HeaderComponent from '../components/HeaderComponent';
 import {withNavigation} from 'react-navigation';
 import MenuItem from '../components/MenuItem';
 import {loadCocktailNames, getThumbnail} from '../api/Cloud';
+import {getIgnoreIngredients} from '../api/Control';
 import Spacer from '../components/Spacer';
 import {toUpper} from '../utils/Tools';
 
@@ -25,6 +26,7 @@ class EditRecipeScreen extends React.Component {
 
   state = {
     cocktailList: [],
+    ignoreIngredients: [],
     lastKey: {},
     haltLoading: false,
     loading: false,
@@ -77,14 +79,26 @@ class EditRecipeScreen extends React.Component {
     this.setState(
       {
         cocktailList: [],
+        ignoreIngredients: [],
         loading: false,
         haltLoading: false,
         lastKey: {},
       },
       () => {
         this.loadMoreRecipes();
+        this.loadIgnoreIngredients();
       },
     );
+  }
+
+  //Loads ignore ingredient list
+  loadIgnoreIngredients() {
+    getIgnoreIngredients().then(res => {
+      console.log(res);
+      this.setState({
+        ignoreIngredients: res,
+      });
+    });
   }
 
   componentDidMount() {
@@ -93,6 +107,8 @@ class EditRecipeScreen extends React.Component {
     });
     //Load initial recipes
     this.loadMoreRecipes();
+    //Load ignore ingredients
+    this.loadIgnoreIngredients();
   }
 
   render() {
@@ -113,6 +129,7 @@ class EditRecipeScreen extends React.Component {
                 name={item.name}
                 editMode={true}
                 reloadCallback={this.reloadCallback.bind(this)}
+                ignoreIngredients={this.state.ignoreIngredients}
               />
               <Spacer height={25} />
             </View>

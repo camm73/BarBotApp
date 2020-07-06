@@ -561,7 +561,7 @@ export async function getBottleName(number) {
 export async function refreshRecipes() {
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'refreshRecipes/', {
-      methods: 'GET',
+      method: 'GET',
     })
       .then(response => response.text())
       .then(resText => {
@@ -570,6 +570,51 @@ export async function refreshRecipes() {
       .catch(error => {
         console.log(error);
         reject('Error refreshing cocktail recipes');
+      });
+  });
+}
+
+//Gets ingredients that should be ignored
+export async function getIgnoreIngredients() {
+  return new Promise(function(resolve, reject) {
+    fetch(barbotAddress + 'getIgnoreIngredients/', {
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(responseJson => {
+        resolve(responseJson);
+      })
+      .catch(error => {
+        console.log(error);
+        reject('There was an error getting ignored ingredients list');
+      });
+  });
+}
+
+//Updates ignore ingredients
+export async function updateIgnoreIngredients(ingredient, add) {
+  return new Promise(function(resolve, reject) {
+    fetch(barbotAddress + 'ignoreIngredient/', {
+      method: 'POST',
+      body: JSON.stringify({
+        action: add === true ? 'add' : 'remove',
+        ingredient: ingredient,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.text())
+      .then(responseText => {
+        if (responseText === 'true') {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        reject('Error setting ignore ingredient!');
       });
   });
 }

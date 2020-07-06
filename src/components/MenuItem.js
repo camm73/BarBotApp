@@ -185,6 +185,7 @@ class MenuItem extends React.Component {
               visible={this.state.editVisible}
               cocktailName={this.props.name}
               reloadCallback={this.props.reloadCallback}
+              ignoreIngredients={this.props.ignoreIngredients}
               closeCallback={() => {
                 this.setState({
                   editVisible: false,
