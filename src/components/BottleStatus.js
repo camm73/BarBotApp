@@ -199,8 +199,8 @@ class BottleStatus extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this._isMounted = true;
+  //Set's the current bottle's name
+  setBottleName() {
     //Set the bottle name
     getBottleName(this.props.number)
       .then(response => {
@@ -218,7 +218,14 @@ class BottleStatus extends React.Component {
           this.reloadPercentage();
         }
       });
+  }
 
+  componentDidMount() {
+    this._isMounted = true;
+
+    this.setBottleName();
+
+    //Continously reload bottle percentage
     setInterval(() => {
       this.reloadPercentage();
     }, 30000);
@@ -385,11 +392,15 @@ class BottleStatus extends React.Component {
                               isLoading: false,
                               detailsVisible: true,
                             },
-                            () => {
-                              setTimeout(() => {
-                                Alert.alert('BarBot is busy! Try again soon.');
-                              }, 500);
-                            },
+                            res === 'busy'
+                              ? () => {
+                                  setTimeout(() => {
+                                    Alert.alert(
+                                      'BarBot is busy! Try again soon.',
+                                    );
+                                  }, 500);
+                                }
+                              : () => {},
                           );
                         })
                         .catch(error => {
@@ -516,30 +527,50 @@ class BottleStatus extends React.Component {
                         loadingMessage: 'Please wait while bottle is added.',
                         loadingTitle: 'Adding Bottle',
                         isLoading: true,
+                        detailsVisible: false,
                       });
 
-                      var res = await addBottle(
+                      addBottle(
                         this.state.selectedItem,
                         this.props.number,
                         this.state.inputCurrentVolume,
                         this.state.inputInitVolume,
-                      );
-                      console.log('ADDING BOTTLE RESULT: ' + res);
-                      if (res === false) {
-                        Alert.alert(
-                          'There was an error adding your bottle. Please try again later',
-                        );
-                      }
-                      this.setState({
-                        selectedItem: '',
-                        inputCurrentVolume: '',
-                        inputInitVolume: '',
-                        isLoading: false,
-                      });
+                      )
+                        .then(res => {
+                          console.log('ADDING BOTTLE RESULT: ' + res);
+                          if (res === 'false') {
+                            Alert.alert(
+                              'There was an error adding your bottle. Please try again later',
+                            );
+                          }
 
-                      this.componentDidMount();
-                      this.props.reloadCallback();
-                      this.reloadPercentage();
+                          this.setState({
+                            selectedItem: '',
+                            inputCurrentVolume: '',
+                            inputInitVolume: '',
+                            isLoading: false,
+                            detailsVisible: true,
+                          });
+
+                          this.setBottleName();
+                          this.props.reloadCallback();
+                          this.reloadPercentage();
+                        })
+                        .catch(err => {
+                          console.log(err);
+
+                          this.setState({
+                            selectedItem: '',
+                            inputCurrentVolume: '',
+                            inputInitVolume: '',
+                            isLoading: false,
+                            detailsVisible: true,
+                          });
+
+                          this.setBottleName();
+                          this.props.reloadCallback();
+                          this.reloadPercentage();
+                        });
                     }}
                   />
                 </View>
