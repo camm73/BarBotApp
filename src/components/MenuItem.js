@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {Button, Overlay} from 'react-native-elements';
 import Spacer from './Spacer';
-import {makeCocktail} from '../api/Control.js';
+import {makeCocktail, getLocalIngredients} from '../api/Control.js';
 import {toUpper} from '../utils/Tools';
 import {verifyImageExists, getThumbnail, getIngredients} from '../api/Cloud';
 import EditRecipeOverlay from './EditRecipeOverlay';
@@ -45,16 +45,26 @@ class MenuItem extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    getIngredients(this.props.name)
-      .then(response => {
+    if (this.props.offline) {
+      getLocalIngredients(this.props.name).then(response => {
         if (this._isMounted) {
           this.setState({
-            ingredients: response,
+            ingredients: response, //TODO: Make sure this is the same response format as the online method
           });
         }
-      })
-      .catch(error => console.log(error));
-    verifyImageExists(this.props.name, this.setImageExists.bind(this));
+      });
+    } else {
+      getIngredients(this.props.name)
+        .then(response => {
+          if (this._isMounted) {
+            this.setState({
+              ingredients: response,
+            });
+          }
+        })
+        .catch(error => console.log(error));
+      verifyImageExists(this.props.name, this.setImageExists.bind(this));
+    }
   }
 
   setImageExists(status) {

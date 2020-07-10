@@ -59,7 +59,9 @@ class BottleStatus extends React.Component {
     inputCurrentVolume: '',
     slideNum: 1,
     selectedItem: '',
-    isRemoving: false,
+    isLoading: false,
+    loadingTitle: '',
+    loadingMessage: '',
   };
 
   getTextColor(num) {
@@ -243,9 +245,9 @@ class BottleStatus extends React.Component {
     return (
       <View>
         <LoadingComponent
-          title="Removing Bottle"
-          message={'Please wait while bottle is removed.'}
-          visible={this.state.isRemoving}
+          title={this.state.loadingTitle}
+          message={this.state.loadingMessage}
+          visible={this.state.isLoading}
         />
         <TouchableOpacity
           onPress={() => {
@@ -358,8 +360,10 @@ class BottleStatus extends React.Component {
                     buttonStyle={styles.buttonStyle}
                     onPress={async () => {
                       this.setState({
-                        isRemoving: true,
+                        loadingMessage: 'Please wait while bottle is removed.',
+                        loadingTitle: 'Removing Bottle',
                         detailsVisible: false,
+                        isLoading: true,
                       });
                       removeBottle(this.props.number, this.state.bottleName)
                         .then(res => {
@@ -367,7 +371,6 @@ class BottleStatus extends React.Component {
                             this.resetBottle();
                           } else if (res === 'busy') {
                             console.log('Barbot is busy...');
-                            Alert.alert('Barbot is busy! Try again soon.');
                           } else {
                             console.log(
                               'Error removing bottle ' +
@@ -377,10 +380,17 @@ class BottleStatus extends React.Component {
                             );
                           }
 
-                          this.setState({
-                            isRemoving: false,
-                            detailsVisible: true,
-                          });
+                          this.setState(
+                            {
+                              isLoading: false,
+                              detailsVisible: true,
+                            },
+                            () => {
+                              setTimeout(() => {
+                                Alert.alert('BarBot is busy! Try again soon.');
+                              }, 500);
+                            },
+                          );
                         })
                         .catch(error => {
                           console.log(
@@ -390,7 +400,7 @@ class BottleStatus extends React.Component {
                               error,
                           );
                           this.setState({
-                            isRemoving: false,
+                            isLoading: false,
                             detailsVisible: true,
                           });
                           Alert.alert('Error removing bottle: ' + error);
@@ -502,6 +512,12 @@ class BottleStatus extends React.Component {
                         return;
                       }
 
+                      this.setState({
+                        loadingMessage: 'Please wait while bottle is added.',
+                        loadingTitle: 'Adding Bottle',
+                        isLoading: true,
+                      });
+
                       var res = await addBottle(
                         this.state.selectedItem,
                         this.props.number,
@@ -518,6 +534,7 @@ class BottleStatus extends React.Component {
                         selectedItem: '',
                         inputCurrentVolume: '',
                         inputInitVolume: '',
+                        isLoading: false,
                       });
 
                       this.componentDidMount();

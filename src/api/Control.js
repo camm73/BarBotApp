@@ -506,7 +506,7 @@ export async function getCocktailMenu() {
   });
 }
 
-export async function getIngredients(name) {
+export async function getLocalIngredients(name) {
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'ingredients/' + name.toLowerCase() + '/', {
       method: 'GET',

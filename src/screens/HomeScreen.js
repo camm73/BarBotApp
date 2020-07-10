@@ -11,11 +11,9 @@ import {
   getCocktailMenu,
   getNewBottles,
   getPumpSupportDetails,
-  refreshRecipes,
 } from '../api/Control';
 import {toUpper} from '../utils/Tools';
 import ConnectionStatus from '../components/ConnectionStatus';
-
 import BottleStatus from '../components/BottleStatus';
 
 var screenWidth = Dimensions.get('window').width;
@@ -127,6 +125,7 @@ class HomeScreen extends React.Component {
     bottleCount: 0, //8 is the default and then is updated by API request
     pumpDetails: [],
     manageVisible: false,
+    offline: false,
   };
 
   //Callback for ConnectionStatus to manage the display
@@ -200,6 +199,7 @@ class HomeScreen extends React.Component {
                     <MenuItem
                       name={toUpper(cocktail)}
                       reloadCallback={this.reloadCallback.bind(this)}
+                      offline={this.state.offline}
                     />
                     <Spacer height={20} />
                   </View>
