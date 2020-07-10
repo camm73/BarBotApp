@@ -284,7 +284,7 @@ export async function addNewBottle(bottleName, isAlcohol) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        resolve(responseJson);
+        resolve(true);
       })
       .catch(error => {
         console.log(error);

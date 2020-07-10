@@ -291,11 +291,28 @@ class BarbotScreen extends React.Component {
                 addNewBottle(
                   this.state.inputBottle,
                   this.state.alcoholCheck ? 'true' : 'false',
-                );
+                ).then(res => {
+                  console.log(res);
+                  if (res === true) {
+                    this.setState(
+                      {
+                        showLoading: false,
+                      },
+                      () => {
+                        setTimeout(() => {
+                          Alert.alert('Successfully added new bottle!');
+                        }, 500);
+                      },
+                    );
+                  }
+                });
                 this.setState({
                   newBottleVisible: false,
                   inputBottle: '',
                   alcoholCheck: false,
+                  loadingMessage: 'BarBot is adding new bottle...',
+                  loadingTitle: 'Adding New Bottle',
+                  showLoading: true,
                 });
               }}
             />
