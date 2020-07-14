@@ -333,6 +333,32 @@ export async function pumpOn(number) {
     });
 }
 
+export async function pressureOn(number) {
+  fetch(barbotAddress + 'pressureOn/' + number.toString() + '/', {
+    method: 'GET',
+  })
+    .then(res => res.text())
+    .then(resText => {
+      console.log('Pressure on: ' + resText);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
+export async function pressureOff(number) {
+  fetch(barbotAddress + 'pressureOff/' + number.toString() + '/', {
+    method: 'GET',
+  })
+    .then(res => res.text())
+    .then(resText => {
+      console.log('Pressure of: ' + resText);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
 export async function calibratePump(number, time) {
   const abortController = new AbortController();
   setTimeout(() => {

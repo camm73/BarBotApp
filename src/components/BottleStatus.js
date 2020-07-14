@@ -21,6 +21,8 @@ import {
   getInitBottleVolume,
   pumpOn,
   pumpOff,
+  pressureOn,
+  pressureOff,
 } from '../api/Control';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {toUpper} from '../utils/Tools';
@@ -440,6 +442,18 @@ class BottleStatus extends React.Component {
                       });
                     }}
                   />
+                  {this.props.pumpType === 'soda' && (
+                    <Button
+                      title={'Pressurize'}
+                      buttonStyle={[styles.buttonStyle, {marginTop: 10}]}
+                      onPressIn={() => {
+                        pressureOn(this.props.number);
+                      }}
+                      onPressOut={() => {
+                        pressureOff(this.props.number);
+                      }}
+                    />
+                  )}
                 </View>
               )}
               {this.state.bottleName === 'N/A' && (
