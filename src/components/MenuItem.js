@@ -67,6 +67,7 @@ class MenuItem extends React.Component {
     }
   }
 
+  //Sets whether image exits for this cocktail
   setImageExists(status) {
     //Load thumbnail
     if (status === true) {
@@ -86,6 +87,7 @@ class MenuItem extends React.Component {
     }
   }
 
+  //Callback after uploading new image
   imageUploadCallback() {
     if (this._isMounted) {
       this.setState({

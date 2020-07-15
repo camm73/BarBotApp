@@ -24,6 +24,7 @@ class CocktailThumbnailButton extends React.Component {
     }
   }
 
+  //Fetches and sets image from S3
   setThumbnailImage(status) {
     //Load thumbnail
     if (status === true) {

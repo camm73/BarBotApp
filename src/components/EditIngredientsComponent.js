@@ -33,6 +33,7 @@ class EditIngredientsComponent extends React.Component {
     this.loadBottleList();
   }
 
+  //Adds ingredient to ingredient list and increases ingredient count
   setIngredValue(ingredient) {
     this.setState({
       ingredientCount: this.state.ingredientCount + 1,
@@ -41,11 +42,13 @@ class EditIngredientsComponent extends React.Component {
     this.forceUpdate();
   }
 
+  //Callback to set amount of ingredient
   setAmountValue(amount) {
     this.state.recipeAmounts.push(amount);
     this.forceUpdate();
   }
 
+  //Loads list of all possible bottles to pass to selector
   loadBottleList() {
     getAllBottles().then(response => {
       var fullList = [];

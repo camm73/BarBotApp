@@ -19,6 +19,7 @@ class IngredientItem extends React.Component {
     ingredChanged: false,
   };
 
+  //Resets all selection components
   resetSelectComponents() {
     this.setState({
       triggerReset: true,

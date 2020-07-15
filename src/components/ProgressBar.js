@@ -3,6 +3,7 @@ import React from 'react';
 import {View, Text} from 'react-native';
 
 class ProgressBar extends React.Component {
+  //Get proper color for progress bar based on volume percentage
   getColor() {
     if (this.props.value >= 50) {
       return 'green';

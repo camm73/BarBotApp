@@ -39,6 +39,7 @@ class EditRecipeOverlay extends React.Component {
     this.loadIngredients();
   }
 
+  //Load ingredients in recipe being editted
   loadIngredients() {
     getIngredients(this.state.recipeName)
       .then(response => {
@@ -51,6 +52,7 @@ class EditRecipeOverlay extends React.Component {
       .catch(error => console.log(error));
   }
 
+  //Resets EditRecipeOverlay
   resetComponent() {
     this.loadIngredients();
     if (this._isMounted) {
@@ -60,6 +62,7 @@ class EditRecipeOverlay extends React.Component {
     }
   }
 
+  //Gets the amounts for each ingredient in a recipe
   getIngredientAmounts() {
     var amounts = [];
     for (var key in Object.keys(this.state.ingredients)) {

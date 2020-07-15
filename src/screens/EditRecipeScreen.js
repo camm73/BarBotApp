@@ -33,6 +33,7 @@ class EditRecipeScreen extends React.Component {
     loadNum: 6,
   };
 
+  //Loads another set of recipes starting where flatlist left off
   loadMoreRecipes() {
     //TODO: Add refresh ability
 
@@ -75,6 +76,7 @@ class EditRecipeScreen extends React.Component {
     }
   }
 
+  //Reload callback for MenuItem
   reloadCallback() {
     this.setState(
       {

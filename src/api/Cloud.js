@@ -13,6 +13,7 @@ var dynamodb = new AWS.DynamoDB({
 import {toUpper} from '../utils/Tools';
 import {Alert} from 'react-native';
 
+//Retrieves s3 URL for a cocktail thumbnail image
 export function getThumbnail(cocktailName) {
   //console.log('GETTING THUMBNAIL for ' + cocktailName);
   var params = {
@@ -25,6 +26,7 @@ export function getThumbnail(cocktailName) {
   return url;
 }
 
+//Makes sure cocktail thumbnail exists in S3 bucket by checking head object
 export function verifyImageExists(cocktailName, callback) {
   var params = {
     Bucket: 'barbot-data',
@@ -40,6 +42,7 @@ export function verifyImageExists(cocktailName, callback) {
   });
 }
 
+//Uploads cocktail image to S3 bucket
 export function uploadImage(name, imgSource, callback) {
   var params = {
     Bucket: 'barbot-data',

@@ -36,6 +36,7 @@ class HomeScreen extends React.Component {
     };
   };
 
+  //Fetches and sets the available cocktail menu
   setCocktailMenu() {
     getCocktailMenu()
       .then(response => {
@@ -47,7 +48,7 @@ class HomeScreen extends React.Component {
       })
       .catch(error => console.log(error));
 
-    this.forceUpdate();
+    this.forceUpdate(); //TODO: Is this necessary??
   }
 
   //Load bottle list from the BarBot controller and formats it for the drop down menu

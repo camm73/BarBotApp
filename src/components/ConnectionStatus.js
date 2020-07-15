@@ -12,6 +12,7 @@ class ConnectionStatus extends React.Component {
     hearbeatRunning: false,
   };
 
+  //Checks whether BarBot is online and set's displayed status
   checkOnline() {
     isOnline()
       .then(response => {

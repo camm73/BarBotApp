@@ -66,6 +66,7 @@ class BottleStatus extends React.Component {
     loadingMessage: '',
   };
 
+  //Gets the color for the bottle percentage display
   getTextColor(num) {
     if (num > 50) {
       return 'limegreen';
@@ -78,12 +79,14 @@ class BottleStatus extends React.Component {
     }
   }
 
+  //Callback for opening main overlay again after loading
   doneCallback() {
     this.setState({
       detailsVisible: true,
     });
   }
 
+  //Reloads the percentage for the bottle
   reloadPercentage() {
     if (this.state.bottleName !== 'N/A') {
       //Refresh the bottle percentage
@@ -112,6 +115,7 @@ class BottleStatus extends React.Component {
     this.setBottleVolumes();
   }
 
+  //Resets BottleStatus component
   resetBottle() {
     if (this._isMounted) {
       this.props.reloadCallback();
@@ -124,6 +128,7 @@ class BottleStatus extends React.Component {
     }
   }
 
+  //Sets the volumes of the current bottle
   setBottleVolumes() {
     if (this.state.bottleName !== 'N/A') {
       //Set current volume
@@ -168,6 +173,7 @@ class BottleStatus extends React.Component {
     });
   }
 
+  //Makes sure that volume input is only numbers
   processVolumeInput(text, current) {
     var isNum = /^\d*$/.test(text);
     if (isNum !== true) {

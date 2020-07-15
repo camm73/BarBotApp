@@ -7,6 +7,7 @@ import AbortController from 'abort-controller';
 const barbotAddress = 'http://barbot.local:5000/';
 const shotSize = 1.5;
 
+//Calls the make cocktail function on BarBot API
 export async function makeCocktail(name) {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -77,7 +78,7 @@ export async function removeAllBottles() {
   });
 }
 
-//TODO: Migrate reverse and pumpOn call to the removeBottle function on server-side
+//Removes a specific bottle from the current pump
 export async function removeBottle(number, bottleName) {
   var result = '';
   const abortController = new AbortController();
@@ -127,6 +128,7 @@ export async function checkAlcoholMode() {
   });
 }
 
+//Sets the value of "alcohol mode"
 export async function setAlcoholMode(modeSetting) {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -155,6 +157,7 @@ export async function setAlcoholMode(modeSetting) {
   });
 }
 
+//Adds a bottle to a certain pump and sets its details
 export async function addBottle(bottleName, pumpNum, volume, originalVolume) {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -230,6 +233,7 @@ export async function addRecipe(recipeName, ingredients, amounts) {
   });
 }
 
+//Gets list of bottles that aren't on pumps yet
 export async function getNewBottles() {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -251,6 +255,7 @@ export async function getNewBottles() {
   });
 }
 
+//Gets full list of bottles, both on and off pumps
 export async function getAllBottles() {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -272,6 +277,7 @@ export async function getAllBottles() {
   });
 }
 
+//Adds new bottle to list of available bottles
 export async function addNewBottle(bottleName, isAlcohol) {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -293,6 +299,7 @@ export async function addNewBottle(bottleName, isAlcohol) {
   });
 }
 
+//Reverses polarity for peristaltic pumps
 export async function reverse() {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -315,6 +322,7 @@ export async function reverse() {
   });
 }
 
+//Turns on a specific pump
 export async function pumpOn(number) {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -333,6 +341,7 @@ export async function pumpOn(number) {
     });
 }
 
+//Turns on air pressure pump
 export async function pressureOn(number) {
   fetch(barbotAddress + 'pressureOn/' + number.toString() + '/', {
     method: 'GET',
@@ -346,6 +355,7 @@ export async function pressureOn(number) {
     });
 }
 
+//Turns off air pressure pumps
 export async function pressureOff(number) {
   fetch(barbotAddress + 'pressureOff/' + number.toString() + '/', {
     method: 'GET',
@@ -359,6 +369,7 @@ export async function pressureOff(number) {
     });
 }
 
+//Calibrates pump time for 1 shot
 export async function calibratePump(number, time) {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -388,6 +399,7 @@ export async function calibratePump(number, time) {
   });
 }
 
+//Gets the details about all of the pumps
 export async function getPumpSupportDetails() {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -411,6 +423,7 @@ export async function getPumpSupportDetails() {
   });
 }
 
+//Gets the current volume for a specified bottle
 export async function getCurrentBottleVolume(bottleName) {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -433,6 +446,7 @@ export async function getCurrentBottleVolume(bottleName) {
   });
 }
 
+//Gets the initial volume for a specified bottle
 export async function getInitBottleVolume(bottleName) {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -455,6 +469,7 @@ export async function getInitBottleVolume(bottleName) {
   });
 }
 
+//Turns off a specified pump
 export async function pumpOff(number) {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -473,6 +488,7 @@ export async function pumpOff(number) {
     });
 }
 
+//Checks whether Barbot is reachable or not
 export async function isOnline() {
   const abortController = new AbortController();
   setTimeout(() => {
@@ -495,6 +511,7 @@ export async function isOnline() {
   });
 }
 
+//Cleans all peristaltic pumps by flushing them
 export async function cleanPumps() {
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'clean/', {
@@ -516,6 +533,7 @@ export async function cleanPumps() {
   });
 }
 
+//Retrieves the current cocktail menu
 export async function getCocktailMenu() {
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'cocktailList/', {
@@ -532,6 +550,7 @@ export async function getCocktailMenu() {
   });
 }
 
+//Gets the ingredients for a cocktail from the local cache
 export async function getLocalIngredients(name) {
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'ingredients/' + name.toLowerCase() + '/', {
@@ -548,6 +567,7 @@ export async function getLocalIngredients(name) {
   });
 }
 
+//Gets the percentage full a bottle is
 export async function getBottlePercent(bottleName) {
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'bottlePercent/' + bottleName + '/', {
@@ -565,6 +585,7 @@ export async function getBottlePercent(bottleName) {
   });
 }
 
+//Get the name of the bottle on a specific pump
 export async function getBottleName(number) {
   var address = barbotAddress + 'bottleName/' + number + '/';
   return new Promise(function(resolve, reject) {

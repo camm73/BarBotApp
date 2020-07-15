@@ -1,3 +1,4 @@
+//Formats cocktail names with first letter of each word capitalized
 export function toUpper(name) {
   if (name === null || name === undefined || name === '') {
     return '';
