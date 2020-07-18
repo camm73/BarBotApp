@@ -535,8 +535,8 @@ class BottleStatus extends React.Component {
                         Alert.alert('Initial Volume cannot be less than 0!');
                         return;
                       } else if (
-                        this.state.inputCurrentVolume >
-                        this.state.inputInitVolume
+                        parseFloat(this.state.inputCurrentVolume) >
+                        parseFloat(this.state.inputInitVolume)
                       ) {
                         Alert.alert(
                           'Current volume cannot be larger than initial volume!',
