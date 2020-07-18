@@ -43,8 +43,8 @@ class HomeScreen extends React.Component {
         this.setState({
           cocktailMenu: response,
         });
-        console.log('Cocktail Menu:');
-        console.log(response);
+        //console.log('Cocktail Menu:');
+        //console.log(response);
       })
       .catch(error => console.log(error));
 
@@ -78,7 +78,7 @@ class HomeScreen extends React.Component {
     this.configureBottleShelf();
     this.setCocktailMenu();
     this.loadBottleList();
-    console.log('Reloaded');
+    //console.log('Reloaded');
   }
 
   //Configures the bottle shelf based on available pump data

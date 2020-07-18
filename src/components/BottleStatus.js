@@ -558,7 +558,7 @@ class BottleStatus extends React.Component {
                         this.state.inputInitVolume,
                       )
                         .then(res => {
-                          console.log('ADDING BOTTLE RESULT: ' + res);
+                          //console.log('ADDING BOTTLE RESULT: ' + res);
                           if (res === 'false') {
                             Alert.alert(
                               'There was an error adding your bottle. Please try again later',

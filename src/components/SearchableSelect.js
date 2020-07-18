@@ -158,7 +158,7 @@ class SearchableSelect extends React.Component {
                   padding: 0,
                 }}
                 onPress={() => {
-                  console.log('Selected: ' + item.value);
+                  //console.log('Selected: ' + item.value);
                   this.setState({
                     inputText: item.value,
                     listVisible: false,

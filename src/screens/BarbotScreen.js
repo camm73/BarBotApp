@@ -74,7 +74,7 @@ class BarbotScreen extends React.Component {
     ) {
       var saveName = this.state.recipeName;
       addRecipe(this.state.recipeName, recipeIngreds, recipeAmts).then(res => {
-        console.log('Add Recipe result: ' + res);
+        //console.log('Add Recipe result: ' + res);
         if (res === true) {
           Alert.alert(
             'Success',
@@ -292,7 +292,7 @@ class BarbotScreen extends React.Component {
                   this.state.inputBottle,
                   this.state.alcoholCheck ? 'true' : 'false',
                 ).then(res => {
-                  console.log(res);
+                  //console.log(res);
                   if (res === true) {
                     this.setState(
                       {
@@ -380,7 +380,7 @@ class BarbotScreen extends React.Component {
                   {
                     text: 'Confirm',
                     onPress: () => {
-                      console.log('Starting removal of all bottles...');
+                      //console.log('Starting removal of all bottles...');
                       this.setState({
                         showLoading: true,
                         loadingMessage:

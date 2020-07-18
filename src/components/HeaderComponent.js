@@ -31,7 +31,7 @@ class HeaderComponent extends React.Component {
                   title="Go Back"
                   style={styles.buttonStyle}
                   onPress={() => {
-                    console.log('Return page: ' + this.props.returnPage);
+                    //console.log('Return page: ' + this.props.returnPage);
                     if (this.props.returnPage === 'ManageBarbot') {
                       this.props.navigation.navigate('ManageBarbot');
                     } else {

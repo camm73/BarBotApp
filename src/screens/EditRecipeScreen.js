@@ -96,7 +96,7 @@ class EditRecipeScreen extends React.Component {
   //Loads ignore ingredient list
   loadIgnoreIngredients() {
     getIgnoreIngredients().then(res => {
-      console.log(res);
+      //console.log(res);
       this.setState({
         ignoreIngredients: res,
       });

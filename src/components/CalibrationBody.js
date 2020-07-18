@@ -18,8 +18,8 @@ class CalibrationBody extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props.slide);
-    console.log(this.props.pumpNum);
+    //console.log(this.props.slide);
+    //console.log(this.props.pumpNum);
   }
 
   render() {
@@ -97,10 +97,10 @@ class CalibrationBody extends React.Component {
                     });
 
                     var shotTime = (endTime - startTime) / 1000.0;
-                    console.log('Shot time: ' + shotTime.toString());
+                    //console.log('Shot time: ' + shotTime.toString());
                     calibratePump(this.props.pumpNum, shotTime.toString()).then(
                       response => {
-                        console.log(response);
+                        //console.log(response);
                         if (response === true) {
                           Alert.alert(
                             'The calibration has finished with shotTime: ' +

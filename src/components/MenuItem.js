@@ -143,7 +143,7 @@ class MenuItem extends React.Component {
               title="Make Cocktail"
               buttonStyle={styles.buttonStyle}
               onPress={async () => {
-                console.log('Making cocktail: ' + this.props.name);
+                //console.log('Making cocktail: ' + this.props.name);
                 Alert.alert(
                   'Cocktail Confirmation',
                   'Are you sure you want to make a ' + this.props.name + '?',
@@ -161,7 +161,7 @@ class MenuItem extends React.Component {
                         });
                         makeCocktail(this.props.name)
                           .then(res => {
-                            console.log('Toggling off');
+                            //console.log('Toggling off');
                             this.setState({
                               isMaking: false,
                             });
