@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   ScrollView,
+  AppState,
 } from 'react-native';
 import {Button, Overlay} from 'react-native-elements';
 import Spacer from './Spacer';
@@ -17,11 +18,13 @@ import {verifyImageExists, getThumbnail, getIngredients} from '../api/Cloud';
 import EditRecipeOverlay from './EditRecipeOverlay';
 import CocktailThumbnailButton from './CocktailThumbnailButton';
 import LoadingComponent from './LoadingComponent';
+import AbortController from 'abort-controller';
 
 const defaultImage = require('../assets/defaultCocktail.jpg');
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
+var abortController = new AbortController();
 
 var containerHeight = 130;
 
@@ -45,6 +48,7 @@ class MenuItem extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
+    AppState.addEventListener('change', this.handleBackgroundApp);
     if (this.props.offline) {
       getLocalIngredients(this.props.name).then(response => {
         if (this._isMounted) {
@@ -100,6 +104,15 @@ class MenuItem extends React.Component {
   //Make sure updates don't occur after unmounting
   componentWillUnmount() {
     this._isMounted = false;
+    AppState.removeEventListener('change', this.handleBackgroundApp);
+  }
+
+  handleBackgroundApp(nextAppState) {
+    if (nextAppState === 'background' || nextAppState === 'inactive') {
+      abortController.abort();
+      console.log('Aborting API call');
+      abortController = new AbortController();
+    }
   }
 
   render() {
@@ -159,7 +172,7 @@ class MenuItem extends React.Component {
                         this.setState({
                           isMaking: true,
                         });
-                        makeCocktail(this.props.name)
+                        makeCocktail(this.props.name, abortController.signal)
                           .then(res => {
                             //console.log('Toggling off');
                             this.setState({
