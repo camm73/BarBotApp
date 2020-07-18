@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@react-native-community/netinfo": "^5.9.4",
+    "@react-native-community/toolbar-android": "^0.1.0-rc.2",
     "abort-controller": "^3.0.0",
     "aws-amplify": "^1.2.4",
     "aws-amplify-react-native": "^2.2.3",

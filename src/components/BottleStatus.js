@@ -48,6 +48,7 @@ class BottleStatus extends React.Component {
   }
 
   _isMounted = false;
+  interval = undefined;
 
   state = {
     level: 'N/A',
@@ -234,7 +235,7 @@ class BottleStatus extends React.Component {
     this.setBottleName();
 
     //Continously reload bottle percentage
-    setInterval(() => {
+    this.interval = setInterval(() => {
       this.reloadPercentage();
     }, 30000);
 

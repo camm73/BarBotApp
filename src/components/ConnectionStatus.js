@@ -12,6 +12,8 @@ class ConnectionStatus extends React.Component {
     hearbeatRunning: false,
   };
 
+  onlineInterval = undefined;
+
   //Checks whether BarBot is online and set's displayed status
   checkOnline() {
     isOnline()
@@ -42,7 +44,7 @@ class ConnectionStatus extends React.Component {
     this.checkOnline();
 
     if (!this.state.hearbeatRunning) {
-      setInterval(() => {
+      this.onlineInterval = setInterval(() => {
         this.checkOnline();
       }, 10000);
       this.setState({
@@ -54,6 +56,7 @@ class ConnectionStatus extends React.Component {
   //Stop state from updating after unmount
   componentWillUnmount() {
     this._isMounted = false;
+    clearInterval(this.onlineInterval);
   }
 
   render() {

@@ -46,7 +46,7 @@ class IngredientItem extends React.Component {
             clearInitialItems={this.props.clearInitialItems}
             width={this.props.overlayWidth / 1.5}
             selectItemCallback={item => {
-              console.log('Setting ingredient to :' + item);
+              //console.log('Setting ingredient to :' + item);
               this.setState({
                 selectedItem: item,
                 ingredChanged: true,
@@ -62,7 +62,7 @@ class IngredientItem extends React.Component {
             width={this.props.overlayWidth / 4.5}
             clearInitialItems={this.props.clearInitialItems}
             selectItemCallback={item => {
-              console.log('Setting amount to :' + item);
+              //console.log('Setting amount to :' + item);
               this.setState({
                 selectedAmount: item,
                 amountChanged: true,
@@ -93,21 +93,21 @@ class IngredientItem extends React.Component {
                   );
                   return;
                 }
-                console.log('Both changed');
+                //console.log('Both changed');
                 this.props.ingredCallback(this.state.selectedItem);
                 this.props.amountCallback(this.state.selectedAmount);
               } else if (
                 this.state.ingredChanged &&
                 !this.state.amountChanged
               ) {
-                console.log('Ingred changed: ' + this.state.selectedItem);
+                //console.log('Ingred changed: ' + this.state.selectedItem);
                 this.props.ingredCallback(this.state.selectedItem);
                 this.props.amountCallback(this.props.selectedAmount);
               } else if (
                 !this.state.ingredChanged &&
                 this.state.amountChanged
               ) {
-                console.log('Amount changed: ' + this.state.selectedAmount);
+                //console.log('Amount changed: ' + this.state.selectedAmount);
                 this.props.ingredCallback(this.props.selectedItem);
                 this.props.amountCallback(this.state.selectedAmount);
               } else {

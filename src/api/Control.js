@@ -9,19 +9,13 @@ const shotSize = 1.5;
 
 //Calls the make cocktail function on BarBot API
 export async function makeCocktail(name) {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 60000);
-
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'cocktail/' + encodeURI(name.toLowerCase()) + '/', {
       method: 'GET',
-      signal: abortController.signal,
     })
       .then(response => response.text())
       .then(responseText => {
-        console.log('Cocktail Response: ' + responseText);
+        //console.log('Cocktail Response: ' + responseText);
         if (responseText === 'available') {
           Alert.alert("We're sorry, but this cocktail is no longer available.");
         } else if (responseText === 'busy') {
@@ -47,14 +41,9 @@ export async function makeCocktail(name) {
 
 //Remove bottles from every pump
 export async function removeAllBottles() {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 30000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'removeAllBottles/', {
       method: 'GET',
-      signal: abortController.signal,
     })
       .then(response => response.text())
       .then(responseText => {
@@ -81,19 +70,14 @@ export async function removeAllBottles() {
 //Removes a specific bottle from the current pump
 export async function removeBottle(number, bottleName) {
   var result = '';
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 30000);
 
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'removeBottle/' + bottleName, {
       method: 'GET',
-      signal: abortController.signal,
     })
       .then(response => response.text())
       .then(responseJson => {
-        console.log('Removed bottle: ' + bottleName + '; ' + responseJson);
+        //console.log('Removed bottle: ' + bottleName + '; ' + responseJson);
         result = responseJson;
         resolve(responseJson);
       })
@@ -107,19 +91,14 @@ export async function removeBottle(number, bottleName) {
 
 //Check whether alcoholMode is enabled or not
 export async function checkAlcoholMode() {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 15000);
 
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'getAlcoholMode/', {
       method: 'GET',
-      signal: abortController.signal,
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log('Alcohol Mode: ' + responseJson);
+        //console.log('Alcohol Mode: ' + responseJson);
         resolve(responseJson);
       })
       .catch(error => {
@@ -130,14 +109,9 @@ export async function checkAlcoholMode() {
 
 //Sets the value of "alcohol mode"
 export async function setAlcoholMode(modeSetting) {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'alcoholMode/', {
       method: 'POST',
-      signal: abortController.signal,
       body: JSON.stringify({
         enable: modeSetting,
       }),
@@ -147,7 +121,7 @@ export async function setAlcoholMode(modeSetting) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        //console.log(responseJson);
         resolve(responseJson);
       })
       .catch(error => {
@@ -159,10 +133,6 @@ export async function setAlcoholMode(modeSetting) {
 
 //Adds a bottle to a certain pump and sets its details
 export async function addBottle(bottleName, pumpNum, volume, originalVolume) {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(
       barbotAddress +
@@ -177,7 +147,6 @@ export async function addBottle(bottleName, pumpNum, volume, originalVolume) {
         '/',
       {
         method: 'GET',
-        signal: abortController.signal,
       },
     )
       .then(response => response.json())
@@ -199,15 +168,9 @@ export async function addRecipe(recipeName, ingredients, amounts) {
     amounts[i] = parseFloat(oldAmount.replace(/.oz/g, '')) / shotSize;
   }
 
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 15000);
-
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'addRecipe/', {
       method: 'POST',
-      signal: abortController.signal,
       body: JSON.stringify({
         name: recipeName,
         ingredients: ingredients,
@@ -218,7 +181,7 @@ export async function addRecipe(recipeName, ingredients, amounts) {
       },
     })
       .then(responseJson => {
-        console.log(responseJson);
+        //console.log(responseJson);
         if (responseJson.status === 200) {
           console.log('Successfully added new recipe: ' + recipeName);
           resolve(true);
@@ -235,14 +198,9 @@ export async function addRecipe(recipeName, ingredients, amounts) {
 
 //Gets list of bottles that aren't on pumps yet
 export async function getNewBottles() {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 30000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'getBottles/', {
       method: 'GET',
-      signal: abortController.signal,
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -257,14 +215,9 @@ export async function getNewBottles() {
 
 //Gets full list of bottles, both on and off pumps
 export async function getAllBottles() {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 30000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'getAllBottles/', {
       method: 'GET',
-      signal: abortController.signal,
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -279,14 +232,9 @@ export async function getAllBottles() {
 
 //Adds new bottle to list of available bottles
 export async function addNewBottle(bottleName, isAlcohol) {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'newBottle/' + bottleName + '/alcohol=' + isAlcohol, {
       method: 'GET',
-      signal: abortController.signal,
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -301,18 +249,13 @@ export async function addNewBottle(bottleName, isAlcohol) {
 
 //Reverses polarity for peristaltic pumps
 export async function reverse() {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 10000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'reverse/', {
       method: 'GET',
-      signal: abortController.signal,
     })
       .then(response => response.text())
       .then(responseText => {
-        console.log('Reversed polarity: ' + responseText);
+        //console.log('Reversed polarity: ' + responseText);
         resolve(responseText);
       })
       .catch(error => {
@@ -324,17 +267,12 @@ export async function reverse() {
 
 //Turns on a specific pump
 export async function pumpOn(number) {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 15000);
   fetch(barbotAddress + 'pumpOn/' + number.toString() + '/', {
     method: 'GET',
-    signal: abortController.signal,
   })
     .then(response => response.text())
     .then(responseText => {
-      console.log('Pump on: ' + responseText);
+      //console.log('Pump on: ' + responseText);
     })
     .catch(error => {
       console.log(error);
@@ -348,7 +286,7 @@ export async function pressureOn(number) {
   })
     .then(res => res.text())
     .then(resText => {
-      console.log('Pressure on: ' + resText);
+      //console.log('Pressure on: ' + resText);
     })
     .catch(err => {
       console.log(err);
@@ -362,7 +300,7 @@ export async function pressureOff(number) {
   })
     .then(res => res.text())
     .then(resText => {
-      console.log('Pressure of: ' + resText);
+      //console.log('Pressure of: ' + resText);
     })
     .catch(err => {
       console.log(err);
@@ -371,10 +309,6 @@ export async function pressureOff(number) {
 
 //Calibrates pump time for 1 shot
 export async function calibratePump(number, time) {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(
       barbotAddress +
@@ -384,12 +318,11 @@ export async function calibratePump(number, time) {
         time.replace('.', '%2E'),
       {
         method: 'GET',
-        signal: abortController.signal,
       },
     )
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        //console.log(responseJson);
         resolve(responseJson);
       })
       .catch(error => {
@@ -401,19 +334,14 @@ export async function calibratePump(number, time) {
 
 //Gets the details about all of the pumps
 export async function getPumpSupportDetails() {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'pumpSupportDetails/', {
       method: 'GET',
-      signal: abortController.signal,
     })
       .then(response => response.json())
       .then(responseJson => {
         console.log('Retreieved pump support data');
-        console.log(responseJson);
+        //console.log(responseJson);
         resolve(responseJson);
       })
       .catch(error => {
@@ -425,14 +353,9 @@ export async function getPumpSupportDetails() {
 
 //Gets the current volume for a specified bottle
 export async function getCurrentBottleVolume(bottleName) {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'volume/' + bottleName + '/', {
       method: 'GET',
-      signal: abortController.signal,
     })
       .then(response => response.text())
       .then(responseText => {
@@ -448,14 +371,9 @@ export async function getCurrentBottleVolume(bottleName) {
 
 //Gets the initial volume for a specified bottle
 export async function getInitBottleVolume(bottleName) {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 15000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'initVolume/' + bottleName + '/', {
       method: 'GET',
-      signal: abortController.signal,
     })
       .then(response => response.text())
       .then(responseText => {
@@ -471,17 +389,12 @@ export async function getInitBottleVolume(bottleName) {
 
 //Turns off a specified pump
 export async function pumpOff(number) {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 15000);
   fetch(barbotAddress + 'pumpOff/' + number.toString() + '/', {
     method: 'GET',
-    signal: abortController.signal,
   })
     .then(response => response.text())
     .then(responseText => {
-      console.log('Pump off: ' + responseText);
+      //console.log('Pump off: ' + responseText);
     })
     .catch(error => {
       console.log(error);
@@ -490,18 +403,13 @@ export async function pumpOff(number) {
 
 //Checks whether Barbot is reachable or not
 export async function isOnline() {
-  const abortController = new AbortController();
-  setTimeout(() => {
-    abortController.abort();
-  }, 5000);
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'heartbeat/', {
       method: 'GET',
-      signal: abortController.signal,
     })
       .then(response => response.text())
       .then(text => {
-        console.log('Heartbeat: ' + text);
+        //console.log('Heartbeat: ' + text);
         resolve(text);
       })
       .catch(error => {
@@ -519,8 +427,8 @@ export async function cleanPumps() {
     })
       .then(response => response.text())
       .then(responseText => {
-        console.log('Pumping cleaning response: ');
-        console.log(responseText);
+        //console.log('Pumping cleaning response: ');
+        //console.log(responseText);
         if (responseText === 'busy') {
           Alert.alert('BarBot is busy right now! Try again soon.');
         }

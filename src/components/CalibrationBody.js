@@ -15,8 +15,6 @@ var endTime = null;
 class CalibrationBody extends React.Component {
   state = {
     calRunning: false,
-    timer: null,
-    tenthsOfSec: 0,
   };
 
   componentDidMount() {
@@ -61,9 +59,7 @@ class CalibrationBody extends React.Component {
               <View style={styles.calibrateButtons}>
                 <Button
                   title="Start"
-                  disabled={
-                    this.state.calRunning || this.state.tenthsOfSec !== 0
-                  }
+                  disabled={this.state.calRunning}
                   buttonStyle={{
                     borderRadius: 20,
                     width: 175,
@@ -73,12 +69,6 @@ class CalibrationBody extends React.Component {
                     pumpOn(this.props.pumpNum);
                     startTime = new Date().getTime();
                     this.setState({
-                      tenthsOfSec: 1,
-                      timer: setInterval(() => {
-                        this.setState({
-                          tenthsOfSec: this.state.tenthsOfSec + 1,
-                        });
-                      }, 100),
                       calRunning: true,
                     });
                   }}
@@ -106,7 +96,6 @@ class CalibrationBody extends React.Component {
                       calRunning: false,
                     });
 
-                    //var shotTime = ((this.state.tenthsOfSec/10.0)/calibrationVolume)*shotVolume
                     var shotTime = (endTime - startTime) / 1000.0;
                     console.log('Shot time: ' + shotTime.toString());
                     calibratePump(this.props.pumpNum, shotTime.toString()).then(

@@ -66,7 +66,7 @@ class EditRecipeOverlay extends React.Component {
   getIngredientAmounts() {
     var amounts = [];
     for (var key in Object.keys(this.state.ingredients)) {
-      console.log(this.state.ingredients[key]);
+      //console.log(this.state.ingredients[key]);
       amounts.push(this.state.ingredients[key]);
     }
 
@@ -124,7 +124,7 @@ class EditRecipeOverlay extends React.Component {
       var newIngreds = {};
 
       //console.log(recipeIngreds);
-      console.log(recipeAmts);
+      //console.log(recipeAmts);
       for (var i = 0; i < recipeIngreds.length; i++) {
         newIngreds[recipeIngreds[i]] = parseFloat(recipeAmts[i] / shotSize);
       }

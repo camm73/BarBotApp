@@ -55,7 +55,7 @@ export function uploadImage(name, imgSource, callback) {
       console.log(err);
       return;
     } else {
-      console.log('Upload URL: ' + url);
+      //console.log('Upload URL: ' + url);
     }
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', url);
@@ -127,7 +127,7 @@ export function deleteRecipe(recipeName) {
         console.log(err, err.stack);
         reject(false);
       } else {
-        console.log(data);
+        //console.log(data);
         resolve(true);
       }
     });
@@ -157,7 +157,7 @@ export function updateRecipe(recipeName, ingredients) {
     },
   };
 
-  console.log(itemVal);
+  //console.log(itemVal);
 
   var params = {
     Item: itemVal,
