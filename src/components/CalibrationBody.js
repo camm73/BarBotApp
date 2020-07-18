@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {StyleSheet, View, Text, Alert} from 'react-native';
+import {StyleSheet, View, Text, Alert, AppState} from 'react-native';
 import {Button} from 'react-native-elements';
 import {pumpOn, pumpOff, calibratePump} from '../api/Control';
 import Spacer from './Spacer';
@@ -20,6 +20,24 @@ class CalibrationBody extends React.Component {
   componentDidMount() {
     //console.log(this.props.slide);
     //console.log(this.props.pumpNum);
+    AppState.addEventListener('change', this.handleBackgroundApp.bind(this));
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleBackgroundApp(this));
+  }
+
+  //Handle shutting off pump if app is closed
+  handleBackgroundApp(nextAppState) {
+    if (nextAppState === 'inactive' || nextAppState === 'background') {
+      startTime = null;
+      endTime = null;
+      pumpOff(this.props.pumpNum);
+    } else if (nextAppState === 'active') {
+      this.setState({
+        calRunning: false,
+      });
+    }
   }
 
   render() {
