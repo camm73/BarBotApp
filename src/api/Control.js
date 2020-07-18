@@ -448,8 +448,8 @@ export async function cleanPumps(abortSignal) {
         resolve(responseText);
       })
       .catch(error => {
-        console.log('Error cleaning pumps: ' + error);
-        reject('false');
+        //console.log('Error cleaning pumps: ' + error);
+        reject(error);
       });
   });
 }
