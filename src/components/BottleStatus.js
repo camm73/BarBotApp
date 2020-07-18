@@ -9,6 +9,7 @@ import {
   Dimensions,
   StyleSheet,
   AsyncStorage,
+  AppState,
 } from 'react-native';
 import {Overlay, Icon, Button} from 'react-native-elements';
 import Spacer from './Spacer';
@@ -31,6 +32,7 @@ import {withNavigation} from 'react-navigation';
 import CalibrationBody, {calibrationSlideCount} from './CalibrationBody';
 import SearchableSelect from './SearchableSelect';
 import LoadingComponent from '../components/LoadingComponent';
+import AbortController from 'abort-controller';
 
 const scaleFactor = 1.5;
 
@@ -40,6 +42,9 @@ const screenHeight = Dimensions.get('screen').height;
 var overlayWidth = screenWidth / 1.2;
 //var overlayHeight = screenHeight/1.4;
 var overlayHeight = 500;
+
+var abortController = new AbortController();
+var aborted = false;
 
 class BottleStatus extends React.Component {
   constructor(props) {
@@ -63,6 +68,8 @@ class BottleStatus extends React.Component {
     slideNum: 1,
     selectedItem: '',
     isLoading: false,
+    isRemoving: false,
+    isAdding: false,
     loadingTitle: '',
     loadingMessage: '',
   };
@@ -102,13 +109,10 @@ class BottleStatus extends React.Component {
           }
         })
         .catch(error => {
-          //console.log(error);
-          if (this._isMounted) {
-            this.setState({
-              level: 'N/A',
-              textColor: 'black',
-            });
-          }
+          this.setState({
+            level: 'N/A',
+            textColor: 'black',
+          });
         });
     }
 
@@ -117,15 +121,32 @@ class BottleStatus extends React.Component {
   }
 
   //Resets BottleStatus component
-  resetBottle() {
-    if (this._isMounted) {
-      this.props.reloadCallback();
-      this.reloadPercentage();
-      this.setState({
-        bottleName: 'N/A',
-        currentVolume: 'N/A',
-        initVolume: 'N/A',
-      });
+  resetBottle(abortMode) {
+    if (this._isMounted || abortMode) {
+      console.log('RESETTING BOTTLE!');
+
+      if (abortMode) {
+        setTimeout(() => {
+          this.props.reloadCallback();
+          this.reloadPercentage();
+          this.setState({
+            bottleName: 'N/A',
+            currentVolume: 'N/A',
+            initVolume: 'N/A',
+            level: 'N/A',
+            textColor: 'black',
+          });
+        }, 6000);
+      } else {
+        this.props.reloadCallback();
+        this.reloadPercentage();
+        this.setState({
+          bottleName: 'N/A',
+          currentVolume: 'N/A',
+          initVolume: 'N/A',
+          level: 'N/A',
+        });
+      }
     }
   }
 
@@ -231,7 +252,7 @@ class BottleStatus extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-
+    AppState.addEventListener('change', this.handleBackgroundApp.bind(this));
     this.setBottleName();
 
     //Continously reload bottle percentage
@@ -247,14 +268,42 @@ class BottleStatus extends React.Component {
   componentDidUpdate() {
     if (this.props.reload) {
       //console.log('RESETTING BOTTLE!!');
-      this.resetBottle();
+      this.resetBottle(false);
     }
   }
 
   //Signify that component has been unmounted to prevent memory leaks
   componentWillUnmount() {
-    this._isMounted = false;
+    AppState.removeEventListener('change', this.handleBackgroundApp.bind(this));
     clearInterval(this.interval);
+  }
+
+  //Handles app going into the background (cancels API requests)
+  handleBackgroundApp(nextAppState) {
+    if (nextAppState === 'background' || nextAppState === 'inactive') {
+      abortController.abort();
+      abortController = new AbortController();
+      this.setState({
+        selectedItem: '',
+        inputCurrentVolume: '',
+        inputInitVolume: '',
+        isLoading: false,
+        isAdding: false,
+        isRemoving: false,
+        detailsVisible: false,
+      });
+
+      this._isMounted = false;
+    } else if (nextAppState === 'active') {
+      if (this.aborted) {
+        this.aborted = false;
+        this._isMounted = true;
+        this.resetBottle();
+        this.setBottleName();
+        this.reloadPercentage();
+        this.props.reloadCallback();
+      }
+    }
   }
 
   render() {
@@ -380,11 +429,16 @@ class BottleStatus extends React.Component {
                         loadingTitle: 'Removing Bottle',
                         detailsVisible: false,
                         isLoading: true,
+                        isRemoving: true,
                       });
-                      removeBottle(this.props.number, this.state.bottleName)
+                      removeBottle(
+                        this.props.number,
+                        this.state.bottleName,
+                        abortController.signal,
+                      )
                         .then(res => {
                           if (res === 'true') {
-                            this.resetBottle();
+                            this.resetBottle(false);
                           } else if (res === 'busy') {
                             console.log('Barbot is busy...');
                           } else {
@@ -399,6 +453,7 @@ class BottleStatus extends React.Component {
                           this.setState(
                             {
                               isLoading: false,
+                              isRemoving: false,
                               detailsVisible: true,
                             },
                             res === 'busy'
@@ -413,17 +468,22 @@ class BottleStatus extends React.Component {
                           );
                         })
                         .catch(error => {
-                          console.log(
-                            'Error removing bottle ' +
-                              this.state.bottleName +
-                              ': ' +
-                              error,
-                          );
-                          this.setState({
-                            isLoading: false,
-                            detailsVisible: true,
-                          });
-                          Alert.alert('Error removing bottle: ' + error);
+                          if (error.name === 'AbortError') {
+                            this.aborted = true;
+                          } else {
+                            console.log(
+                              'Error removing bottle ' +
+                                this.state.bottleName +
+                                ': ' +
+                                error,
+                            );
+                            this.setState({
+                              isLoading: false,
+                              isRemoving: false,
+                              detailsVisible: true,
+                            });
+                            Alert.alert('Error removing bottle: ' + error);
+                          }
                         });
                     }}
                   />
@@ -548,6 +608,7 @@ class BottleStatus extends React.Component {
                         loadingMessage: 'Please wait while bottle is added.',
                         loadingTitle: 'Adding Bottle',
                         isLoading: true,
+                        isAdding: true,
                         detailsVisible: false,
                       });
 
@@ -556,6 +617,7 @@ class BottleStatus extends React.Component {
                         this.props.number,
                         this.state.inputCurrentVolume,
                         this.state.inputInitVolume,
+                        abortController.signal,
                       )
                         .then(res => {
                           //console.log('ADDING BOTTLE RESULT: ' + res);
@@ -570,6 +632,7 @@ class BottleStatus extends React.Component {
                             inputCurrentVolume: '',
                             inputInitVolume: '',
                             isLoading: false,
+                            isAdding: false,
                             detailsVisible: true,
                           });
 
@@ -578,19 +641,24 @@ class BottleStatus extends React.Component {
                           this.reloadPercentage();
                         })
                         .catch(err => {
-                          console.log(err);
+                          if (err.name === 'AbortError') {
+                            this.aborted = true;
+                          } else {
+                            console.log(err);
 
-                          this.setState({
-                            selectedItem: '',
-                            inputCurrentVolume: '',
-                            inputInitVolume: '',
-                            isLoading: false,
-                            detailsVisible: true,
-                          });
+                            this.setState({
+                              selectedItem: '',
+                              inputCurrentVolume: '',
+                              inputInitVolume: '',
+                              isLoading: false,
+                              isAdding: true,
+                              detailsVisible: true,
+                            });
 
-                          this.setBottleName();
-                          this.props.reloadCallback();
-                          this.reloadPercentage();
+                            this.setBottleName();
+                            this.props.reloadCallback();
+                            this.reloadPercentage();
+                          }
                         });
                     }}
                   />

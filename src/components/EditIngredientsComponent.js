@@ -103,6 +103,7 @@ class EditIngredientsComponent extends React.Component {
             <View style={{flexDirection: 'column', alignItems: 'center'}}>
               {this.state.recipeIngredients.map((ingredient, index) => (
                 <TouchableOpacity
+                  key={ingredient}
                   onPress={() => {
                     var oldIngreds = this.state.recipeIngredients;
                     oldIngreds.splice(index, 1);

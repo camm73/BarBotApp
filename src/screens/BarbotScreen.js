@@ -10,6 +10,7 @@ import {
   TextInput,
   ScrollView,
   ImageBackground,
+  AppState,
 } from 'react-native';
 import {Button, Overlay, Icon, CheckBox} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
@@ -27,9 +28,11 @@ import {
 import {toUpper} from '../utils/Tools';
 import EditIngredientsComponent from '../components/EditIngredientsComponent';
 import LoadingComponent from '../components/LoadingComponent';
+import AbortController from 'abort-controller';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
+var abortController = new AbortController();
 
 const recipeOverlayWidth = screenWidth / 1.2;
 //const recipeOverlayHeight = screenHeight/1.2;
@@ -43,11 +46,23 @@ class BarbotScreen extends React.Component {
   };
 
   componentDidMount() {
+    AppState.addEventListener('change', this.handleBackgroundApp);
     checkAlcoholMode().then(res => {
       this.setState({
         alcoholMode: res,
       });
     });
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleBackgroundApp);
+  }
+
+  handleBackgroundApp(nextAppState) {
+    if (nextAppState === 'background' || nextAppState === 'inactive') {
+      abortController.abort();
+      abortController = new AbortController();
+    }
   }
 
   state = {
@@ -73,7 +88,12 @@ class BarbotScreen extends React.Component {
       recipeAmts.length > 0
     ) {
       var saveName = this.state.recipeName;
-      addRecipe(this.state.recipeName, recipeIngreds, recipeAmts).then(res => {
+      addRecipe(
+        this.state.recipeName,
+        recipeIngreds,
+        recipeAmts,
+        abortController.signal,
+      ).then(res => {
         //console.log('Add Recipe result: ' + res);
         if (res === true) {
           Alert.alert(
@@ -158,7 +178,7 @@ class BarbotScreen extends React.Component {
         <View style={styles.buttonRow}>
           <TouchableOpacity
             onPress={() => {
-              setAlcoholMode(!this.state.alcoholMode)
+              setAlcoholMode(!this.state.alcoholMode, abortController.signal)
                 .then(() => {
                   this.props.navigation.state.params.reloadMenu();
                   this.setState({
@@ -207,7 +227,7 @@ class BarbotScreen extends React.Component {
                         loadingMessage: 'Flushing your ingredient pumps...',
                         loadingTitle: 'Flushing Pumps',
                       });
-                      cleanPumps()
+                      cleanPumps(abortController.signal)
                         .then(res => {
                           this.setState({
                             showLoading: false,
@@ -291,6 +311,7 @@ class BarbotScreen extends React.Component {
                 addNewBottle(
                   this.state.inputBottle,
                   this.state.alcoholCheck ? 'true' : 'false',
+                  abortController.signal,
                 ).then(res => {
                   //console.log(res);
                   if (res === true) {
@@ -388,7 +409,7 @@ class BarbotScreen extends React.Component {
                         loadingTitle: 'Removing Bottles',
                       });
 
-                      removeAllBottles()
+                      removeAllBottles(abortController.signal)
                         .then(response => {
                           if (response === 'true') {
                             this.props.navigation.state.params.resetBottles();

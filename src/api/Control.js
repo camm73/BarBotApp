@@ -41,10 +41,11 @@ export async function makeCocktail(name, abortSignal) {
 }
 
 //Remove bottles from every pump
-export async function removeAllBottles() {
+export async function removeAllBottles(abortSignal) {
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'removeAllBottles/', {
       method: 'GET',
+      signal: abortSignal,
     })
       .then(response => response.text())
       .then(responseText => {
@@ -69,12 +70,13 @@ export async function removeAllBottles() {
 }
 
 //Removes a specific bottle from the current pump
-export async function removeBottle(number, bottleName) {
+export async function removeBottle(number, bottleName, abortSignal) {
   var result = '';
 
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'removeBottle/' + bottleName, {
       method: 'GET',
+      signal: abortSignal,
     })
       .then(response => response.text())
       .then(responseJson => {
@@ -85,14 +87,13 @@ export async function removeBottle(number, bottleName) {
       .catch(error => {
         console.log('Issue removing bottle!');
         console.log(error);
-        reject(result); //TODO: May need to check what this is expecting to return
+        reject(error); //TODO: May need to check what this is expecting to return
       });
   });
 }
 
 //Check whether alcoholMode is enabled or not
 export async function checkAlcoholMode() {
-
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'getAlcoholMode/', {
       method: 'GET',
@@ -109,10 +110,11 @@ export async function checkAlcoholMode() {
 }
 
 //Sets the value of "alcohol mode"
-export async function setAlcoholMode(modeSetting) {
+export async function setAlcoholMode(modeSetting, abortSignal) {
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'alcoholMode/', {
       method: 'POST',
+      signal: abortSignal,
       body: JSON.stringify({
         enable: modeSetting,
       }),
@@ -133,7 +135,13 @@ export async function setAlcoholMode(modeSetting) {
 }
 
 //Adds a bottle to a certain pump and sets its details
-export async function addBottle(bottleName, pumpNum, volume, originalVolume) {
+export async function addBottle(
+  bottleName,
+  pumpNum,
+  volume,
+  originalVolume,
+  abortSignal,
+) {
   return new Promise(function(resolve, reject) {
     fetch(
       barbotAddress +
@@ -148,6 +156,7 @@ export async function addBottle(bottleName, pumpNum, volume, originalVolume) {
         '/',
       {
         method: 'GET',
+        signal: abortSignal,
       },
     )
       .then(response => response.json())
@@ -155,14 +164,14 @@ export async function addBottle(bottleName, pumpNum, volume, originalVolume) {
         resolve(responseJson);
       })
       .catch(error => {
-        reject('false');
+        reject(error);
         console.log(error);
       });
   });
 }
 
 //Add cocktail recipe to menu hosted on BarBot
-export async function addRecipe(recipeName, ingredients, amounts) {
+export async function addRecipe(recipeName, ingredients, amounts, abortSignal) {
   //Need to process amounts for BarBot's format
   for (var i = 0; i < amounts.length; i++) {
     var oldAmount = amounts[i];
@@ -172,6 +181,7 @@ export async function addRecipe(recipeName, ingredients, amounts) {
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'addRecipe/', {
       method: 'POST',
+      signal: abortSignal,
       body: JSON.stringify({
         name: recipeName,
         ingredients: ingredients,
@@ -232,10 +242,11 @@ export async function getAllBottles() {
 }
 
 //Adds new bottle to list of available bottles
-export async function addNewBottle(bottleName, isAlcohol) {
+export async function addNewBottle(bottleName, isAlcohol, abortSignal) {
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'newBottle/' + bottleName + '/alcohol=' + isAlcohol, {
       method: 'GET',
+      signal: abortSignal,
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -421,10 +432,11 @@ export async function isOnline() {
 }
 
 //Cleans all peristaltic pumps by flushing them
-export async function cleanPumps() {
+export async function cleanPumps(abortSignal) {
   return new Promise(function(resolve, reject) {
     fetch(barbotAddress + 'clean/', {
       method: 'GET',
+      signal: abortSignal,
     })
       .then(response => response.text())
       .then(responseText => {
@@ -450,7 +462,7 @@ export async function getCocktailMenu() {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        //console.log(responseJson);
         resolve(responseJson);
       })
       .catch(error => {
