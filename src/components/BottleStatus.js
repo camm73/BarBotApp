@@ -121,33 +121,16 @@ class BottleStatus extends React.Component {
   }
 
   //Resets BottleStatus component
-  resetBottle(abortMode) {
-    if (this._isMounted || abortMode) {
-      console.log('RESETTING BOTTLE!');
-
-      if (abortMode) {
-        setTimeout(() => {
-          this.props.reloadCallback();
-          this.reloadPercentage();
-          this.setState({
-            bottleName: 'N/A',
-            currentVolume: 'N/A',
-            initVolume: 'N/A',
-            level: 'N/A',
-            textColor: 'black',
-          });
-        }, 6000);
-      } else {
-        this.props.reloadCallback();
-        this.reloadPercentage();
-        this.setState({
-          bottleName: 'N/A',
-          currentVolume: 'N/A',
-          initVolume: 'N/A',
-          level: 'N/A',
-        });
-      }
-    }
+  resetBottle() {
+    this.props.reloadCallback();
+    this.reloadPercentage();
+    this.setState({
+      bottleName: 'N/A',
+      currentVolume: 'N/A',
+      initVolume: 'N/A',
+      level: 'N/A',
+      textColor: 'black',
+    });
   }
 
   //Sets the volumes of the current bottle
@@ -267,8 +250,7 @@ class BottleStatus extends React.Component {
 
   componentDidUpdate() {
     if (this.props.reload) {
-      //console.log('RESETTING BOTTLE!!');
-      this.resetBottle(false);
+      this.resetBottle();
     }
   }
 
@@ -295,9 +277,9 @@ class BottleStatus extends React.Component {
 
       this._isMounted = false;
     } else if (nextAppState === 'active') {
+      this._isMounted = true;
       if (this.aborted) {
         this.aborted = false;
-        this._isMounted = true;
         this.resetBottle();
         this.setBottleName();
         this.reloadPercentage();
@@ -438,7 +420,7 @@ class BottleStatus extends React.Component {
                       )
                         .then(res => {
                           if (res === 'true') {
-                            this.resetBottle(false);
+                            this.resetBottle();
                           } else if (res === 'busy') {
                             console.log('Barbot is busy...');
                           } else {

@@ -33,6 +33,7 @@ import AbortController from 'abort-controller';
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 var abortController = new AbortController();
+var aborted = false;
 
 const recipeOverlayWidth = screenWidth / 1.2;
 //const recipeOverlayHeight = screenHeight/1.2;
@@ -62,6 +63,10 @@ class BarbotScreen extends React.Component {
     if (nextAppState === 'background' || nextAppState === 'inactive') {
       abortController.abort();
       abortController = new AbortController();
+    } else if (nextAppState === 'active') {
+      if (aborted) {
+        aborted = false;
+      }
     }
   }
 
@@ -431,6 +436,10 @@ class BarbotScreen extends React.Component {
                           });
                         })
                         .catch(err => {
+                          if (err.name === 'AbortError') {
+                            aborted = true;
+                            this.props.navigation.state.params.resetBottles();
+                          }
                           console.log(err);
                           this.setState({showLoading: false});
                         });

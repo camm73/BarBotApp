@@ -64,7 +64,7 @@ export async function removeAllBottles(abortSignal) {
       .catch(error => {
         console.log('Issue removing all bottles!');
         console.log(error);
-        reject('false');
+        reject(error);
       });
   });
 }
