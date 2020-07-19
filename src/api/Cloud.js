@@ -17,7 +17,7 @@ import {Alert} from 'react-native';
 export function getThumbnail(cocktailName) {
   //console.log('GETTING THUMBNAIL for ' + cocktailName);
   var params = {
-    Bucket: 'barbot-data',
+    Bucket: awsCreds.imageBucket,
     Key: toUpper(cocktailName) + '.jpg',
     Expires: 86400,
   };
@@ -29,7 +29,7 @@ export function getThumbnail(cocktailName) {
 //Makes sure cocktail thumbnail exists in S3 bucket by checking head object
 export function verifyImageExists(cocktailName, callback) {
   var params = {
-    Bucket: 'barbot-data',
+    Bucket: awsCreds.imageBucket,
     Key: toUpper(cocktailName) + '.jpg',
   };
 
@@ -45,7 +45,7 @@ export function verifyImageExists(cocktailName, callback) {
 //Uploads cocktail image to S3 bucket
 export function uploadImage(name, imgSource, callback) {
   var params = {
-    Bucket: 'barbot-data',
+    Bucket: awsCreds.imageBucket,
     Key: toUpper(name) + '.jpg',
     ContentType: 'image/jpeg',
   };
