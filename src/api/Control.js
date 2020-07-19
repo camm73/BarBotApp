@@ -560,6 +560,13 @@ export async function getIgnoreIngredients() {
   });
 }
 
+//Updates BarBot's software
+export async function updateBarbot() {
+  fetch(barbotAddress + 'update/', {
+    method: 'GET',
+  });
+}
+
 //Updates ignore ingredients
 export async function updateIgnoreIngredients(ingredient, add) {
   return new Promise(function(resolve, reject) {

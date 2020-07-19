@@ -24,6 +24,7 @@ import {
   removeAllBottles,
   checkAlcoholMode,
   setAlcoholMode,
+  updateBarbot,
 } from '../api/Control';
 import {toUpper} from '../utils/Tools';
 import EditIngredientsComponent from '../components/EditIngredientsComponent';
@@ -458,7 +459,6 @@ class BarbotScreen extends React.Component {
           <Spacer width={buttonSpacing} />
 
           <TouchableOpacity
-            disabled={false} //REMOVE WHEN FINISHED
             onPress={() => {
               this.props.navigation.navigate('EditRecipe');
             }}>
@@ -471,6 +471,23 @@ class BarbotScreen extends React.Component {
               source={require('../assets/editRecipeIcon.png')}
             />
             <Text style={styles.iconText}>{'Manage Recipes'}</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={[styles.buttonRow, {marginTop: 70}]}>
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert(
+                'Update BarBot?',
+                "Pressing 'Continue' will update BarBot if an update is available. BarBot may reboot itself when updated. Do you want to continue?",
+                [
+                  {text: 'Go Back', onPress: () => {}},
+                  {text: 'Continue', onPress: updateBarbot},
+                ],
+              );
+            }}>
+            <Icon name="download" type="antdesign" size={90} />
+            <Text style={styles.iconText}>Update BarBot</Text>
           </TouchableOpacity>
         </View>
       </View>
