@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "barbotIcon.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
