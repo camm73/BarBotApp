@@ -15,6 +15,7 @@
     "aws-amplify": "^1.2.4",
     "aws-amplify-react-native": "^2.2.3",
     "aws-sdk": "^2.610.0",
+    "logkitty": "^0.7.1",
     "react": "16.9.0",
     "react-liquid-gauge": "^1.2.4",
     "react-native": "0.61.4",
