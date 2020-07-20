@@ -272,6 +272,8 @@ class EditRecipeOverlay extends React.Component {
                                         onPress: () => {
                                           this.props.closeCallback();
                                           this.resetComponent();
+                                          this.props.reloadCallback();
+                                          refreshRecipes();
                                         },
                                       },
                                     ],
