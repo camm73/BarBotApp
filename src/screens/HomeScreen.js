@@ -234,17 +234,21 @@ class HomeScreen extends React.Component {
               3. Ensure your phone is connected to the same network
             </Text>
             <Spacer height={30} />
-            <Text style={styles.offlineTitle}>
-              If these fail, reconfigure wifi settings:
-            </Text>
-            <Text style={styles.offlineMessage}>
-              1. Check your wifi settings for a wifi network named "BarBot" and
-              connect to it.
-            </Text>
-            <Text style={styles.offlineMessage}>
-              2. Re-open the BarBot app and you will be able to reconfigure the
-              BarBot wifi settings.
-            </Text>
+            {false && (
+              <>
+                <Text style={styles.offlineTitle}>
+                  If these fail, reconfigure wifi settings:
+                </Text>
+                <Text style={styles.offlineMessage}>
+                  1. Check your wifi settings for a wifi network named "BarBot"
+                  and connect to it.
+                </Text>
+                <Text style={styles.offlineMessage}>
+                  2. Re-open the BarBot app and you will be able to reconfigure
+                  the BarBot wifi settings.
+                </Text>
+              </>
+            )}
           </View>
         )}
       </View>

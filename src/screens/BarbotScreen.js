@@ -149,7 +149,7 @@ class BarbotScreen extends React.Component {
           message={this.state.loadingMessage}
           visible={this.state.showLoading}
         />
-        <Text style={styles.headerText}>Manage Menu</Text>
+        <Text style={styles.headerText}>Settings</Text>
 
         <View style={styles.buttonRow}>
           <TouchableOpacity
