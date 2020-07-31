@@ -25,6 +25,7 @@ import {
   checkAlcoholMode,
   setAlcoholMode,
   updateBarbot,
+  rebootBarbot,
 } from '../api/Control';
 import {toUpper} from '../utils/Tools';
 import EditIngredientsComponent from '../components/EditIngredientsComponent';
@@ -488,6 +489,28 @@ class BarbotScreen extends React.Component {
             }}>
             <Icon name="download" type="antdesign" size={90} />
             <Text style={styles.iconText}>Update BarBot</Text>
+          </TouchableOpacity>
+
+          <Spacer width={buttonSpacing} />
+
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert(
+                'Reboot BarBot?',
+                "Pressing 'Continue' will reboot BarBot. Do you want to continue?",
+                [
+                  {text: 'Go Back', onPress: () => {}},
+                  {
+                    text: 'Continue',
+                    onPress: () => {
+                      rebootBarbot();
+                    },
+                  },
+                ],
+              );
+            }}>
+            <Icon name="refresh" type="fontawesome" size={90} />
+            <Text style={styles.iconText}>Reboot BarBot</Text>
           </TouchableOpacity>
         </View>
       </View>

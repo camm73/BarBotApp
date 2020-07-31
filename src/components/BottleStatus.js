@@ -114,23 +114,21 @@ class BottleStatus extends React.Component {
             textColor: 'black',
           });
         });
+    } else {
+      this.setState({
+        level: 'N/A',
+        textColor: 'black',
+      });
     }
 
-    //Refresh the bottle currentVolume
+    //Refresh the bottle currentVolume (MIGHT BE REDUNDANT)
     this.setBottleVolumes();
   }
 
   //Resets BottleStatus component
   resetBottle() {
+    this.setBottleName();
     this.props.reloadCallback();
-    this.reloadPercentage();
-    this.setState({
-      bottleName: 'N/A',
-      currentVolume: 'N/A',
-      initVolume: 'N/A',
-      level: 'N/A',
-      textColor: 'black',
-    });
   }
 
   //Sets the volumes of the current bottle
@@ -156,14 +154,23 @@ class BottleStatus extends React.Component {
         });
 
       //Set Initial volume
-      getInitBottleVolume(this.state.bottleName).then(response => {
-        //console.log('Initial Volume: ' + response);
-        if (this._isMounted) {
-          this.setState({
-            initVolume: response,
-          });
-        }
-      });
+      getInitBottleVolume(this.state.bottleName)
+        .then(response => {
+          //console.log('Initial Volume: ' + response);
+          if (this._isMounted) {
+            this.setState({
+              initVolume: response,
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          if (this._isMounted) {
+            this.setState({
+              initVolume: 'N/A',
+            });
+          }
+        });
     }
   }
 
@@ -218,17 +225,29 @@ class BottleStatus extends React.Component {
     getBottleName(this.props.number)
       .then(response => {
         if (this._isMounted) {
-          this.setState({
-            bottleName: response,
-          });
+          this.setState(
+            {
+              bottleName: response,
+            },
+            () => {
+              this.setBottleVolumes();
+              this.reloadPercentage();
+            },
+          );
         }
-        //console.log('BOTTLE NAME: ' + response);
       })
-      .then(() => {
+      .catch(err => {
+        console.log(err);
         if (this._isMounted) {
-          //Set the bottle volumes the first time
-          this.setBottleVolumes();
-          this.reloadPercentage();
+          this.setState(
+            {
+              bottleName: 'N/A',
+            },
+            () => {
+              this.setBottleVolumes();
+              this.reloadPercentage();
+            },
+          );
         }
       });
   }
@@ -240,7 +259,7 @@ class BottleStatus extends React.Component {
 
     //Continously reload bottle percentage
     this.interval = setInterval(() => {
-      this.reloadPercentage();
+      this.setBottleName();
     }, 30000);
 
     //Need to trigger tutorial if this is the first time seeing this
@@ -281,9 +300,6 @@ class BottleStatus extends React.Component {
       if (this.aborted) {
         this.aborted = false;
         this.resetBottle();
-        this.setBottleName();
-        this.reloadPercentage();
-        this.props.reloadCallback();
       }
     }
   }
@@ -620,7 +636,6 @@ class BottleStatus extends React.Component {
 
                           this.setBottleName();
                           this.props.reloadCallback();
-                          this.reloadPercentage();
                         })
                         .catch(err => {
                           if (err.name === 'AbortError') {

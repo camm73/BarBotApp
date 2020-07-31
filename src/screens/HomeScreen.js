@@ -78,7 +78,32 @@ class HomeScreen extends React.Component {
     this.configureBottleShelf();
     this.setCocktailMenu();
     this.loadBottleList();
+    this.resetBottles();
     //console.log('Reloaded');
+  }
+
+  //Callback for BottleStatus
+  reloadBottleCallback() {
+    this.setState({
+      cocktailMenu: [],
+    });
+    this.configureBottleShelf();
+    this.setCocktailMenu();
+    this.loadBottleList();
+  }
+
+  //Resets/reloads bottles
+  resetBottles() {
+    this.setState(
+      {
+        reload: true,
+      },
+      () => {
+        this.setState({
+          reload: false,
+        });
+      },
+    );
   }
 
   //Configures the bottle shelf based on available pump data
@@ -107,21 +132,12 @@ class HomeScreen extends React.Component {
     if (prevProps.isFocused !== this.props.isFocused) {
       this.loadBottleList();
     }
-
-    if (this.state.reloadMenu) {
-      this.reloadCallback();
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({
-        reloadMenu: false,
-      });
-    }
   }
 
   state = {
     cocktailMenu: [],
     bottleList: [],
     reload: false,
-    reloadMenu: false,
     cocktailThumbnails: {},
     bottleCount: 0, //8 is the default and then is updated by API request
     pumpDetails: [],
@@ -162,7 +178,7 @@ class HomeScreen extends React.Component {
                       pumpTime={pumpObj.pumpTime}
                       reload={this.state.reload}
                       bottleItems={this.state.bottleList}
-                      reloadCallback={this.reloadCallback.bind(this)}
+                      reloadCallback={this.reloadBottleCallback.bind(this)}
                     />
                   ))}
                 </ScrollView>
@@ -173,16 +189,8 @@ class HomeScreen extends React.Component {
                 titleStyle={{fontSize: 16}}
                 onPress={() => {
                   this.props.navigation.navigate('ManageBarbot', {
-                    resetBottles: () => {
-                      this.setState({
-                        reload: true,
-                      });
-                    },
-                    reloadMenu: () => {
-                      this.setState({
-                        reloadMenu: true,
-                      });
-                    },
+                    resetBottles: () => {},
+                    reloadMenu: this.reloadCallback.bind(this),
                   });
                 }}
               />

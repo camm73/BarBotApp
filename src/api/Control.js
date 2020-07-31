@@ -567,6 +567,13 @@ export async function updateBarbot() {
   });
 }
 
+//Triggers BarBot restart
+export function rebootBarbot() {
+  fetch(barbotAddress + 'reboot/', {
+    method: 'GET',
+  });
+}
+
 //Updates ignore ingredients
 export async function updateIgnoreIngredients(ingredient, add) {
   return new Promise(function(resolve, reject) {
