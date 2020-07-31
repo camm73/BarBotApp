@@ -12,7 +12,8 @@ import {
   ImageBackground,
   AppState,
 } from 'react-native';
-import {Button, Overlay, Icon, CheckBox} from 'react-native-elements';
+import {Button, Overlay, CheckBox} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {withNavigation} from 'react-navigation';
 import HeaderComponent from '../components/HeaderComponent';
 import Spacer from '../components/Spacer';
@@ -152,6 +153,7 @@ class BarbotScreen extends React.Component {
 
         <View style={styles.buttonRow}>
           <TouchableOpacity
+            style={styles.opacityStyle}
             onPress={() => {
               this.setState({
                 newBottleVisible: true,
@@ -167,6 +169,7 @@ class BarbotScreen extends React.Component {
           <Spacer width={buttonSpacing} />
 
           <TouchableOpacity
+            style={styles.opacityStyle}
             onPress={() => {
               this.setState({
                 newRecipeVisible: true,
@@ -184,6 +187,7 @@ class BarbotScreen extends React.Component {
 
         <View style={styles.buttonRow}>
           <TouchableOpacity
+            style={styles.opacityStyle}
             onPress={() => {
               setAlcoholMode(!this.state.alcoholMode, abortController.signal)
                 .then(() => {
@@ -197,24 +201,18 @@ class BarbotScreen extends React.Component {
                   Alert.alert('There was an error switching to Alcohol Mode');
                 });
             }}>
-            <ImageBackground
-              style={{
-                height: 120 * iconScale,
-                width: 120 * iconScale,
-                marginLeft: 10,
-              }}
-              source={require('../assets/alcoholModeIcon.png')}
-            />
+            <Icon name="pencil" type="fontawesome" size={90} />
             <Text style={styles.iconText}>
               {this.state.alcoholMode
-                ? 'Disable\n Alcohol Mode'
-                : 'Enable\n Alcohol Mode'}
+                ? 'Disable Alcohol Mode'
+                : 'Enable Alcohol Mode'}
             </Text>
           </TouchableOpacity>
 
           <Spacer width={buttonSpacing} />
 
           <TouchableOpacity
+            style={styles.opacityStyle}
             onPress={() => {
               Alert.alert(
                 'Confirm Pump Flush',
@@ -394,6 +392,7 @@ class BarbotScreen extends React.Component {
 
         <View style={styles.buttonRow}>
           <TouchableOpacity
+            style={styles.opacityStyle}
             onPress={() => {
               Alert.alert(
                 'Confirm Bottle Removal',
@@ -450,33 +449,25 @@ class BarbotScreen extends React.Component {
                 ],
               );
             }}>
-            <ImageBackground
-              style={{height: 120 * iconScale, width: 120 * iconScale}}
-              source={require('../assets/removeAllIcon.png')}
-            />
+            <Icon name="eject" size={90} />
             <Text style={styles.iconText}>{'Remove\n All Bottles'}</Text>
           </TouchableOpacity>
 
           <Spacer width={buttonSpacing} />
 
           <TouchableOpacity
+            style={styles.opacityStyle}
             onPress={() => {
               this.props.navigation.navigate('EditRecipe');
             }}>
-            <ImageBackground
-              style={{
-                height: 120 * iconScale,
-                width: 120 * iconScale,
-                marginLeft: 20,
-              }}
-              source={require('../assets/editRecipeIcon.png')}
-            />
+            <Icon name="edit" size={90} style={{marginLeft: 10}} />
             <Text style={styles.iconText}>{'Manage Recipes'}</Text>
           </TouchableOpacity>
         </View>
 
         <View style={[styles.buttonRow, {marginTop: 70}]}>
           <TouchableOpacity
+            style={styles.opacityStyle}
             onPress={() => {
               Alert.alert(
                 'Update BarBot?',
@@ -494,6 +485,7 @@ class BarbotScreen extends React.Component {
           <Spacer width={buttonSpacing} />
 
           <TouchableOpacity
+            style={styles.opacityStyle}
             onPress={() => {
               Alert.alert(
                 'Reboot BarBot?',
@@ -509,7 +501,7 @@ class BarbotScreen extends React.Component {
                 ],
               );
             }}>
-            <Icon name="refresh" type="fontawesome" size={90} />
+            <Icon name="refresh" size={90} />
             <Text style={styles.iconText}>Reboot BarBot</Text>
           </TouchableOpacity>
         </View>
@@ -604,6 +596,12 @@ const styles = StyleSheet.create({
 
   iconText: {
     fontSize: 18,
+    minWidth: 120,
+    maxWidth: 120,
     textAlign: 'center',
+  },
+
+  opacityStyle: {
+    alignItems: 'center',
   },
 });
