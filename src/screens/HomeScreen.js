@@ -195,13 +195,23 @@ class HomeScreen extends React.Component {
                 }}
               />
             </View>
-            <Spacer height={20} />
+            <Spacer height={10} />
             <View style={styles.controlView}>
-              <Text style={styles.textStyle}>Menu</Text>
+              <Text style={[styles.textStyle, {marginBottom: 8}]}>Menu</Text>
               <ScrollView
                 bounces={true}
+                scrollEnabled={
+                  this.state.cocktailMenu.length === 0 ? false : true
+                }
                 contentContainerStyle={styles.menuScroll}>
-                <Spacer height={10} />
+                {this.state.cocktailMenu.length < 1 && (
+                  <View>
+                    <Text style={styles.offlineMessage}>
+                      There are no items on the menu right now. Try adding more
+                      ingredients.
+                    </Text>
+                  </View>
+                )}
 
                 {this.state.cocktailMenu.map(cocktail => (
                   <View key={cocktail}>

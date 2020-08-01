@@ -417,24 +417,37 @@ class BarbotScreen extends React.Component {
 
                       removeAllBottles(abortController.signal)
                         .then(response => {
-                          if (response === 'true') {
-                            this.props.navigation.state.params.resetBottles();
-                            Alert.alert('Successfully removed all bottles!');
-                          } else if (response === 'busy') {
-                            Alert.alert(
-                              'BarBot is busy right now! Try again soon.',
-                            );
-                          } else if (response === 'error') {
-                            Alert.alert(
-                              'There was an error trying to remove all bottles!',
-                            );
-                          } else {
-                            Alert.alert('Failed to remove all bottles!');
-                          }
-
-                          this.setState({
-                            showLoading: false,
-                          });
+                          this.setState(
+                            {
+                              showLoading: false,
+                            },
+                            () => {
+                              if (response === 'true') {
+                                this.props.navigation.state.params.resetBottles();
+                                setTimeout(() => {
+                                  Alert.alert(
+                                    'Successfully removed all bottles!',
+                                  );
+                                }, 500);
+                              } else if (response === 'busy') {
+                                setTimeout(() => {
+                                  Alert.alert(
+                                    'BarBot is busy right now! Try again soon.',
+                                  );
+                                }, 500);
+                              } else if (response === 'error') {
+                                setTimeout(() => {
+                                  Alert.alert(
+                                    'There was an error trying to remove all bottles!',
+                                  );
+                                }, 500);
+                              } else {
+                                setTimeout(() => {
+                                  Alert.alert('Failed to remove all bottles!');
+                                }, 500);
+                              }
+                            },
+                          );
                         })
                         .catch(err => {
                           if (err.name === 'AbortError') {
