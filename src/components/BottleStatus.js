@@ -397,21 +397,10 @@ class BottleStatus extends React.Component {
                         textAlign: 'center',
                         alignSelf: 'center',
                         paddingRight: 10,
-                        paddingLeft: 30,
+                        paddingLeft: 10,
                       }}>
                       Bottle Management
                     </Text>
-                    {
-                      //TODO: ICON TEMPORARILY DISABLED FOR RELEASE ISSUE FIX
-                    }
-                    <Icon
-                      name="help"
-                      disabled={true}
-                      size={28}
-                      onPress={() => {
-                        //this.openInstructions();
-                      }}
-                    />
                   </View>
                 </View>
               )}

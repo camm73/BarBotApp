@@ -1,14 +1,14 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   Text,
   View,
   StyleSheet,
-  Button,
   Dimensions,
   TouchableOpacity,
   Alert,
 } from 'react-native';
-//import {Button} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {withNavigation, SafeAreaView} from 'react-navigation';
 import {Icon} from 'react-native-elements';
 
@@ -29,7 +29,11 @@ class HeaderComponent extends React.Component {
               {this.props.backVisible && (
                 <Button
                   title="Go Back"
-                  style={styles.buttonStyle}
+                  buttonStyle={styles.buttonStyle}
+                  titleStyle={{
+                    color: 'black',
+                    fontSize: 18,
+                  }}
                   onPress={() => {
                     //console.log('Return page: ' + this.props.returnPage);
                     if (this.props.returnPage === 'ManageBarbot') {
@@ -139,6 +143,8 @@ const styles = StyleSheet.create({
 
   buttonStyle: {
     alignSelf: 'flex-start',
+    backgroundColor: 'transparent',
+    marginLeft: 15,
   },
 
   textContainer: {
