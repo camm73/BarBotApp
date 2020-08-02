@@ -189,7 +189,6 @@ class HomeScreen extends React.Component {
                 titleStyle={{fontSize: 16}}
                 onPress={() => {
                   this.props.navigation.navigate('ManageBarbot', {
-                    resetBottles: () => {},
                     reloadMenu: this.reloadCallback.bind(this),
                   });
                 }}

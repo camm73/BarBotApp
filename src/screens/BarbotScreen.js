@@ -8,11 +8,15 @@ import {
   Alert,
   TouchableOpacity,
   TextInput,
-  ScrollView,
   ImageBackground,
   AppState,
 } from 'react-native';
-import {Button, Overlay, CheckBox} from 'react-native-elements';
+import {
+  Button,
+  Overlay,
+  CheckBox,
+  Icon as ElementIcon,
+} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {withNavigation} from 'react-navigation';
 import HeaderComponent from '../components/HeaderComponent';
@@ -54,6 +58,7 @@ class BarbotScreen extends React.Component {
     checkAlcoholMode().then(res => {
       this.setState({
         alcoholMode: res,
+        alcModeSet: true,
       });
     });
   }
@@ -82,6 +87,7 @@ class BarbotScreen extends React.Component {
     recipeAmounts: [],
     ingredientCount: 0,
     alcoholMode: false,
+    alcModeSet: false,
     alcoholCheck: false,
     loadingMessage: '',
     loadingTitle: '',
@@ -188,18 +194,48 @@ class BarbotScreen extends React.Component {
         <View style={styles.buttonRow}>
           <TouchableOpacity
             style={styles.opacityStyle}
+            disabled={!this.state.alcModeSet}
             onPress={() => {
-              setAlcoholMode(!this.state.alcoholMode, abortController.signal)
-                .then(() => {
-                  this.props.navigation.state.params.reloadMenu();
-                  this.setState({
-                    alcoholMode: !this.state.alcoholMode,
-                  });
-                })
-                .catch(error => {
-                  console.log(error);
-                  Alert.alert('There was an error switching to Alcohol Mode');
-                });
+              Alert.alert(
+                'Toggle Alcohol Mode?',
+                this.state.alcoholMode
+                  ? 'Are you sure you want to disable alcohol mode?'
+                  : 'Are you sure you want to enable alcohol mode?',
+                [
+                  {text: 'Go Back', onPress: () => {}},
+                  {
+                    text: 'Continue',
+                    onPress: () => {
+                      this.setState({
+                        showLoading: true,
+                        loadingTitle: 'Setting Alcohol Mode',
+                        loadingMessage:
+                          'Please wait while alcohol mode is set.',
+                      });
+                      setAlcoholMode(
+                        !this.state.alcoholMode,
+                        abortController.signal,
+                      )
+                        .then(() => {
+                          this.props.navigation.state.params.reloadMenu();
+                          this.setState({
+                            alcoholMode: !this.state.alcoholMode,
+                            showLoading: false,
+                          });
+                        })
+                        .catch(error => {
+                          console.log(error);
+                          this.setState({
+                            showLoading: false,
+                          });
+                          Alert.alert(
+                            'There was an error switching to Alcohol Mode',
+                          );
+                        });
+                    },
+                  },
+                ],
+              );
             }}>
             <Icon name="pencil" type="fontawesome" size={90} />
             <Text style={styles.iconText}>
@@ -276,7 +312,7 @@ class BarbotScreen extends React.Component {
                     alcoholCheck: false,
                   });
                 }}>
-                <Icon name="back" size={33} type="antdesign" />
+                <ElementIcon name="back" size={33} type="antdesign" />
               </TouchableOpacity>
             </View>
 
@@ -362,7 +398,7 @@ class BarbotScreen extends React.Component {
                     ingredientCount: 0,
                   });
                 }}>
-                <Icon name="back" size={33} type="antdesign" />
+                <ElementIcon name="back" size={33} type="antdesign" />
               </TouchableOpacity>
             </View>
 
@@ -423,7 +459,7 @@ class BarbotScreen extends React.Component {
                             },
                             () => {
                               if (response === 'true') {
-                                this.props.navigation.state.params.resetBottles();
+                                this.props.navigation.state.params.reloadMenu();
                                 setTimeout(() => {
                                   Alert.alert(
                                     'Successfully removed all bottles!',
@@ -452,7 +488,7 @@ class BarbotScreen extends React.Component {
                         .catch(err => {
                           if (err.name === 'AbortError') {
                             aborted = true;
-                            this.props.navigation.state.params.resetBottles();
+                            this.props.navigation.state.params.reloadMenu();
                           }
                           console.log(err);
                           this.setState({showLoading: false});
