@@ -38,17 +38,27 @@ class HomeScreen extends React.Component {
 
   //Fetches and sets the available cocktail menu
   setCocktailMenu() {
-    getCocktailMenu()
-      .then(response => {
-        this.setState({
-          cocktailMenu: response,
-        });
-        //console.log('Cocktail Menu:');
-        //console.log(response);
-      })
-      .catch(error => console.log(error));
+    if (!this.state.settingMenu) {
+      this.setState({
+        settingMenu: true,
+      });
 
-    this.forceUpdate(); //TODO: Is this necessary??
+      getCocktailMenu()
+        .then(response => {
+          this.setState({
+            cocktailMenu: response,
+            settingMenu: false,
+          });
+          //console.log('Cocktail Menu:');
+          //console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+          this.setState({
+            settingMenu: false,
+          });
+        });
+    }
   }
 
   //Load bottle list from the BarBot controller and formats it for the drop down menu
@@ -143,6 +153,7 @@ class HomeScreen extends React.Component {
     pumpDetails: [],
     manageVisible: false,
     offline: false,
+    settingMenu: false,
   };
 
   //Callback for ConnectionStatus to manage the display
