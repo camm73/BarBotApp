@@ -32,7 +32,6 @@ import {
   updateBarbot,
   rebootBarbot,
 } from '../api/Control';
-import {toUpper} from '../utils/Tools';
 import EditIngredientsComponent from '../components/EditIngredientsComponent';
 import LoadingComponent from '../components/LoadingComponent';
 import AbortController from 'abort-controller';

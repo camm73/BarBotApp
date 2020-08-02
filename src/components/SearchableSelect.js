@@ -1,20 +1,11 @@
 /* eslint-disable react/no-did-update-set-state */
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  TextInput,
-  Keyboard,
-  Alert,
-} from 'react-native';
+import {View, FlatList, TextInput, Keyboard} from 'react-native';
 import {Button} from 'react-native-elements';
 
-const defaultWidth = 120;
 const defaultHeight = 40;
 const defaultBorderRadius = 8;
-const defaultListHeight = 130;
 
 //Needs (data and selectItemCallback) as props
 class SearchableSelect extends React.Component {
@@ -33,14 +24,6 @@ class SearchableSelect extends React.Component {
   componentDidMount() {}
 
   componentDidUpdate() {
-    /*
-    console.log('Resetting Searchable Select');
-    console.log('Reset param: ' + this.props.reset);
-    console.log('Initial Item: ' + this.props.initialItem);
-    console.log('Input Text: ' + this.state.inputText);
-    console.log('Ignore Default: ' + this.state.ignoreDefault);
-    console.log('========================================');
-    */
     if (this.props.reset && this.state.inputText !== '') {
       this.setState({
         inputText: '',
