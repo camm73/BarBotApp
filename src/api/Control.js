@@ -1,11 +1,7 @@
-import React from 'react';
 import {Alert} from 'react-native';
-import AbortController from 'abort-controller';
-
-//const thumbnailApi = require('../config/thumbnailApi.json');
 
 const barbotAddress = 'http://barbot.local:5000/';
-const shotSize = 1.5;
+const shotSize = 1.5; //fl oz
 
 //Calls the make cocktail function on BarBot API
 export async function makeCocktail(name, abortSignal) {
@@ -492,13 +488,36 @@ export async function cleanPumps(abortSignal) {
         //console.log('Pumping cleaning response: ');
         //console.log(responseText);
         if (responseText === 'busy') {
-          Alert.alert('BarBot is busy right now! Try again soon.');
+          Alert.alert(
+            'BarBot Busy',
+            'BarBot is busy right now! Try again soon.',
+            [
+              {
+                text: 'Ok',
+                onPress: () => {
+                  resolve(responseText);
+                },
+              },
+            ],
+          );
+        } else {
+          resolve(responseText);
         }
-        resolve(responseText);
       })
       .catch(error => {
         //console.log('Error cleaning pumps: ' + error);
-        reject(error);
+        Alert.alert(
+          'Flush Pumps Error',
+          'An unknown error occurred while trying to flush',
+          [
+            {
+              text: 'Ok',
+              onPress: () => {
+                reject(error);
+              },
+            },
+          ],
+        );
       });
   });
 }
