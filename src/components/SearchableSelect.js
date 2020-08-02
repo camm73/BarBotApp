@@ -41,6 +41,7 @@ class SearchableSelect extends React.Component {
       <View>
         <TextInput
           placeholder={this.props.placeholder}
+          autoCorrect={false}
           ref={this.input}
           returnKeyType="done"
           style={{

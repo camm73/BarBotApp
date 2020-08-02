@@ -47,11 +47,6 @@ var abortController = new AbortController();
 var aborted = false;
 
 class BottleStatus extends React.Component {
-  constructor(props) {
-    super(props);
-    this.reloadPercentage();
-  }
-
   _isMounted = false;
   interval = undefined;
 
