@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {Text, View, StyleSheet, Alert, Dimensions} from 'react-native';
+import {Text, View, StyleSheet, Dimensions} from 'react-native';
 import {Button} from 'react-native-elements';
 import Spacer from '../components/Spacer';
 import {withNavigationFocus} from 'react-navigation';

@@ -18,24 +18,73 @@ export async function makeCocktail(name, abortSignal) {
       .then(responseText => {
         //console.log('Cocktail Response: ' + responseText);
         if (responseText === 'available') {
-          Alert.alert("We're sorry, but this cocktail is no longer available.");
+          Alert.alert(
+            'Cocktail Not Available',
+            "We're sorry, but this cocktail is no longer available.",
+            [
+              {
+                text: 'Ok',
+                onPress: () => {
+                  resolve(false);
+                },
+              },
+            ],
+          );
         } else if (responseText === 'busy') {
-          Alert.alert('BarBot is busy right now! Try again in a little while.');
+          Alert.alert(
+            'BarBot Busy',
+            'BarBot is busy right now! Try again in a little while.',
+            {
+              text: 'Ok',
+              onPress: () => {
+                resolve(false);
+              },
+            },
+          );
         } else if (responseText === 'ingredients') {
           Alert.alert(
-            'BarBot does not have the necessary ingredients for this cocktail. Sorry!',
+            'Ingredient Error',
+            'BarBot does not have enough of the necessary ingredients for this cocktail.',
+            [
+              {
+                text: 'Ok',
+                onPress: () => {
+                  resolve(false);
+                },
+              },
+            ],
           );
         } else if (responseText === 'error') {
           Alert.alert(
+            'Unexpected Error',
             'An unexpected error occurred while BarBot was making your cocktail!',
+            [
+              {
+                text: 'Ok',
+                onPress: () => {
+                  resolve(false);
+                },
+              },
+            ],
           );
+        } else {
+          resolve(true);
         }
-        resolve('DONE');
       })
       .catch(error => {
-        Alert.alert('An error occurred trying to make this cocktail!');
         console.log(error);
-        reject('ERROR');
+        Alert.alert(
+          'Error',
+          'An error occurred trying to make this cocktail!',
+          [
+            {
+              text: 'Ok',
+              onPress: () => {
+                resolve(false);
+              },
+            },
+          ],
+        );
       });
   });
 }
