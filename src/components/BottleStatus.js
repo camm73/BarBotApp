@@ -71,7 +71,7 @@ class BottleStatus extends React.Component {
 
   //Gets the color for the bottle percentage display
   getTextColor(num) {
-    if (num > 50) {
+    if (num >= 50) {
       return 'limegreen';
     } else if (num > 15 && num < 50) {
       return 'yellow';

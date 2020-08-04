@@ -69,18 +69,22 @@ export async function makeCocktail(name, abortSignal) {
       })
       .catch(error => {
         console.log(error);
-        Alert.alert(
-          'Error',
-          'An error occurred trying to make this cocktail!',
-          [
-            {
-              text: 'Ok',
-              onPress: () => {
-                resolve(false);
+        if (error.name !== 'AbortError') {
+          Alert.alert(
+            'Error',
+            'An error occurred trying to make this cocktail!',
+            [
+              {
+                text: 'Ok',
+                onPress: () => {
+                  resolve(false);
+                },
               },
-            },
-          ],
-        );
+            ],
+          );
+        } else {
+          resolve(true); //TODO: May want to change to false
+        }
       });
   });
 }
@@ -506,18 +510,22 @@ export async function cleanPumps(abortSignal) {
       })
       .catch(error => {
         //console.log('Error cleaning pumps: ' + error);
-        Alert.alert(
-          'Flush Pumps Error',
-          'An unknown error occurred while trying to flush',
-          [
-            {
-              text: 'Ok',
-              onPress: () => {
-                reject(error);
+        if (error.name !== 'AbortError') {
+          Alert.alert(
+            'Flush Pumps Error',
+            'An unknown error occurred while trying to flush',
+            [
+              {
+                text: 'Ok',
+                onPress: () => {
+                  reject(error);
+                },
               },
-            },
-          ],
-        );
+            ],
+          );
+        } else {
+          resolve();
+        }
       });
   });
 }
