@@ -172,7 +172,10 @@ class HomeScreen extends React.Component {
   render() {
     return (
       <View style={styles.mainView}>
-        <ConnectionStatus toggleConnected={this.toggleConnected.bind(this)} />
+        <ConnectionStatus
+          toggleConnected={this.toggleConnected.bind(this)}
+          reloadCallback={this.reloadCallback.bind(this)}
+        />
         {this.state.manageVisible && (
           <>
             <View style={styles.statusView}>

@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {View, Text, Alert} from 'react-native';
+import {View, Text} from 'react-native';
 import {isOnline} from '../api/Control';
 
 class ConnectionStatus extends React.Component {
@@ -19,20 +19,32 @@ class ConnectionStatus extends React.Component {
     isOnline()
       .then(response => {
         if (response === 'online' && this._isMounted) {
+          var makeChange = this.state.textContent === 'Disconnected';
           this.setState({
             textContent: 'Connected',
             color: 'limegreen',
           });
           this.props.toggleConnected(true);
+
+          //Reload if state changed
+          if (makeChange) {
+            this.props.reloadCallback();
+          }
         }
       })
       .catch(error => {
         if (this._isMounted) {
+          var makeChange = this.state.textContent === 'Connected';
           this.setState({
             textContent: 'Disconnected',
             color: 'red',
           });
           this.props.toggleConnected(false);
+
+          //Reload main screen if connection state changes
+          if (makeChange) {
+            this.props.reloadCallback();
+          }
         }
         console.log(error);
       });
