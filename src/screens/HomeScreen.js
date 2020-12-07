@@ -3,7 +3,7 @@ import React from 'react';
 import {Text, View, StyleSheet, Dimensions} from 'react-native';
 import {Button} from 'react-native-elements';
 import Spacer from '../components/Spacer';
-import {withNavigationFocus} from 'react-navigation';
+import {withNavigationFocus} from '@react-navigation/compat';
 import {ScrollView} from 'react-native-gesture-handler';
 import HeaderComponent from '../components/HeaderComponent';
 import MenuItem from '../components/MenuItem';

@@ -18,7 +18,7 @@ import {
   Icon as ElementIcon,
 } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {withNavigation} from 'react-navigation';
+import {withNavigation} from '@react-navigation/compat';
 import HeaderComponent from '../components/HeaderComponent';
 import Spacer from '../components/Spacer';
 import {

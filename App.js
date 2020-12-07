@@ -18,36 +18,67 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <AppNavigator />
+      <RootStack />
     </NavigationContainer>
   );
 };
 
-const AppNavigator = createStackNavigator(
-  {
-    Home: {
-      screen: HomeScreen,
-    },
+const Stack = createStackNavigator();
 
-    ManageBarbot: {
-      screen: BarbotScreen,
-    },
-
-    BottleTut: {
-      screen: BottleTutorial,
-    },
-
-    Settings: {
-      screen: SettingsScreen,
-    },
-
-    EditRecipe: {
-      screen: EditRecipeScreen,
-    },
-  },
-  {
-    initialRouteName: 'Home',
-  },
-);
+function RootStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{gestureEnabled: false}}>
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          headerTitle: 'BarBot',
+          headerStyle: {
+            backgroundColor: '#1C404F',
+          },
+          headerTitleStyle: {
+            color: 'black',
+            fontSize: 28,
+            fontFamily: 'Chalkboard SE',
+          },
+        }}
+      />
+      <Stack.Screen
+        name="ManageBarbot"
+        component={BarbotScreen}
+        options={{
+          headerTitle: 'Manage BarBot',
+          headerStyle: {
+            backgroundColor: '#1C404F',
+          },
+          headerTitleStyle: {
+            color: 'black',
+            fontSize: 22,
+            fontFamily: 'Chalkboard SE',
+          },
+        }}
+      />
+      <Stack.Screen name="BottleTut" component={BottleTutorial} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen
+        name="EditRecipe"
+        component={EditRecipeScreen}
+        options={{
+          headerTitle: 'Edit Recipe',
+          headerStyle: {
+            backgroundColor: '#1C404F',
+          },
+          headerTitleStyle: {
+            color: 'black',
+            fontSize: 22,
+            fontFamily: 'Chalkboard SE',
+          },
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 
 export default App;

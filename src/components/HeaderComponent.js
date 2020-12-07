@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import {Button} from 'react-native-elements';
-import {withNavigation, SafeAreaView} from 'react-navigation';
+import {withNavigation, SafeAreaView} from '@react-navigation/compat';
 import {Icon} from 'react-native-elements';
 
 var screenWidth = Dimensions.get('window').width;

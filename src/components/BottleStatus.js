@@ -28,7 +28,7 @@ import {
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {toUpper} from '../utils/Tools';
 import ProgressBar from '../components/ProgressBar';
-import {withNavigation} from 'react-navigation';
+import {withNavigation} from '@react-navigation/compat';
 import CalibrationBody, {calibrationSlideCount} from './CalibrationBody';
 import SearchableSelect from './SearchableSelect';
 import LoadingComponent from '../components/LoadingComponent';

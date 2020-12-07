@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, StyleSheet, Dimensions, Text, FlatList} from 'react-native';
 import HeaderComponent from '../components/HeaderComponent';
-import {withNavigation} from 'react-navigation';
+import {withNavigation} from '@react-navigation/compat';
 import MenuItem from '../components/MenuItem';
 import {loadCocktailNames, getThumbnail} from '../api/Cloud';
 import {getIgnoreIngredients} from '../api/Control';
