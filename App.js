@@ -1,9 +1,6 @@
 import React, {useEffect} from 'react';
-import {
-  createAppContainer,
-  createStackNavigator,
-  SafeAreaView,
-} from 'react-navigation';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 import HomeScreen from './src/screens/HomeScreen';
 import BarbotScreen from './src/screens/BarbotScreen';
 import BottleTutorial from './src/tutorials/BottleTutorial';
@@ -19,7 +16,11 @@ const App = () => {
     SplashScreen.hide();
   }, []);
 
-  return <AppContainer />;
+  return (
+    <NavigationContainer>
+      <AppNavigator />
+    </NavigationContainer>
+  );
 };
 
 const AppNavigator = createStackNavigator(
@@ -48,7 +49,5 @@ const AppNavigator = createStackNavigator(
     initialRouteName: 'Home',
   },
 );
-
-const AppContainer = createAppContainer(AppNavigator);
 
 export default App;

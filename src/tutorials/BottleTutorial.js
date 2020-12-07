@@ -1,8 +1,6 @@
 import React from 'react';
 import {StyleSheet, Dimensions, View, Alert, AsyncStorage} from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
-import {withNavigation} from 'react-navigation';
-
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
@@ -12,10 +10,6 @@ class BottleTutorial extends React.Component {
   };
 
   doneAction = async () => {
-    this.props.navigation.navigate('Home');
-    this.props.navigation.state.params.doneCallback();
-    //TODO: Modify some settings here
-
     try {
       await AsyncStorage.setItem('bottleInstructionsShow', 'false');
     } catch (error) {
@@ -56,4 +50,4 @@ const slides = [
   },
 ];
 
-export default withNavigation(BottleTutorial);
+export default BottleTutorial;
