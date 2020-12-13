@@ -216,7 +216,6 @@ class BarbotScreen extends React.Component {
                         abortController.signal,
                       )
                         .then(() => {
-                          this.props.navigation.state.params.reloadMenu();
                           this.setState({
                             alcoholMode: !this.state.alcoholMode,
                             showLoading: false,
@@ -224,11 +223,17 @@ class BarbotScreen extends React.Component {
                         })
                         .catch(error => {
                           console.log(error);
-                          this.setState({
-                            showLoading: false,
-                          });
-                          Alert.alert(
-                            'There was an error switching to Alcohol Mode',
+                          this.setState(
+                            {
+                              showLoading: false,
+                            },
+                            () => {
+                              setTimeout(() => {
+                                Alert.alert(
+                                  'There was an error switching to Alcohol Mode',
+                                );
+                              }, 100);
+                            },
                           );
                         });
                     },

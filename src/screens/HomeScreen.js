@@ -1,11 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {Text, View, StyleSheet, Dimensions} from 'react-native';
+import {Text, View, StyleSheet, Dimensions, Alert} from 'react-native';
 import {Button} from 'react-native-elements';
 import Spacer from '../components/Spacer';
 import {withNavigationFocus} from '@react-navigation/compat';
 import {ScrollView} from 'react-native-gesture-handler';
-import HeaderComponent from '../components/HeaderComponent';
 import MenuItem from '../components/MenuItem';
 import {
   getCocktailMenu,
@@ -23,18 +22,6 @@ class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
   }
-
-  static navigationOptions = ({navigation}) => {
-    return {
-      header: (
-        <HeaderComponent
-          backVisible={false}
-          settingsVisible={false}
-          reloadCallback={navigation.getParam('reloadCallback')}
-        />
-      ),
-    };
-  };
 
   //Fetches and sets the available cocktail menu
   setCocktailMenu() {
@@ -140,7 +127,7 @@ class HomeScreen extends React.Component {
   componentDidUpdate(prevProps) {
     //Runs when navigating back to the screen
     if (prevProps.isFocused !== this.props.isFocused) {
-      this.loadBottleList();
+      this.reloadCallback();
     }
   }
 
@@ -210,7 +197,11 @@ class HomeScreen extends React.Component {
             </View>
             <Spacer height={10} />
             <View style={styles.controlView}>
-              <Text style={[styles.textStyle, {marginBottom: 8}]}>Menu</Text>
+              <Text
+                style={[styles.textStyle, {marginBottom: 8}]}
+                onPress={this.reloadCallback.bind(this)}>
+                Menu
+              </Text>
               <ScrollView
                 bounces={true}
                 scrollEnabled={

@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import HeaderComponent from './src/components/HeaderComponent';
 import HomeScreen from './src/screens/HomeScreen';
 import BarbotScreen from './src/screens/BarbotScreen';
 import BottleTutorial from './src/tutorials/BottleTutorial';
@@ -40,7 +41,7 @@ function RootStack() {
           },
           headerTitleStyle: {
             color: 'black',
-            fontSize: 28,
+            fontSize: 26,
             fontFamily: 'Chalkboard SE',
           },
         }}
