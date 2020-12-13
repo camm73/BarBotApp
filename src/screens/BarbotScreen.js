@@ -116,14 +116,7 @@ class BarbotScreen extends React.Component {
               {
                 text: 'OK',
                 onPress: () => {
-                  refreshRecipes()
-                    .then(res => {
-                      this.props.navigation.state.params.reloadMenu();
-                    })
-                    .catch(err => {
-                      console.log(err);
-                      this.props.navigation.state.params.reloadMenu();
-                    });
+                  refreshRecipes();
                 },
               },
             ],
@@ -463,7 +456,6 @@ class BarbotScreen extends React.Component {
                             },
                             () => {
                               if (response === 'true') {
-                                this.props.navigation.state.params.reloadMenu();
                                 setTimeout(() => {
                                   Alert.alert(
                                     'Successfully removed all bottles!',
@@ -492,7 +484,6 @@ class BarbotScreen extends React.Component {
                         .catch(err => {
                           if (err.name === 'AbortError') {
                             aborted = true;
-                            this.props.navigation.state.params.reloadMenu();
                           }
                           console.log(err);
                           this.setState({showLoading: false});
