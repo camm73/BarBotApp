@@ -38,6 +38,7 @@ function RootStack() {
           headerTitle: 'BarBot',
           headerStyle: {
             backgroundColor: '#1C404F',
+            shadowOpacity: 0,
           },
           headerTitleStyle: {
             color: 'black',
