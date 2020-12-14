@@ -54,6 +54,7 @@ function RootStack() {
           headerTitle: 'Manage BarBot',
           headerStyle: {
             backgroundColor: '#1C404F',
+            shadowOpacity: 0,
           },
           headerTitleStyle: {
             color: 'black',
@@ -71,6 +72,7 @@ function RootStack() {
           headerTitle: 'Edit Recipe',
           headerStyle: {
             backgroundColor: '#1C404F',
+            shadowOpacity: 0,
           },
           headerTitleStyle: {
             color: 'black',
